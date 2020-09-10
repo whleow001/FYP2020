@@ -23,5 +23,6 @@ public class QuickInstantiate : MonoBehaviourPun
 
       GameObject playerClone = MasterManager.NetworkInstantiate(prefabs[index], spawns[index].transform.position, Quaternion.identity);
       playerClone.GetComponent<PlayerController>().SpawnCamera(_mainCamera);
+
     }
 }

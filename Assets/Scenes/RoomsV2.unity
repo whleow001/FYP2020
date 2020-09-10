@@ -153,11 +153,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e4c3c4bc7dea04744bf9a0c311c31349, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  myCharacter: {fileID: 0}
-  playerHealth: 200
-  playerDamage: 10
-  myCamera: {fileID: 0}
-  myAL: {fileID: 0}
 --- !u!136 &39567536
 CapsuleCollider:
   m_ObjectHideFlags: 0
