@@ -25,9 +25,6 @@ public class PlayerController : MonoBehaviour {
     void Start() {
       playerInput = GetComponent<PlayerInput>();
       rb = GetComponent<Rigidbody>();
-
-      // Set camera to follow player
-      Camera.main.GetComponent<CameraMotor>().SetPlayer(gameObject);
     }
 
     public void Move() {
@@ -41,5 +38,10 @@ public class PlayerController : MonoBehaviour {
       if (joystickVector.x != 0 || joystickVector.y != 0)
         angle = Mathf.Atan2(joystickVector.x, -joystickVector.y) * Mathf.Rad2Deg - 45;
       transform.rotation = Quaternion.Euler(new Vector3(0, angle, 0));
+    }
+
+    public void SpawnCamera(GameObject camera) {
+      GameObject _mainCamera = Instantiate(camera, Vector3.zero, Quaternion.Euler(30, 45, 0));
+      _mainCamera.GetComponent<CameraMotor>().SetPlayer(gameObject);
     }
 }
