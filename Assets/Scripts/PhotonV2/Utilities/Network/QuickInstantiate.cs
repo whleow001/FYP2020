@@ -19,6 +19,8 @@ public class QuickInstantiate : MonoBehaviourPun
     //private GameObject generator;
 
     private void Awake() {
+      if (!photonView.IsMine) return;
+
       foreach (Player player in PhotonNetwork.PlayerList) {
           int index = (int)player.CustomProperties["Team"] - 1;
           //Vector3 spawnLocation = Random.insideUnitSphere * spawns[index].renderer.bounds.extents.magnitude;
