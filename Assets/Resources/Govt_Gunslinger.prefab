@@ -789,6 +789,7 @@ MonoBehaviour:
   OwnershipTransfer: 0
   ObservedComponents:
   - {fileID: -4513304103588242888}
+  - {fileID: -5715353839943592588}
   viewIdField: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
@@ -821,8 +822,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowLayerWeightsInspector: 1
   ShowParameterInspector: 1
-  m_SynchronizeParameters: []
-  m_SynchronizeLayers: []
+  m_SynchronizeParameters:
+  - Type: 4
+    SynchronizeType: 0
+    Name: run
+  - Type: 4
+    SynchronizeType: 0
+    Name: attack
+  - Type: 4
+    SynchronizeType: 0
+    Name: forceTransition
+  - Type: 4
+    SynchronizeType: 0
+    Name: dodge
+  m_SynchronizeLayers:
+  - SynchronizeType: 0
+    LayerIndex: 0
 --- !u!1 &4030554210917919797
 GameObject:
   m_ObjectHideFlags: 0

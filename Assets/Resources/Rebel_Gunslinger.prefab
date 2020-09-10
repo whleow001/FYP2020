@@ -606,7 +606,7 @@ GameObject:
   - component: {fileID: 8580988493813934296}
   - component: {fileID: -2930879083360605016}
   - component: {fileID: -8666940486480318184}
-  - component: {fileID: 2110919839493878202}
+  - component: {fileID: -6274397500598710474}
   m_Layer: 0
   m_Name: Rebel_Gunslinger
   m_TagString: Player
@@ -726,6 +726,7 @@ MonoBehaviour:
   OwnershipTransfer: 0
   ObservedComponents:
   - {fileID: -8666940486480318184}
+  - {fileID: -6274397500598710474}
   viewIdField: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
@@ -744,7 +745,7 @@ MonoBehaviour:
   m_SynchronizePosition: 1
   m_SynchronizeRotation: 1
   m_SynchronizeScale: 0
---- !u!114 &2110919839493878202
+--- !u!114 &-6274397500598710474
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -753,12 +754,27 @@ MonoBehaviour:
   m_GameObject: {fileID: 8580988493813934299}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 627855c7f81362d41938ffe0b1475957, type: 3}
+  m_Script: {fileID: 11500000, guid: 9b8c4a61274f60b4ea5fb4299cfdbf14, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_SynchronizePosition: 1
-  m_SynchronizeRotation: 1
-  m_SynchronizeScale: 0
+  ShowLayerWeightsInspector: 1
+  ShowParameterInspector: 1
+  m_SynchronizeParameters:
+  - Type: 4
+    SynchronizeType: 1
+    Name: run
+  - Type: 4
+    SynchronizeType: 1
+    Name: attack
+  - Type: 4
+    SynchronizeType: 1
+    Name: forceTransition
+  - Type: 4
+    SynchronizeType: 1
+    Name: dodge
+  m_SynchronizeLayers:
+  - SynchronizeType: 0
+    LayerIndex: 0
 --- !u!1 &8580988493817692001
 GameObject:
   m_ObjectHideFlags: 0

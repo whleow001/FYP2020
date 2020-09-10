@@ -23,6 +23,7 @@ public class QuickInstantiate : MonoBehaviourPun
           int index = (int)player.CustomProperties["Team"] - 1;
           //Vector3 spawnLocation = Random.insideUnitSphere * spawns[index].renderer.bounds.extents.magnitude;
 
+          Debug.Log(prefabs[index]);
           GameObject playerClone = MasterManager.NetworkInstantiate(prefabs[index], spawns[index].transform.position, Quaternion.identity);
           playerClone.GetComponent<PlayerController>().SpawnCamera(_mainCamera);
 

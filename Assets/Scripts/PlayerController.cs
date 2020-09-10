@@ -1,8 +1,11 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using ExitGames.Client.Photon;
+using Photon.Pun;
+using Photon.Realtime;
 
-public class PlayerController : MonoBehaviour {
+public class PlayerController : MonoBehaviourPun {
     // Input reference
     PlayerInput playerInput;
 
@@ -28,6 +31,8 @@ public class PlayerController : MonoBehaviour {
     }
 
     public void Move() {
+      if (!photonView.IsMine) return;
+
       Vector2 joystickVector = playerInput.GetJoystickVector();
 
       // Movement
@@ -41,6 +46,8 @@ public class PlayerController : MonoBehaviour {
     }
 
     public void SpawnCamera(GameObject camera) {
+      if (!photonView.IsMine) return;
+
       GameObject _mainCamera = Instantiate(camera, Vector3.zero, Quaternion.Euler(30, 45, 0));
       _mainCamera.GetComponent<CameraMotor>().SetPlayer(gameObject);
     }

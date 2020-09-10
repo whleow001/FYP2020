@@ -29,12 +29,8 @@ public class MasterManager : SingletonScriptableObject<MasterManager>
                     return result;
                 }
             }
-            else
-            {
-                Debug.LogError("Path is empty for gameObject name " + networkedPrefab.Prefab);
-                return null;
-            }
         }
+        Debug.LogError("Path is empty for gameObject name " + obj);
         return null;
     }
 
@@ -50,7 +46,6 @@ public class MasterManager : SingletonScriptableObject<MasterManager>
         {
             if (results[i].GetComponent<PhotonView>() != null)
             {
-                Debug.Log(results[i]);
                 string path = AssetDatabase.GetAssetPath(results[i]);
                 Instance._networkedPrefabs.Add(new NetworkedPrefab(results[i], path));
             }
