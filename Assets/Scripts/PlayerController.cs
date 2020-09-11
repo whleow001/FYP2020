@@ -69,7 +69,7 @@ public class PlayerController : MonoBehaviourPun {
     void Update() {
       if (isAttacking) {
         if (timer == 0.0f)
-          Fire();
+          photonView.RPC("Fire", RpcTarget.All);
 
         timer += Time.deltaTime;
         if (timer >= cd)
@@ -79,23 +79,21 @@ public class PlayerController : MonoBehaviourPun {
       }
     }
 
+    [PunRPC]
     void Fire() {
       ray.origin = raycastOrigin.transform.position;
       ray.direction = raycastOrigin.forward;
 
       if (Physics.Raycast(ray, out hitInfo, distance)) {
         if (hitInfo.collider.gameObject.layer != gameObject.layer && hitInfo.collider.gameObject.tag == "Player") {
-          hitInfo.transform.SendMessage("TakeDamage", 20);
+          hitInfo.transform.gameObject.GetComponent<PlayerManager>().TakeDamage(20, photonView);
         }
         /*hitEffect.transform.position = hitInfo.point;
         hitEffect.transform.forward = hitInfo.normal;
         hitEffect.Emit(1);
 
         bullet.tracer.transform.position = hitInfo.point;
-        bullet.time = maxLifeTime;
-
-        if (hitInfo.collider.gameObject.tag == "Drone")
-          hitInfo.transform.SendMessage("HitByBullet", BulletDamage, SendMessageOptions.DontRequireReceiver);*/
+        bullet.time = maxLifeTime;*/
       }
 
       Debug.DrawRay(ray.origin, ray.GetPoint(distance), Color.red, 2.0f);

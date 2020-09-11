@@ -56,6 +56,8 @@ public class PlayerManager : MonoBehaviourPun
     }
 
     public void Increment(string key) {
+      if (!photonView.IsMine) return;
+
       if (_myCustomProperties.ContainsKey(key))
         ChangeValue(key, (int)(_myCustomProperties[key]) + 1);
     }
@@ -67,7 +69,7 @@ public class PlayerManager : MonoBehaviourPun
     }
 
     // Take Damage
-    public bool TakeDamage(int damage) {
+    public bool TakeDamage(int damage, PhotonView attacker) {
       if (!photonView.IsMine) return false;
 
       ChangeValue("Health", (int)(_myCustomProperties["Health"]) - damage);
