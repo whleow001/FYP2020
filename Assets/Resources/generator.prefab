@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 4329363571618913200}
   m_Layer: 12
   m_Name: generator
-  m_TagString: Untagged
+  m_TagString: Generator
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

@@ -62,7 +62,7 @@ public class PlayerManager : MonoBehaviourPun
 
     public void Increment(string key) {
       if (_myCustomProperties.ContainsKey(key))
-        ChangeValue(key, (int)(_myCustomProperties[key]) + 1);
+        ChangeValue(key, GetProperty(key) + 1);
     }
 
     public int GetProperty(string key) {
@@ -77,7 +77,7 @@ public class PlayerManager : MonoBehaviourPun
 
       ChangeValue("Health", (int)(_myCustomProperties["Health"]) - damage);
 
-      if ((int)_myCustomProperties["Health"] <= 0) {
+      if (GetProperty("Health") <= 0) {
         Increment("Deaths");
         Respawn();
 

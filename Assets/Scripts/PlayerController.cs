@@ -10,6 +10,9 @@ public class PlayerController : MonoBehaviourPun {
     private PlayerInput playerInput;
     private Transform raycastOrigin;
 
+    // Director reference
+    private GameDirector director;
+
     // Components
     Rigidbody rb;
 
@@ -36,6 +39,7 @@ public class PlayerController : MonoBehaviourPun {
     void Start() {
       playerInput = GetComponent<PlayerInput>();
       rb = GetComponent<Rigidbody>();
+      director = GameObject.Find("Director").GetComponent<GameDirector>();
 
       foreach (Transform child in gameObject.transform)
         if (child.name == "GunPoint")
@@ -87,8 +91,11 @@ public class PlayerController : MonoBehaviourPun {
       ray.direction = raycastOrigin.forward;
 
       if (Physics.Raycast(ray, out hitInfo, distance)) {
-        if (hitInfo.collider.gameObject.layer != gameObject.layer && hitInfo.collider.gameObject.tag == "Player") {
-          hitInfo.transform.gameObject.GetComponent<PlayerManager>().TakeDamage(20, photonView);
+        if (hitInfo.collider.gameObject.layer != gameObject.layer) {
+          if (hitInfo.collider.gameObject.tag == "Player")
+            hitInfo.transform.gameObject.GetComponent<PlayerManager>().TakeDamage(20, photonView);
+          else if (hitInfo.collider.gameObject.tag == "Generator")
+            director.DamageGenerator(hitInfo.collider.gameObject, 20);
         }
         /*hitEffect.transform.position = hitInfo.point;
         hitEffect.transform.forward = hitInfo.normal;
