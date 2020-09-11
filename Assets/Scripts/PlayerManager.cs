@@ -21,7 +21,7 @@ public class PlayerManager : MonoBehaviourPun
     // Start is called before the first frame update
     void Start() {
       _myCustomProperties = PhotonNetwork.LocalPlayer.CustomProperties;
-      director = GameObject.Find("GameDirector").GetComponent<GameDirector>();
+      director = GameObject.Find("Director").GetComponent<GameDirector>();
 
       Reset();
       instantiated = true;
@@ -61,7 +61,7 @@ public class PlayerManager : MonoBehaviourPun
     }
 
     // Take Damage
-    public bool TakeDamage(int damage, Player attacker) {
+    public bool TakeDamage(int damage) {
       ChangeValue("Health", (int)(_myCustomProperties["Health"]) - damage);
 
       if ((int)_myCustomProperties["Health"] <= 0) {

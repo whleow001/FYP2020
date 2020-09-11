@@ -671,6 +671,7 @@ GameObject:
   - component: {fileID: -4513304103588242888}
   - component: {fileID: -5715353839943592588}
   - component: {fileID: 1749319789178552207}
+  - component: {fileID: -3930881243187481530}
   m_Layer: 9
   m_Name: Govt_Gunslinger
   m_TagString: Player
@@ -850,6 +851,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f94042e63494f7848a7659b22e9929f0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &-3930881243187481530
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4030554210914171791}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6692d4cfee8c2ab419630cc77b69c7b3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &4030554210917919797

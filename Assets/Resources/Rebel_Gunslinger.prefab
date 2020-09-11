@@ -689,6 +689,7 @@ GameObject:
   - component: {fileID: -8666940486480318184}
   - component: {fileID: -6274397500598710474}
   - component: {fileID: -2834983496707361724}
+  - component: {fileID: -7708104927471644171}
   m_Layer: 10
   m_Name: Rebel_Gunslinger
   m_TagString: Player
@@ -868,6 +869,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f94042e63494f7848a7659b22e9929f0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &-7708104927471644171
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8580988493813934299}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6692d4cfee8c2ab419630cc77b69c7b3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &8580988493817692001
