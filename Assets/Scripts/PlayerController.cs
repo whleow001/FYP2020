@@ -81,8 +81,6 @@ public class PlayerController : MonoBehaviourPun {
 
     [PunRPC]
     void Fire() {
-      if (!photonView.IsMine) return;
-
       ray.origin = raycastOrigin.transform.position;
       ray.direction = raycastOrigin.forward;
 
