@@ -25,6 +25,8 @@ public class State : StateMachineBehaviour {
     }
 
     public void UpdateParams(params int[] toUpdate) {
+      if (!playerController.IsPhotonViewMine()) return;
+      
       foreach (int param in toUpdate)
         animator.SetBool(param, GetParamProperty(param));
     }

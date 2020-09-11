@@ -31,7 +31,7 @@ public class PlayerController : MonoBehaviourPun {
     }
 
     public void Move() {
-      if (!photonView.IsMine) return;
+      if (!IsPhotonViewMine()) return;
 
       Vector2 joystickVector = playerInput.GetJoystickVector();
 
@@ -50,5 +50,9 @@ public class PlayerController : MonoBehaviourPun {
 
       GameObject _mainCamera = Instantiate(camera, Vector3.zero, Quaternion.Euler(30, 45, 0));
       _mainCamera.GetComponent<CameraMotor>().SetPlayer(gameObject);
+    }
+
+    public bool IsPhotonViewMine() {
+      return photonView.IsMine;
     }
 }
