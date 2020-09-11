@@ -24,4 +24,17 @@ public class GameDirector : MonoBehaviourPun
         foreach (Transform child in spawns[2].transform)
           MasterManager.RoomObjectInstantiate(prefabs[2], child.position, Quaternion.identity);
     }
+
+    public void AddToCombatLog(PhotonView victimID, PhotonView killerID) {
+      //Player victim = Player.Find(victimID.ViewID);
+      //Player killer = Player.Find(killerID.ViewID);
+
+      //Debug.Log("Killer's health': " + photonView.GetComponent<PlayerManager>().GetProperty("Health"));
+
+      killerID.GetComponent<PlayerManager>().CreditKill();
+    }
+
+    public Vector3 GetSpawnLocation(int team) {
+      return spawns[team-1].transform.GetChild(Random.Range(0, 3)).transform.position;
+    }
 }

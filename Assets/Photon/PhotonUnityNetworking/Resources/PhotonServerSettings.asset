@@ -39,6 +39,7 @@ MonoBehaviour:
   - RPC_Shooting
   - TakeDamage
   - Fire
+  - DealDamage
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

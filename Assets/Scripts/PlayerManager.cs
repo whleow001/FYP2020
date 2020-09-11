@@ -55,6 +55,11 @@ public class PlayerManager : MonoBehaviourPun
         ChangeValue(key, 0);
     }
 
+    private void Respawn() {
+      Reset();
+      gameObject.transform.position = director.GetSpawnLocation(GetProperty("Team"));
+    }
+
     public void Increment(string key) {
       if (_myCustomProperties.ContainsKey(key))
         ChangeValue(key, (int)(_myCustomProperties[key]) + 1);
@@ -67,31 +72,24 @@ public class PlayerManager : MonoBehaviourPun
     }
 
     // Take Damage
-    public bool TakeDamage(int damage) {
-      if (!photonView.IsMine) return false;
+    public void TakeDamage(int damage, PhotonView attacker) {
+      if (!photonView.IsMine) return;
 
       ChangeValue("Health", (int)(_myCustomProperties["Health"]) - damage);
 
       if ((int)_myCustomProperties["Health"] <= 0) {
         Increment("Deaths");
-        ChangeValue("Health", 100);
+        Respawn();
 
-        return true;
+        director.AddToCombatLog(photonView, attacker);
       }
-      return false;
     }
 
     // Credit kill
     public void CreditKill() {
       if (!photonView.IsMine) return;
 
+      Debug.Log("Increasing kill for: " + photonView);
       Increment("Kills");
-    }
-
-    // Credit kill
-    public void Die() {
-      if (!photonView.IsMine) return;
-
-      Increment("Deaths");
     }
 }

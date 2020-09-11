@@ -88,9 +88,7 @@ public class PlayerController : MonoBehaviourPun {
 
       if (Physics.Raycast(ray, out hitInfo, distance)) {
         if (hitInfo.collider.gameObject.layer != gameObject.layer && hitInfo.collider.gameObject.tag == "Player") {
-          if (hitInfo.transform.gameObject.GetComponent<PlayerManager>().TakeDamage(20))
-            photonView.GetComponent<PlayerManager>().CreditKill();
-
+          hitInfo.transform.gameObject.GetComponent<PlayerManager>().TakeDamage(20, photonView);
         }
         /*hitEffect.transform.position = hitInfo.point;
         hitEffect.transform.forward = hitInfo.normal;
