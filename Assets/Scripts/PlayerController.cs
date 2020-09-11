@@ -37,7 +37,9 @@ public class PlayerController : MonoBehaviourPun {
       playerInput = GetComponent<PlayerInput>();
       rb = GetComponent<Rigidbody>();
 
-      raycastOrigin = GameObject.Find("GunPoint").transform;
+      foreach (Transform child in gameObject.transform)
+        if (child.name == "GunPoint")
+          raycastOrigin = child;
     }
 
     public void Move() {
@@ -68,21 +70,19 @@ public class PlayerController : MonoBehaviourPun {
 
     void Update() {
       if (isAttacking) {
-        if (timer == 0.0f)
+        if (timer == 0.0f && photonView.IsMine)
           photonView.RPC("Fire", RpcTarget.All);
 
         timer += Time.deltaTime;
         if (timer >= cd)
           timer = 0.0f;
-      } else {
-        timer = 0.0f;
       }
+      else
+        timer = 0.0f;
     }
 
     [PunRPC]
     void Fire() {
-      if (!photonView.IsMine) return;
-
       ray.origin = raycastOrigin.transform.position;
       ray.direction = raycastOrigin.forward;
 
