@@ -56,6 +56,8 @@ public class PlayerManager : MonoBehaviourPun
     }
 
     public void Increment(string key) {
+      if (!photonView.IsMine) return;
+
       if (_myCustomProperties.ContainsKey(key))
         ChangeValue(key, (int)(_myCustomProperties[key]) + 1);
     }
@@ -75,6 +77,7 @@ public class PlayerManager : MonoBehaviourPun
       if ((int)_myCustomProperties["Health"] <= 0) {
         Increment("Deaths");
         ChangeValue("Health", 100);
+
         return true;
       }
       return false;
