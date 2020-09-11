@@ -2,7 +2,6 @@ using ExitGames.Client.Photon;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using ExitGames.Client.Photon;
 using UnityEngine.UI;
 using Photon.Pun;
 using Photon.Realtime;
@@ -69,6 +68,8 @@ public class PlayerManager : MonoBehaviourPun
 
     // Take Damage
     public bool TakeDamage(int damage) {
+      if (!photonView.IsMine) return false;
+
       ChangeValue("Health", (int)(_myCustomProperties["Health"]) - damage);
 
       if ((int)_myCustomProperties["Health"] <= 0) {

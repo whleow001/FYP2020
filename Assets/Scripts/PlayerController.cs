@@ -84,10 +84,9 @@ public class PlayerController : MonoBehaviourPun {
       ray.direction = raycastOrigin.forward;
 
       if (Physics.Raycast(ray, out hitInfo, distance)) {
-        if (hitInfo.collider.gameObject.layer != gameObject.layer) {
+        if (hitInfo.collider.gameObject.layer != gameObject.layer && hitInfo.collider.gameObject.tag == "Player") {
           hitInfo.transform.SendMessage("TakeDamage", 20);
         }
-
         /*hitEffect.transform.position = hitInfo.point;
         hitEffect.transform.forward = hitInfo.normal;
         hitEffect.Emit(1);
@@ -99,6 +98,6 @@ public class PlayerController : MonoBehaviourPun {
           hitInfo.transform.SendMessage("HitByBullet", BulletDamage, SendMessageOptions.DontRequireReceiver);*/
       }
 
-      Debug.DrawRay(ray.origin, ray.direction + (Vector3.forward * distance), Color.red, 2.0f);
+      Debug.DrawRay(ray.origin, ray.GetPoint(distance), Color.red, 2.0f);
     }
 }
