@@ -56,8 +56,6 @@ public class PlayerManager : MonoBehaviourPun
     }
 
     public void Increment(string key) {
-      if (!photonView.IsMine) return;
-
       if (_myCustomProperties.ContainsKey(key))
         ChangeValue(key, (int)(_myCustomProperties[key]) + 1);
     }

@@ -858,16 +858,16 @@ MonoBehaviour:
   ShowParameterInspector: 1
   m_SynchronizeParameters:
   - Type: 4
-    SynchronizeType: 0
+    SynchronizeType: 1
     Name: run
   - Type: 4
-    SynchronizeType: 0
+    SynchronizeType: 1
     Name: attack
   - Type: 4
-    SynchronizeType: 0
+    SynchronizeType: 1
     Name: forceTransition
   - Type: 4
-    SynchronizeType: 0
+    SynchronizeType: 1
     Name: dodge
   m_SynchronizeLayers:
   - SynchronizeType: 0
