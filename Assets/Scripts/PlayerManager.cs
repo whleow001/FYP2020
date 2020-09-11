@@ -22,17 +22,23 @@ public class PlayerManager : MonoBehaviourPun
 
     // Start is called before the first frame update
     void Start() {
-      _myCustomProperties = PhotonNetwork.LocalPlayer.CustomProperties;
+      GetProperties();
       director = GameObject.Find("Director").GetComponent<GameDirector>();
 
       Reset();
       instantiated = true;
 
       hp = GameObject.Find("Scoreboard").GetComponent<Text>();
+
+      DontDestroyOnLoad(gameObject);
     }
 
     void Update() {
       hp.text = _myCustomProperties["Health"].ToString() + "\n" + _myCustomProperties["Kills"].ToString() + " - " + _myCustomProperties["Deaths"].ToString();
+    }
+
+    private void GetProperties() {
+      _myCustomProperties = PhotonNetwork.LocalPlayer.CustomProperties;
     }
 
     public void Reset() {
@@ -44,6 +50,7 @@ public class PlayerManager : MonoBehaviourPun
     }
 
     private void ChangeValue(string key, int value) {
+      GetProperties();
       _myCustomProperties[key] = value;
       PhotonNetwork.SetPlayerCustomProperties(_myCustomProperties);
     }
@@ -66,6 +73,7 @@ public class PlayerManager : MonoBehaviourPun
     }
 
     public int GetProperty(string key) {
+      GetProperties();
       if (_myCustomProperties.ContainsKey(key))
         return (int)_myCustomProperties[key];
       return 0;

@@ -95,7 +95,7 @@ public class PlayerController : MonoBehaviourPun {
           if (hitInfo.collider.gameObject.tag == "Player")
             hitInfo.transform.gameObject.GetComponent<PlayerManager>().TakeDamage(20, photonView);
           else if (hitInfo.collider.gameObject.tag == "Generator")
-            director.DamageGenerator(hitInfo.collider.gameObject, 20);
+            hitInfo.transform.gameObject.GetComponent<GeneratorHealth>().TakeDamage(20);
         }
         /*hitEffect.transform.position = hitInfo.point;
         hitEffect.transform.forward = hitInfo.normal;

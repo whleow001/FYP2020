@@ -26,6 +26,7 @@ public class CreateRoomMenu : MonoBehaviourPunCallbacks
         RoomOptions options = new RoomOptions();
         options.BroadcastPropsChangeToAll = true;
         options.MaxPlayers = 6;
+        options.CustomRoomProperties = new ExitGames.Client.Photon.Hashtable();
         PhotonNetwork.JoinOrCreateRoom(_roomName.text, options, TypedLobby.Default);
     }
 
