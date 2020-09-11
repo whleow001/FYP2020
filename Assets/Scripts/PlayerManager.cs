@@ -56,8 +56,6 @@ public class PlayerManager : MonoBehaviourPun
     }
 
     public void Increment(string key) {
-      if (!photonView.IsMine) return;
-
       if (_myCustomProperties.ContainsKey(key))
         ChangeValue(key, (int)(_myCustomProperties[key]) + 1);
     }
@@ -81,5 +79,19 @@ public class PlayerManager : MonoBehaviourPun
         return true;
       }
       return false;
+    }
+
+    // Credit kill
+    public void CreditKill() {
+      if (!photonView.IsMine) return;
+
+      Increment("Kills");
+    }
+
+    // Credit kill
+    public void Die() {
+      if (!photonView.IsMine) return;
+
+      Increment("Deaths");
     }
 }
