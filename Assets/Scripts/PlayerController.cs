@@ -7,7 +7,8 @@ using Photon.Realtime;
 
 public class PlayerController : MonoBehaviourPun {
     // Input reference
-    PlayerInput playerInput;
+    private PlayerInput playerInput;
+    private Transform raycastOrigin;
 
     // Components
     Rigidbody rb;
@@ -15,6 +16,13 @@ public class PlayerController : MonoBehaviourPun {
     // Variables
     float speed = 10.0f;
     float angle;
+
+    // firing
+    float cd = 2.0f;
+    float timer = 0.0f;
+    Ray ray;
+    RaycastHit hitInfo;
+    float distance = 100.0f;
 
     // Flags
     [HideInInspector]
@@ -28,6 +36,8 @@ public class PlayerController : MonoBehaviourPun {
     void Start() {
       playerInput = GetComponent<PlayerInput>();
       rb = GetComponent<Rigidbody>();
+
+      raycastOrigin = GameObject.Find("GunPoint").transform;
     }
 
     public void Move() {
@@ -54,5 +64,41 @@ public class PlayerController : MonoBehaviourPun {
 
     public bool IsPhotonViewMine() {
       return photonView.IsMine;
+    }
+
+    void Update() {
+      if (isAttacking) {
+        if (timer == 0.0f)
+          Fire();
+
+        timer += Time.deltaTime;
+        if (timer >= cd)
+          timer = 0.0f;
+      } else {
+        timer = 0.0f;
+      }
+    }
+
+    void Fire() {
+      ray.origin = raycastOrigin.transform.position;
+      ray.direction = raycastOrigin.forward;
+
+      if (Physics.Raycast(ray, out hitInfo, distance)) {
+        if (hitInfo.collider.gameObject.layer != gameObject.layer) {
+          hitInfo.transform.SendMessage("TakeDamage", 20);
+        }
+
+        /*hitEffect.transform.position = hitInfo.point;
+        hitEffect.transform.forward = hitInfo.normal;
+        hitEffect.Emit(1);
+
+        bullet.tracer.transform.position = hitInfo.point;
+        bullet.time = maxLifeTime;
+
+        if (hitInfo.collider.gameObject.tag == "Drone")
+          hitInfo.transform.SendMessage("HitByBullet", BulletDamage, SendMessageOptions.DontRequireReceiver);*/
+      }
+
+      Debug.DrawRay(ray.origin, ray.direction + (Vector3.forward * distance), Color.red, 2.0f);
     }
 }

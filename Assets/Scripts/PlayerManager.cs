@@ -12,11 +12,14 @@ public class PlayerManager : MonoBehaviourPun
     // GameDirector reference
     private GameDirector director;
 
+    // Hp Reference
+    private Text hp;
+
     // Flags
     private bool instantiated = false;
 
     // Custom player properties
-    private ExitGames.Client.Photon.Hashtable _myCustomProperties = new ExitGames.Client.Photon.Hashtable();
+    private ExitGames.Client.Photon.Hashtable _myCustomProperties;
 
     // Start is called before the first frame update
     void Start() {
@@ -25,14 +28,20 @@ public class PlayerManager : MonoBehaviourPun
 
       Reset();
       instantiated = true;
+
+      hp = GameObject.Find("Scoreboard").GetComponent<Text>();
+    }
+
+    void Update() {
+      hp.text = _myCustomProperties["Health"].ToString();
     }
 
     public void Reset() {
       if (!instantiated) {
-        Reset("Deaths");
-        Reset("Kills");
+        ResetProperty("Deaths");
+        ResetProperty("Kills");
       }
-      Reset("Health");
+      ResetProperty("Health");
     }
 
     private void ChangeValue(string key, int value) {
@@ -40,13 +49,11 @@ public class PlayerManager : MonoBehaviourPun
       PhotonNetwork.SetPlayerCustomProperties(_myCustomProperties);
     }
 
-    private void Reset(string key) {
-      if (_myCustomProperties.ContainsKey(key)) {
-          if (key == "Health")
-            ChangeValue(key, 100);
-          else
-            ChangeValue(key, 0);
-      }
+    private void ResetProperty(string key) {
+      if (key == "Health")
+        ChangeValue(key, 100);
+      else
+        ChangeValue(key, 0);
     }
 
     public void Increment(string key) {
