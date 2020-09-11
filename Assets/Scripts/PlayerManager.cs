@@ -32,7 +32,7 @@ public class PlayerManager : MonoBehaviourPun
     }
 
     void Update() {
-      hp.text = _myCustomProperties["Health"].ToString();
+      hp.text = _myCustomProperties["Health"].ToString() + "\n" + _myCustomProperties["Kills"].ToString() + " - " + _myCustomProperties["Deaths"].ToString();
     }
 
     public void Reset() {
@@ -67,13 +67,14 @@ public class PlayerManager : MonoBehaviourPun
     }
 
     // Take Damage
-    public bool TakeDamage(int damage, PhotonView attacker) {
+    public bool TakeDamage(int damage) {
       if (!photonView.IsMine) return false;
 
       ChangeValue("Health", (int)(_myCustomProperties["Health"]) - damage);
 
       if ((int)_myCustomProperties["Health"] <= 0) {
         Increment("Deaths");
+        ChangeValue("Health", 100);
         return true;
       }
       return false;
