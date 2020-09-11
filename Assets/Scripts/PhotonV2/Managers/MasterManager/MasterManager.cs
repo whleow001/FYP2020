@@ -34,6 +34,23 @@ public class MasterManager : SingletonScriptableObject<MasterManager>
         return null;
     }
 
+    public static GameObject RoomObjectInstantiate(GameObject obj, Vector3 position, Quaternion rotation)
+    {
+        foreach (NetworkedPrefab networkedPrefab in Instance._networkedPrefabs)
+        {
+            if (networkedPrefab.Prefab == obj)
+            {
+                if (networkedPrefab.Path != string.Empty)
+                {
+                    GameObject result = PhotonNetwork.InstantiateRoomObject(networkedPrefab.Path, position, rotation);
+                    return result;
+                }
+            }
+        }
+        Debug.LogError("Path is empty for gameObject name " + obj);
+        return null;
+    }
+
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
     public static void PopulateNetworkedPrefab()

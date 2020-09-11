@@ -20,7 +20,8 @@ public class GameDirector : MonoBehaviourPun
       GameObject playerClone = MasterManager.NetworkInstantiate(prefabs[index], spawns[index].transform.GetChild(Random.Range(0, 3)).transform.position, Quaternion.identity);
       playerClone.GetComponent<PlayerController>().SpawnCamera(_mainCamera);
 
-      foreach (Transform child in spawns[2].transform)
-        MasterManager.NetworkInstantiate(prefabs[2], child.position, Quaternion.identity);
+      if (PhotonNetwork.IsMasterClient)
+        foreach (Transform child in spawns[2].transform)
+          MasterManager.RoomObjectInstantiate(prefabs[2], child.position, Quaternion.identity);
     }
 }

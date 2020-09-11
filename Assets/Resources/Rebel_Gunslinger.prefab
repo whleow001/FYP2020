@@ -689,7 +689,7 @@ GameObject:
   - component: {fileID: -8666940486480318184}
   - component: {fileID: -6274397500598710474}
   - component: {fileID: -2834983496707361724}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Rebel_Gunslinger
   m_TagString: Player
   m_Icon: {fileID: 0}

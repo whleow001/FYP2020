@@ -671,7 +671,7 @@ GameObject:
   - component: {fileID: -4513304103588242888}
   - component: {fileID: -5715353839943592588}
   - component: {fileID: 1749319789178552207}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Govt_Gunslinger
   m_TagString: Player
   m_Icon: {fileID: 0}
