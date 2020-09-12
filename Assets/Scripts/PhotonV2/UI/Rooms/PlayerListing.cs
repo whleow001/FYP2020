@@ -18,7 +18,7 @@ public class PlayerListing : MonoBehaviourPunCallbacks
     {
         Player = player;
 
-        SetPlayerText(player);
+        //SetPlayerText(player);
     }
 
     public override void OnPlayerPropertiesUpdate(Player target, ExitGames.Client.Photon.Hashtable changedProps)
@@ -32,11 +32,17 @@ public class PlayerListing : MonoBehaviourPunCallbacks
     }
         
 
-    private void SetPlayerText(Player player)
+    public void SetPlayerText(Player player)
     {
-        int result = -1;
         if (player.CustomProperties.ContainsKey("Team"))
-            result = (int)player.CustomProperties["Team"];
-        _text.text = result.ToString() + ", " + player.NickName;
+        {
+            int result = (int)player.CustomProperties["Team"];
+            _text.text = result.ToString() + ", " + player.NickName;
+        }
+            
+
+
+
+        //_text.text = player.CustomProperties["Team"].ToString() + ", " + player.NickName;
     }
 }

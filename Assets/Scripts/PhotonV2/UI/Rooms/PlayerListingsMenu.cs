@@ -1,24 +1,34 @@
-﻿using System.Collections;
+﻿using ExitGames.Client.Photon;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using Photon.Pun;
 using Photon.Realtime;
-using UnityEngine.UI;
 
 public class PlayerListingsMenu : MonoBehaviourPunCallbacks
 {
     [SerializeField]
     private Transform _content;
+    //private Transform _contentTeamOne;
+
+    //[SerializeField]
+    //private Transform _contentTeamTwo;
+
     [SerializeField]
     private PlayerListing _playerListing;
 
     [SerializeField]
     private Text _readyUpText;
 
+    //For team selection
 
     private List<PlayerListing> _listings = new List<PlayerListing>();
     private RoomsCanvases _roomCanvases;
     private bool _ready = false;
+    private int teamOneNo = 0;
+    private int teamTwoNo = 0;
+    //private bool _nextTeam = false;
 
     public override void OnEnable()
     {
@@ -52,14 +62,19 @@ public class PlayerListingsMenu : MonoBehaviourPunCallbacks
 
     private void GetCurrentRoomPlayers()
     {
+        //if (!photonView.IsMine) return;
+
         if (!PhotonNetwork.IsConnected)
             return;
         if (PhotonNetwork.CurrentRoom == null || PhotonNetwork.CurrentRoom.Players == null)
             return;
 
+        
         foreach (KeyValuePair<int, Player> playerInfo in PhotonNetwork.CurrentRoom.Players)
         {
+            SetTeamOne();
             AddPlayerListing(playerInfo.Value);
+            teamOneNo++;
         }
         
     }
@@ -78,6 +93,8 @@ public class PlayerListingsMenu : MonoBehaviourPunCallbacks
             {
                 listing.SetPlayerInfo(player);
                 _listings.Add(listing);
+                listing.SetPlayerText(player);
+                Debug.Log(player.NickName);
             }
         }
         
@@ -90,6 +107,22 @@ public class PlayerListingsMenu : MonoBehaviourPunCallbacks
 
     public override void OnPlayerEnteredRoom(Player newPlayer)
     {
+        //if (!photonView.IsMine) return;
+
+        /*
+        if (teamOneNo < teamTwoNo || teamOneNo == teamTwoNo)
+        {
+            SetTeamOne();
+            AddPlayerListing(newPlayer);
+            teamOneNo++;
+        }
+        else
+        {
+            SetTeamTwo();
+            AddPlayerListing(newPlayer);
+            teamTwoNo++;
+        }*/
+
         AddPlayerListing(newPlayer);
     }
 
@@ -138,5 +171,29 @@ public class PlayerListingsMenu : MonoBehaviourPunCallbacks
         int index = _listings.FindIndex(x => x.Player == player);
         if (index != -1)
             _listings[index].Ready = ready;
+    }
+
+    //For team selection
+    private void SetTeamOne()
+    {
+        ExitGames.Client.Photon.Hashtable _myCustomProperties = PhotonNetwork.LocalPlayer.CustomProperties;
+        _myCustomProperties["Team"] = 1;
+        PhotonNetwork.SetPlayerCustomProperties(_myCustomProperties);
+    }
+
+    private void SetTeamTwo()
+    {
+        ExitGames.Client.Photon.Hashtable _myCustomProperties = PhotonNetwork.LocalPlayer.CustomProperties;
+        _myCustomProperties["Team"] = 2;
+        PhotonNetwork.SetPlayerCustomProperties(_myCustomProperties);
+    }
+    public void OnClick_ButtonTeamOne()
+    { 
+        SetTeamOne();
+    }
+
+    public void OnClick_ButtonTeamTwo()
+    {
+        SetTeamTwo();
     }
 }

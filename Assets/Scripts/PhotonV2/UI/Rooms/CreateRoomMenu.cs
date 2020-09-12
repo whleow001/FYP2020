@@ -40,4 +40,9 @@ public class CreateRoomMenu : MonoBehaviourPunCallbacks
     {
         Debug.Log("Room creation failed: " + message, this);
     }
+
+    public void OnClick_GoBackButton()
+    {
+        _roomsCanvases.CreateOrJoinRoomCanvas.Hide();
+    }
 }
