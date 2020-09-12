@@ -85,12 +85,13 @@ public class GameDirector : MonoBehaviourPun
     }
 
     public void AddToCombatLog(PhotonView victimID, PhotonView killerID) {
-      //Player victim = Player.Find(victimID.ViewID);
-      //Player killer = Player.Find(killerID.ViewID);
+        Player victim = victimID.Owner;
+        Player killer = killerID.Owner;
 
-      //Debug.Log("Killer's health': " + photonView.GetComponent<PlayerManager>().GetProperty("Health"));
+        //Debug.Log("Killer's health': " + photonView.GetComponent<PlayerManager>().GetProperty("Health"));
+        Debug.Log(killerID + " has killed " + victimID);
 
-      killerID.GetComponent<PlayerManager>().CreditKill();
+      //killerID.GetComponent<PlayerManager>().CreditKill();
     }
 
     public Vector3 GetSpawnLocation(int team) {

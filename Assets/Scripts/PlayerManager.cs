@@ -87,6 +87,8 @@ public class PlayerManager : MonoBehaviourPun
 
       if (GetProperty("Health") <= 0) {
         Increment("Deaths");
+        Player killer = attacker.Owner;
+        CreditKill(killer);
         Respawn();
 
         director.AddToCombatLog(photonView, attacker);
@@ -94,10 +96,11 @@ public class PlayerManager : MonoBehaviourPun
     }
 
     // Credit kill
-    public void CreditKill() {
+    public void CreditKill(Player killer) {
       if (!photonView.IsMine) return;
 
-      Debug.Log("Increasing kill for: " + photonView);
-      Increment("Kills");
+      _myCustomProperties = killer.CustomProperties;
+      _myCustomProperties["Kills"] = (int)(_myCustomProperties["Kills"]) + 1;
+      killer.SetCustomProperties(_myCustomProperties);
     }
 }
