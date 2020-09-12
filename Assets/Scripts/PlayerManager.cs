@@ -30,7 +30,7 @@ public class PlayerManager : MonoBehaviourPun
 
       hp = GameObject.Find("Scoreboard").GetComponent<Text>();
 
-      DontDestroyOnLoad(gameObject);
+      //DontDestroyOnLoad(gameObject);
     }
 
     void Update() {

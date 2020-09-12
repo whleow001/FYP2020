@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,17 +7,32 @@ using UnityEngine;
 public class Attack : StateData {
 
   [Range(0.01f, 1f)]
-  public float transitionTiming = 1.0f;
+  public float attackTime;
+  private bool attacked;
 
   public override void OnEnter(State state, Animator animator, AnimatorStateInfo stateInfo) {
+    state.GetPlayerController(animator);
 
+    attacked = false;
   }
 
   public override void UpdateAbility(State state, Animator animator, AnimatorStateInfo stateInfo) {
-    animator.SetBool(state.GetForceTransitionParam(), stateInfo.normalizedTime >= transitionTiming);
+    float actualNormalizedTime = stateInfo.normalizedTime - (float)Math.Truncate(stateInfo.normalizedTime);
+    //Debug.Log(actualNormalizedTime);
+
+    if (actualNormalizedTime >= attackTime && !attacked) {
+      attacked = true;
+
+      state.GetPlayerController(animator).TurnAndFireNearestTarget();
+    }
+
+    if (actualNormalizedTime < attackTime)
+      attacked = false;
+
+    state.UpdateParams(state.GetRunParam(), state.GetAttackParam());
   }
 
   public override void OnExit(State state, Animator animator, AnimatorStateInfo stateInfo) {
-    animator.SetBool(state.GetForceTransitionParam(), false);
+
   }
 }

@@ -1,4 +1,5 @@
-﻿using System.Collections;
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using ExitGames.Client.Photon;
@@ -9,6 +10,10 @@ public class PlayerController : MonoBehaviourPun {
     // Input reference
     private PlayerInput playerInput;
     private Transform raycastOrigin;
+
+    // Layer references
+    private int GOVT_LAYER = 9;
+    private int REBEL_LAYER = 10;
 
     // Director reference
     private GameDirector director;
@@ -21,11 +26,12 @@ public class PlayerController : MonoBehaviourPun {
     float angle;
 
     // firing
-    float cd = 2.0f;
-    float timer = 0.0f;
     Ray ray;
     RaycastHit hitInfo;
-    float distance = 100.0f;
+    float range = 10.0f;
+    bool turning = false;
+    Quaternion lookAt;
+    float rotateSpeed = 10.0f;
 
     // Flags
     [HideInInspector]
@@ -46,10 +52,20 @@ public class PlayerController : MonoBehaviourPun {
           raycastOrigin = child;
     }
 
+    void FixedUpdate() {
+      if (turning) {
+        transform.rotation = Quaternion.Slerp(transform.rotation, lookAt, rotateSpeed * Time.deltaTime);
+
+        if (Math.Abs(transform.rotation.eulerAngles.y - lookAt.eulerAngles.y) <= 1.0f)
+          photonView.RPC("Fire", RpcTarget.All);
+      }
+    }
+
     public void Move() {
       if (!IsPhotonViewMine()) return;
 
       Vector2 joystickVector = playerInput.GetJoystickVector();
+      turning = false;
 
       // Movement
       Vector3 projectedVector = new Vector3(joystickVector.y * speed, rb.velocity.y, joystickVector.x * speed);
@@ -72,17 +88,39 @@ public class PlayerController : MonoBehaviourPun {
       return photonView.IsMine;
     }
 
-    void Update() {
-      if (isAttacking) {
-        if (timer == 0.0f && photonView.IsMine)
-          photonView.RPC("Fire", RpcTarget.All);
+    public void Dodge() {
+      turning = false;
+      rb.AddForce(transform.forward * 10.0f, ForceMode.Impulse);
+    }
 
-        timer += Time.deltaTime;
-        if (timer >= cd)
-          timer = 0.0f;
+    // Auto targeting
+    public void TurnAndFireNearestTarget() {
+      Collider[] targets = Physics.OverlapSphere(transform.position, range, 1 << GetOtherFactionLayer());
+      float nearestDistance = 0.0f;
+      Collider nearestTarget = new Collider();
+
+      if (targets.Length > 0) {
+        nearestDistance = Vector2.Distance(transform.position, targets[0].transform.position);
+        nearestTarget = targets[0];
       }
-      else
-        timer = 0.0f;
+
+      foreach (Collider target in targets) {
+        float newDistance = Vector2.Distance(transform.position, target.transform.position);
+
+        if (nearestDistance > newDistance) {
+          nearestDistance = newDistance;
+          nearestTarget = target;
+        }
+      }
+
+      if (nearestDistance != 0.0f) {
+        turning = true;
+        lookAt = Quaternion.LookRotation(nearestTarget.transform.position - transform.position);
+      }
+    }
+
+    private int GetOtherFactionLayer() {
+      return gameObject.layer == GOVT_LAYER ? REBEL_LAYER : GOVT_LAYER;
     }
 
     [PunRPC]
@@ -90,7 +128,7 @@ public class PlayerController : MonoBehaviourPun {
       ray.origin = raycastOrigin.transform.position;
       ray.direction = raycastOrigin.forward;
 
-      if (Physics.Raycast(ray, out hitInfo, distance)) {
+      if (Physics.Raycast(ray, out hitInfo, range)) {
         if (hitInfo.collider.gameObject.layer != gameObject.layer) {
           if (hitInfo.collider.gameObject.tag == "Player")
             hitInfo.transform.gameObject.GetComponent<PlayerManager>().TakeDamage(20, photonView);
@@ -105,6 +143,6 @@ public class PlayerController : MonoBehaviourPun {
         bullet.time = maxLifeTime;*/
       }
 
-      Debug.DrawRay(ray.origin, ray.GetPoint(distance), Color.red, 2.0f);
+      Debug.DrawRay(ray.origin, transform.TransformDirection(Vector3.forward) * range, Color.red, 0.5f);
     }
 }
