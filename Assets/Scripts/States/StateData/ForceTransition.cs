@@ -9,12 +9,10 @@ public class ForceTransition : StateData {
   public float transitionTiming = 0.8f;
 
   public override void OnEnter(State state, Animator animator, AnimatorStateInfo stateInfo) {
-
+    state.GetPlayerController(animator);
   }
 
   public override void UpdateAbility(State state, Animator animator, AnimatorStateInfo stateInfo) {
-    PlayerController playerController = state.GetPlayerController(animator);
-
     animator.SetBool(state.GetForceTransitionParam(), stateInfo.normalizedTime >= transitionTiming);
   }
 
