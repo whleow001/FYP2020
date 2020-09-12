@@ -1,4 +1,5 @@
-﻿using System.Collections;
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using ExitGames.Client.Photon;
@@ -52,12 +53,11 @@ public class PlayerController : MonoBehaviourPun {
     }
 
     void FixedUpdate() {
-      if (turning = true) {
+      if (turning) {
         transform.rotation = Quaternion.Slerp(transform.rotation, lookAt, rotateSpeed * Time.deltaTime);
 
-        // Stop turning once rotation has reached its destination
-        if (transform.rotation == lookAt)
-            turning = false;
+        if (Math.Abs(transform.rotation.eulerAngles.y - lookAt.eulerAngles.y) <= 1.0f)
+          photonView.RPC("Fire", RpcTarget.All);
       }
     }
 
@@ -88,8 +88,13 @@ public class PlayerController : MonoBehaviourPun {
       return photonView.IsMine;
     }
 
+    public void Dodge() {
+      turning = false;
+      rb.AddForce(transform.forward * 10.0f, ForceMode.Impulse);
+    }
+
     // Auto targeting
-    public void TurnToNearestTarget() {
+    public void TurnAndFireNearestTarget() {
       Collider[] targets = Physics.OverlapSphere(transform.position, range, 1 << GetOtherFactionLayer());
       float nearestDistance = 0.0f;
       Collider nearestTarget = new Collider();
