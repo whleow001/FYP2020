@@ -111,6 +111,6 @@ public class GameDirector : MonoBehaviourPun
     public void DecrementGeneratorCount() {
 
       generatorCount--;
-        Debug.Log(generatorCount.ToString());
+      Debug.Log(generatorCount.ToString());
     }
 }

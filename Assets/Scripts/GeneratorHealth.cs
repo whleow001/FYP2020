@@ -11,39 +11,34 @@ public class GeneratorHealth : MonoBehaviourPun
 
     private GameDirector director;
 
-    void Start()
-    {
-        director = GameObject.Find("Director").GetComponent<GameDirector>();    
+    void Start() {
+        director = GameObject.Find("Director").GetComponent<GameDirector>();
     }
 
-    // Update is called once per frame 
+    // Update is called once per frame
     void Update() {
       if (PhotonNetwork.IsMasterClient)
         if (health <= 0)
           DestroyGenerator();
     }
-    
+
     private void DestroyGenerator() {
-      photonView.RPC("NotifyRebelTeam", RpcTarget.All, "A Generator has been destroyed!", transform.position);
+      photonView.RPC("NotifyRebelTeam", RpcTarget.All, "Generator destroyed!", transform.position, true);
       PhotonNetwork.Destroy(gameObject);
-        director.generatorCount--;
+      director.DecrementGeneratorCount();
     }
 
     public void TakeDamage(int damage) {
       health -= damage;
 
-      photonView.RPC("NotifyRebelTeam", RpcTarget.All, "Generator Under Attack!", transform.position);
-        ////test
-        //if (PhotonNetwork.IsMasterClient)
-        //    if (health <= 0)
-        //        DestroyGenerator();
+      photonView.RPC("NotifyRebelTeam", RpcTarget.All, "Generator Under Attack!", transform.position, false);
     }
 
     [PunRPC]
-    void NotifyRebelTeam(string message, Vector3 position) {
+    void NotifyRebelTeam(string message, Vector3 position, bool ignoreCooldown) {
       GameObject[] allPlayers = GameObject.FindGameObjectsWithTag("Player");
       foreach (GameObject player in allPlayers)
         if (player.layer == REBEL_LAYER)
-          player.GetComponent<PlayerController>().Notify(message, position);
+          player.GetComponent<PlayerManager>().Notify(message, 3, ignoreCooldown, position);
     }
 }
