@@ -15,6 +15,11 @@ public class GameDirector : MonoBehaviourPun
     private List<GameObject> spawns = new List<GameObject>();
     [SerializeField]
     private List<GameObject> prefabs = new List<GameObject>();
+    
+    [SerializeField]
+    private EndGameScreen _endGameScreen;
+
+    private PlayerManager playerManager;
 
     // Team no
     private int team;
@@ -34,6 +39,7 @@ public class GameDirector : MonoBehaviourPun
 
       GameObject playerClone = MasterManager.NetworkInstantiate(prefabs[team], spawns[team].transform.GetChild(Random.Range(0, 3)).transform.position, Quaternion.identity);
       playerClone.GetComponent<PlayerController>().SpawnCamera(_mainCamera);
+        playerManager = playerClone.GetComponent<PlayerManager>();
 
       // If client is a master client
       if (PhotonNetwork.IsMasterClient) {
@@ -53,6 +59,8 @@ public class GameDirector : MonoBehaviourPun
           MasterManager.RoomObjectInstantiate(prefabs[3], spawns[3].transform.GetChild(i).transform.position, spawns[3].transform.GetChild(i).transform.rotation);
         }
       }
+
+        //_endGameScreen = GameObject.Find("EndGameScreen").GetComponent<EndGameScreen>();
     }
 
     void Update() {
@@ -60,11 +68,17 @@ public class GameDirector : MonoBehaviourPun
         AllocateFOVMask();
 
       if (generatorCount == 0 && !forcefieldDestroyed && PhotonNetwork.IsMasterClient) {
-        GameObject[] forcefields = GameObject.FindGameObjectsWithTag("Forcefield");
-        foreach (GameObject gameObject in forcefields)
-          PhotonNetwork.Destroy(gameObject);
-        forcefieldDestroyed = true;
-      }
+            GameObject[] forcefields = GameObject.FindGameObjectsWithTag("Forcefield");
+            foreach (GameObject gameObject in forcefields)
+            {
+                PhotonNetwork.Destroy(gameObject);
+            }
+            forcefieldDestroyed = true;
+            Debug.Log(photonView);
+            playerManager.GetComponent<PhotonView>().RPC("DisplayEndScreenRPC", RpcTarget.All);
+            //_endGameScreen.GetComponent<EndGameScreen>().Show();
+
+        }
     }
 
     private void AllocateFOVMask() {
@@ -111,6 +125,11 @@ public class GameDirector : MonoBehaviourPun
     public void DecrementGeneratorCount() {
 
       generatorCount--;
-        Debug.Log(generatorCount.ToString());
+        //Debug.Log(generatorCount.ToString());
+    }
+
+    public void DisplayEndScreen()
+    {
+        _endGameScreen.Show();
     }
 }

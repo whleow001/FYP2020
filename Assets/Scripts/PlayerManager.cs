@@ -103,4 +103,26 @@ public class PlayerManager : MonoBehaviourPun
       _myCustomProperties["Kills"] = (int)(_myCustomProperties["Kills"]) + 1;
       killer.SetCustomProperties(_myCustomProperties);
     }
+
+    public PhotonView GetPhotonView()
+    {
+        return photonView;
+    }
+
+    public void DisplayEndScreen()
+    {
+        director.DisplayEndScreen();
+    }
+
+    [PunRPC]
+    void DisplayEndScreenRPC()
+    {
+        foreach(Player player in PhotonNetwork.PlayerList)
+        {
+            if (player == photonView.Owner)
+            {
+                GetComponent<PlayerManager>().DisplayEndScreen();
+            }
+        }
+    }
 }

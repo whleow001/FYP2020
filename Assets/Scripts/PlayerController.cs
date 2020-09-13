@@ -19,6 +19,9 @@ public class PlayerController : MonoBehaviourPun {
     // Director reference
     private GameDirector director;
 
+    //TEST
+    //private EndGameScreen endScreen;
+
     // Notification Panel Reference
     private GameObject notificationPanel;
     private float panelTime = 3.0f;
@@ -183,4 +186,9 @@ public class PlayerController : MonoBehaviourPun {
     public void DecrementGeneratorCount() {
       director.DecrementGeneratorCount();
     }
+
+    //public void EndGame()
+    //{
+    //    endScreen.Show();
+    //}
 }
