@@ -125,11 +125,15 @@ public class GameDirector : MonoBehaviourPun
     public void DecrementGeneratorCount() {
 
       generatorCount--;
+<<<<<<< HEAD
         //Debug.Log(generatorCount.ToString());
     }
 
     public void DisplayEndScreen()
     {
         _endGameScreen.Show();
+=======
+      Debug.Log(generatorCount.ToString());
+>>>>>>> 71f3166552d0ea1b56f11b4a016ae1ec63ef982b
     }
 }
