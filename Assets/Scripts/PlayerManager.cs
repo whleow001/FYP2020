@@ -6,9 +6,9 @@ using UnityEngine.UI;
 using Photon.Pun;
 using Photon.Realtime;
 
-public class PlayerManager : MonoBehaviourPun, IPunObservable
+public class PlayerManager : MonoBehaviourPun/*, IPunObservable*/
 {
-    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    /*public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
         if(stream.IsWriting)
         {
@@ -20,7 +20,7 @@ public class PlayerManager : MonoBehaviourPun, IPunObservable
             // network player, to receive data
             this._myCustomProperties["Health"] = (object)stream.ReceiveNext();
         }
-    }
+    }*/
 
     // GameDirector reference
     private GameDirector director;
@@ -35,6 +35,10 @@ public class PlayerManager : MonoBehaviourPun, IPunObservable
     private float panelTime = 3.0f;
     private float panelElapsedTime;
     private bool showPanel = false;
+
+    // Layer references
+    private int GOVT_LAYER = 9;
+    private int REBEL_LAYER = 10;
 
     public bool kill = false;
 
@@ -57,7 +61,7 @@ public class PlayerManager : MonoBehaviourPun, IPunObservable
       instantiated = true;
 
       hp = GameObject.Find("Scoreboard").GetComponent<Text>();
-      notificationPanel = GameObject.Find("NotificationPanel");
+      notificationPanel = director.GetNotificationPanel();
     }
 
     void Update() {
@@ -190,13 +194,22 @@ public class PlayerManager : MonoBehaviourPun, IPunObservable
             GetComponent<PlayerManager>().DisplayEndScreen();
     }
 
-    public void Notify(string message, float seconds, bool ignoreCooldown = false, Vector3 position = default(Vector3)) {
-      notificationPanel.transform.GetChild(0).GetComponent<Text>().text = message;
-      panelElapsedTime = 0;
-      panelTime = seconds;
+    public void Notify(string message, float seconds, bool ignoreCooldown = false, int layer = -1, Vector3 position = default(Vector3)) {
+      if (gameObject.layer == 1 << layer || layer == -1) {
+        notificationPanel.transform.GetChild(0).GetComponent<Text>().text = message;
+        panelElapsedTime = 0;
+        panelTime = seconds;
 
-      //Debug.Log(position);
+        //Debug.Log(position);
 
-      showPanel = true;
+        showPanel = true;
+      }
+    }
+
+    [PunRPC]
+    void NotifyRebelTeam(string message, Vector3 position, bool ignoreCooldown) {
+      foreach (Player player in PhotonNetwork.PlayerList)
+        if (player == photonView.Owner)
+          GetComponent<PlayerManager>().Notify(message, 3, ignoreCooldown, REBEL_LAYER, position);
     }
 }

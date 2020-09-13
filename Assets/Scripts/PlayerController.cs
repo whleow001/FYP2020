@@ -19,12 +19,6 @@ public class PlayerController : MonoBehaviourPun {
     // Director reference
     private GameDirector director;
 
-    // Notification Panel Reference
-    private GameObject notificationPanel;
-    private float panelTime = 3.0f;
-    private float panelElapsedTime;
-    private bool showPanel = false;
-
     // Components
     Rigidbody rb;
 
@@ -148,15 +142,6 @@ public class PlayerController : MonoBehaviourPun {
       }
 
       Debug.DrawRay(ray.origin, transform.TransformDirection(Vector3.forward) * range, Color.red, 0.5f);
-    }
-
-    public void Notify(string message, Vector3 position) {
-      if (notificationPanel)
-        notificationPanel.transform.GetChild(0).GetComponent<Text>().text = message;
-      panelElapsedTime = 0;
-      Debug.Log(position);
-
-      showPanel = true;
     }
 
     public void DecrementGeneratorCount() {
