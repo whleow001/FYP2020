@@ -12,12 +12,13 @@ public class GameDirector : MonoBehaviourPun
     [SerializeField]
     private GameObject fovMask;
     [SerializeField]
+    private GameObject notificationPanel;
+    [SerializeField]
+    private EndGameScreen _endGameScreen;
+    [SerializeField]
     private List<GameObject> spawns = new List<GameObject>();
     [SerializeField]
     private List<GameObject> prefabs = new List<GameObject>();
-
-    [SerializeField]
-    private EndGameScreen _endGameScreen;
 
     private PlayerManager playerManager;
 
@@ -120,5 +121,13 @@ public class GameDirector : MonoBehaviourPun
 
     public void DisplayEndScreen() {
         _endGameScreen.Show();
+    }
+
+    public GameObject GetNotificationPanel() {
+      return notificationPanel;
+    }
+
+    public PlayerManager GetPlayerManager() {
+      return playerManager;
     }
 }
