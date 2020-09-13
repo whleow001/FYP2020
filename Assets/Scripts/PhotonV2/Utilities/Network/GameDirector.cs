@@ -19,7 +19,7 @@ public class GameDirector : MonoBehaviourPun
     // Team no
     private int team;
 
-    private int generatorCount = 4;
+    public int generatorCount = 4;
 
     // Layer references
     private int GOVT_LAYER = 9;
@@ -109,6 +109,8 @@ public class GameDirector : MonoBehaviourPun
     }
 
     public void DecrementGeneratorCount() {
+
       generatorCount--;
+        Debug.Log(generatorCount.ToString());
     }
 }

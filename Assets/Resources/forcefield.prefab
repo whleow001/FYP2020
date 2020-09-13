@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 7069700335443327272}
   m_Layer: 13
   m_Name: forcefield
-  m_TagString: Untagged
+  m_TagString: Forcefield
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
