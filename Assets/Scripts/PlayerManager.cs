@@ -6,14 +6,28 @@ using UnityEngine.UI;
 using Photon.Pun;
 using Photon.Realtime;
 
-public class PlayerManager : MonoBehaviourPun
+public class PlayerManager : MonoBehaviourPun, IPunObservable
 {
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        if(stream.IsWriting)
+        {
+            // we own this player, send data to others
+            stream.SendNext(_myCustomProperties["Health"]);
+        }
+        else
+        {
+            // network player, to receive data
+            this._myCustomProperties["Health"] = (object)stream.ReceiveNext();
+        }
+    }
     // GameDirector reference
     private GameDirector director;
     private Rigidbody rb;
 
     // Hp Reference
     private Text hp;
+    public Healthbar healthbar;
 
     // Notification Panel Reference
     private GameObject notificationPanel;
@@ -88,9 +102,14 @@ public class PlayerManager : MonoBehaviourPun
 
     private void ResetProperty(string key) {
       if (key == "Health")
-        ChangeValue(key, 100);
+        {
+            ChangeValue(key, 100);
+            healthbar.SetMaxHealth((int)_myCustomProperties["Health"]);
+        }
       else
-        ChangeValue(key, 0);
+        {
+            ChangeValue(key, 0);
+        }
     }
 
     IEnumerator Respawn() {
@@ -138,6 +157,7 @@ public class PlayerManager : MonoBehaviourPun
       if (!photonView.IsMine) return;
 
       ChangeValue("Health", (int)(_myCustomProperties["Health"]) - damage);
+      healthbar.SetHealth((int)_myCustomProperties["Health"]);
 
       if (GetProperty("Health") <= 0) {
         Increment("Deaths");
