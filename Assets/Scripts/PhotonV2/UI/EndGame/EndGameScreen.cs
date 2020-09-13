@@ -40,6 +40,11 @@ public class EndGameScreen : MonoBehaviourPunCallbacks
         Debug.Log(PhotonNetwork.InRoom);
     }
 
+    //void Update()
+    //{
+    //    SetWinText();
+    //}
+
     private void GetCurrentRoomPlayers()
     {
         //if (!photonView.IsMine) return;
@@ -137,9 +142,16 @@ public class EndGameScreen : MonoBehaviourPunCallbacks
     {
         if (!photonView.IsMine) return;
         //Debug.Log(PhotonNetwork.InRoom);
-        PhotonNetwork.AutomaticallySyncScene = true;
+        //PhotonNetwork.AutomaticallySyncScene = true;
         if(PhotonNetwork.InRoom == true)
+        {
             PhotonNetwork.LeaveRoom();
-            PhotonNetwork.LoadLevel(0);
+            //PhotonNetwork.LoadLevel(0);
+        }
+    }
+
+    public override void OnLeftRoom()
+    {
+        PhotonNetwork.LoadLevel(0);
     }
 }

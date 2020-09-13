@@ -120,5 +120,6 @@ public class GameDirector : MonoBehaviourPun
 
     public void DisplayEndScreen() {
         _endGameScreen.Show();
+        //_endGameScreen.SetWinText();
     }
 }

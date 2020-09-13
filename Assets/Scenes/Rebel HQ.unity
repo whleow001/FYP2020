@@ -5652,9 +5652,9 @@ GameObject:
   - component: {fileID: 1459987293}
   - component: {fileID: 1459987292}
   - component: {fileID: 1459987291}
-  - component: {fileID: 1459987290}
   - component: {fileID: 1459987289}
   - component: {fileID: 1459987295}
+  - component: {fileID: 1459987290}
   m_Layer: 5
   m_Name: EndGameScreen
   m_TagString: Untagged
