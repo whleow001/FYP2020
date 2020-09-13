@@ -71,7 +71,7 @@ public class GameDirector : MonoBehaviourPun
               PhotonNetwork.Destroy(gameObject);
 
             forcefieldDestroyed = true;
-            Debug.Log(photonView);
+            //Debug.Log(photonView);
             playerManager.GetComponent<PhotonView>().RPC("DisplayEndScreenRPC", RpcTarget.All);
         }
     }

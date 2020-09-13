@@ -37,6 +37,7 @@ public class EndGameScreen : MonoBehaviourPunCallbacks
         base.OnEnable();
         GetCurrentRoomPlayers();
         SetWinText();
+        Debug.Log(PhotonNetwork.InRoom);
     }
 
     private void GetCurrentRoomPlayers()
@@ -99,7 +100,7 @@ public class EndGameScreen : MonoBehaviourPunCallbacks
         }
     }
 
-    public override void OnPlayerLeftRoom(Player otherPlayer)
+    public override void OnPlayerLeftRoom (Player otherPlayer)
     {
         if ((int)otherPlayer.CustomProperties["Team"] == 1)
         {
@@ -119,6 +120,9 @@ public class EndGameScreen : MonoBehaviourPunCallbacks
                 _listingsTwo.RemoveAt(index);
             }
         }
+        //test
+        //PhotonNetwork.LoadLevel(0);
+
     }
 
     public void SetWinText()
@@ -131,6 +135,11 @@ public class EndGameScreen : MonoBehaviourPunCallbacks
 
     public void OnClick_LeaveButton()
     {
-        PhotonNetwork.LoadLevel(0);
+        if (!photonView.IsMine) return;
+        //Debug.Log(PhotonNetwork.InRoom);
+        PhotonNetwork.AutomaticallySyncScene = true;
+        if(PhotonNetwork.InRoom == true)
+            PhotonNetwork.LeaveRoom();
+            PhotonNetwork.LoadLevel(0);
     }
 }
