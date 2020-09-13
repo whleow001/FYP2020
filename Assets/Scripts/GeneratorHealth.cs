@@ -13,24 +13,34 @@ public class GeneratorHealth : MonoBehaviourPun
     void Update() {
       if (PhotonNetwork.IsMasterClient)
         if (health <= 0)
-          OnDestory();
+          OnDestroy();
     }
 
-    private void OnDestory() {
+    private void OnDestroy() {
+      photonView.RPC("NotifyRebelTeam", RpcTarget.All, "A Generator has been destroyed!", transform.position);
+      photonView.RPC("NotifyGeneratorDown", RpcTarget.All);
+
       PhotonNetwork.Destroy(gameObject);
     }
 
     public void TakeDamage(int damage) {
       health -= damage;
 
-      photonView.RPC("NotifyRebelTeam", RpcTarget.All, transform.position);
+      photonView.RPC("NotifyRebelTeam", RpcTarget.All, "Generator Under Attack!", transform.position);
     }
 
     [PunRPC]
-    void NotifyRebelTeam(Vector3 position) {
+    void NotifyRebelTeam(string message, Vector3 position) {
       GameObject[] allPlayers = GameObject.FindGameObjectsWithTag("Player");
       foreach (GameObject player in allPlayers)
         if (player.layer == REBEL_LAYER)
-          player.GetComponent<PlayerController>().Notify("Generator Under Attack!", position);
+          player.GetComponent<PlayerController>().Notify(message, position);
+    }
+
+    [PunRPC]
+    void NotifyGeneratorDown() {
+      GameObject[] allPlayers = GameObject.FindGameObjectsWithTag("Player");
+      foreach (GameObject player in allPlayers)
+        player.GetComponent<PlayerController>().DecrementGeneratorCount();
     }
 }

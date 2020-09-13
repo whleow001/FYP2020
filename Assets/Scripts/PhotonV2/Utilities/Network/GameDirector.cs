@@ -19,12 +19,15 @@ public class GameDirector : MonoBehaviourPun
     // Team no
     private int team;
 
+    private int generatorCount = 4;
+
     // Layer references
     private int GOVT_LAYER = 9;
     private int REBEL_LAYER = 10;
 
     // flags
-    public bool maskSet = false;
+    private bool maskSet = false;
+    private bool forcefieldDestroyed = false;
 
     private void Awake() {
       team = (int)PhotonNetwork.LocalPlayer.CustomProperties["Team"] - 1;
@@ -37,8 +40,8 @@ public class GameDirector : MonoBehaviourPun
         // Generate random generator spawns
         List<int> randomIndexes = new List<int>();
 
-        while (randomIndexes.Count < 4) {
-          int randomIndex = Random.Range(0, 4);
+        while (randomIndexes.Count < generatorCount) {
+          int randomIndex = Random.Range(0, generatorCount);
           if (!randomIndexes.Contains(randomIndex))
             randomIndexes.Add(randomIndex);
         }
@@ -46,23 +49,22 @@ public class GameDirector : MonoBehaviourPun
         for (int i = 0; i < randomIndexes.Count; i++)
           MasterManager.RoomObjectInstantiate(prefabs[2], spawns[2].transform.GetChild(randomIndexes[i]).transform.position, Quaternion.identity);
 
-        for (int i = 0; i < 2; i++)
-        {
-                MasterManager.RoomObjectInstantiate(prefabs[3], spawns[3].transform.GetChild(i).transform.position, spawns[3].transform.GetChild(i).transform.rotation);
-                //ForceFieldClone.transform.localScale = new Vector3(4, 0.5f, 0.1f);
-            }
-
-        /*
-        foreach (GameObject item in prefabs)
-            {
-                Debug.Log(item.name);
-            }*/
+        for (int i = 0; i < 2; i++) {
+          MasterManager.RoomObjectInstantiate(prefabs[3], spawns[3].transform.GetChild(i).transform.position, spawns[3].transform.GetChild(i).transform.rotation);
+        }
       }
     }
 
     void Update() {
       if (!maskSet)
         AllocateFOVMask();
+
+      if (generatorCount == 0 && !forcefieldDestroyed && PhotonNetwork.IsMasterClient) {
+        GameObject[] forcefields = GameObject.FindGameObjectsWithTag("Forcefield");
+        foreach (GameObject gameObject in forcefields)
+          PhotonNetwork.Destroy(gameObject);
+        forcefieldDestroyed = true;
+      }
     }
 
     private void AllocateFOVMask() {
@@ -104,5 +106,9 @@ public class GameDirector : MonoBehaviourPun
 
     public Vector3 GetSpawnLocation(int team) {
       return spawns[team-1].transform.GetChild(Random.Range(0, 3)).transform.position;
+    }
+
+    public void DecrementGeneratorCount() {
+      generatorCount--;
     }
 }

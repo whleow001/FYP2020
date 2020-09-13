@@ -173,4 +173,8 @@ public class PlayerController : MonoBehaviourPun {
 
       showPanel = true;
     }
+
+    public void DecrementGeneratorCount() {
+      director.DecrementGeneratorCount();
+    }
 }
