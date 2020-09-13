@@ -62,7 +62,12 @@ public class PlayerController : MonoBehaviourPun {
     }
 
     void Update() {
-      notificationPanel.SetActive(showPanel);
+      if (notificationPanel != null)
+        notificationPanel.SetActive(showPanel);
+      else {
+        Debug.Log("Finding");
+        notificationPanel = GameObject.Find("NotificationPanel");
+      }
 
       if (showPanel) {
         panelElapsedTime += Time.deltaTime;
@@ -167,7 +172,8 @@ public class PlayerController : MonoBehaviourPun {
     }
 
     public void Notify(string message, Vector3 position) {
-      notificationPanel.transform.GetChild(0).GetComponent<Text>().text = message;
+      if (notificationPanel)
+        notificationPanel.transform.GetChild(0).GetComponent<Text>().text = message;
       panelElapsedTime = 0;
       Debug.Log(position);
 

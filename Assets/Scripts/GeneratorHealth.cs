@@ -13,14 +13,14 @@ public class GeneratorHealth : MonoBehaviourPun
     void Update() {
       if (PhotonNetwork.IsMasterClient)
         if (health <= 0)
-          OnDestroy();
+          DestroyGenerator();
     }
 
-    private void OnDestroy() {
+    private void DestroyGenerator() {
+      PhotonNetwork.Destroy(gameObject);
+
       photonView.RPC("NotifyRebelTeam", RpcTarget.All, "A Generator has been destroyed!", transform.position);
       photonView.RPC("NotifyGeneratorDown", RpcTarget.All);
-
-      PhotonNetwork.Destroy(gameObject);
     }
 
     public void TakeDamage(int damage) {
