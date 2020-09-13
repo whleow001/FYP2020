@@ -61,21 +61,17 @@ public class GameDirector : MonoBehaviourPun
             AddMaskAsChild(player);
 
       // Get all generators
-      if (team == 1) {
+      if (GetFactionLayer() == REBEL_LAYER) {
         GameObject[] generators = GameObject.FindGameObjectsWithTag("Generator");
 
-        foreach (GameObject generator in generators) {
+        foreach (GameObject generator in generators)
           AddMaskAsChild(generator);
-        }
       }
-
-
 
       maskSet = true;
     }
 
     private void AddMaskAsChild(GameObject _gameObject) {
-      Debug.Log(_gameObject);
       GameObject FOVObject = Instantiate(fovMask, new Vector3(_gameObject.transform.position.x, _gameObject.transform.position.y + 0.03f, _gameObject.transform.position.z), Quaternion.identity);
       FOVObject.transform.SetParent(_gameObject.transform);
     }

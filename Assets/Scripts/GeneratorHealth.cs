@@ -7,6 +7,7 @@ using Photon.Realtime;
 public class GeneratorHealth : MonoBehaviourPun
 {
     private int health = 100;
+    private int REBEL_LAYER = 10;
 
     // Update is called once per frame
     void Update() {
@@ -21,5 +22,15 @@ public class GeneratorHealth : MonoBehaviourPun
 
     public void TakeDamage(int damage) {
       health -= damage;
+
+      photonView.RPC("NotifyRebelTeam", RpcTarget.All, transform.position);
+    }
+
+    [PunRPC]
+    void NotifyRebelTeam(Vector3 position) {
+      GameObject[] allPlayers = GameObject.FindGameObjectsWithTag("Player");
+      foreach (GameObject player in allPlayers)
+        if (player.layer == REBEL_LAYER)
+          player.GetComponent<PlayerController>().Notify("Generator Under Attack!", position);
     }
 }
