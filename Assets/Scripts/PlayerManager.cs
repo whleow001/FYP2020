@@ -21,6 +21,7 @@ public class PlayerManager : MonoBehaviourPun, IPunObservable
             this._myCustomProperties["Health"] = (object)stream.ReceiveNext();
         }
     }
+
     // GameDirector reference
     private GameDirector director;
     private Rigidbody rb;
@@ -178,28 +179,17 @@ public class PlayerManager : MonoBehaviourPun, IPunObservable
       killer.SetCustomProperties(_myCustomProperties);
     }
 
-<<<<<<< HEAD
-    public PhotonView GetPhotonView()
-    {
-        return photonView;
-    }
-
-    public void DisplayEndScreen()
-    {
+    public void DisplayEndScreen() {
         director.DisplayEndScreen();
     }
 
     [PunRPC]
-    void DisplayEndScreenRPC()
-    {
+    void DisplayEndScreenRPC() {
         foreach(Player player in PhotonNetwork.PlayerList)
-        {
-            if (player == photonView.Owner)
-            {
-                GetComponent<PlayerManager>().DisplayEndScreen();
-            }
-        }
-=======
+          if (player == photonView.Owner)
+            GetComponent<PlayerManager>().DisplayEndScreen();
+    }
+
     public void Notify(string message, float seconds, bool ignoreCooldown = false, Vector3 position = default(Vector3)) {
       notificationPanel.transform.GetChild(0).GetComponent<Text>().text = message;
       panelElapsedTime = 0;
@@ -208,6 +198,5 @@ public class PlayerManager : MonoBehaviourPun, IPunObservable
       //Debug.Log(position);
 
       showPanel = true;
->>>>>>> 71f3166552d0ea1b56f11b4a016ae1ec63ef982b
     }
 }

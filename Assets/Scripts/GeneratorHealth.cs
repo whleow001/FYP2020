@@ -36,9 +36,9 @@ public class GeneratorHealth : MonoBehaviourPun
 
     [PunRPC]
     void NotifyRebelTeam(string message, Vector3 position, bool ignoreCooldown) {
-      GameObject[] allPlayers = GameObject.FindGameObjectsWithTag("Player");
-      foreach (GameObject player in allPlayers)
-        if (player.layer == REBEL_LAYER)
-          player.GetComponent<PlayerManager>().Notify(message, 3, ignoreCooldown, position);
+      foreach (Player player in PhotonNetwork.PlayerList)
+        if (player == photonView.Owner)
+          if (photonView.gameObject.layer == REBEL_LAYER)
+            GetComponent<PlayerManager>().Notify(message, 3, ignoreCooldown, position);
     }
 }

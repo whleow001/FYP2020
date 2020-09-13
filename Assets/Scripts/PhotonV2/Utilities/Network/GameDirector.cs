@@ -15,7 +15,7 @@ public class GameDirector : MonoBehaviourPun
     private List<GameObject> spawns = new List<GameObject>();
     [SerializeField]
     private List<GameObject> prefabs = new List<GameObject>();
-    
+
     [SerializeField]
     private EndGameScreen _endGameScreen;
 
@@ -55,12 +55,9 @@ public class GameDirector : MonoBehaviourPun
         for (int i = 0; i < randomIndexes.Count; i++)
           MasterManager.RoomObjectInstantiate(prefabs[2], spawns[2].transform.GetChild(randomIndexes[i]).transform.position, Quaternion.identity);
 
-        for (int i = 0; i < 2; i++) {
+        for (int i = 0; i < 2; i++)
           MasterManager.RoomObjectInstantiate(prefabs[3], spawns[3].transform.GetChild(i).transform.position, spawns[3].transform.GetChild(i).transform.rotation);
-        }
       }
-
-        //_endGameScreen = GameObject.Find("EndGameScreen").GetComponent<EndGameScreen>();
     }
 
     void Update() {
@@ -70,14 +67,11 @@ public class GameDirector : MonoBehaviourPun
       if (generatorCount == 0 && !forcefieldDestroyed && PhotonNetwork.IsMasterClient) {
             GameObject[] forcefields = GameObject.FindGameObjectsWithTag("Forcefield");
             foreach (GameObject gameObject in forcefields)
-            {
-                PhotonNetwork.Destroy(gameObject);
-            }
+              PhotonNetwork.Destroy(gameObject);
+
             forcefieldDestroyed = true;
             Debug.Log(photonView);
             playerManager.GetComponent<PhotonView>().RPC("DisplayEndScreenRPC", RpcTarget.All);
-            //_endGameScreen.GetComponent<EndGameScreen>().Show();
-
         }
     }
 
@@ -114,8 +108,6 @@ public class GameDirector : MonoBehaviourPun
 
         //Debug.Log("Killer's health': " + photonView.GetComponent<PlayerManager>().GetProperty("Health"));
         Debug.Log(killerID + " has killed " + victimID);
-
-      //killerID.GetComponent<PlayerManager>().CreditKill();
     }
 
     public Vector3 GetSpawnLocation(int team) {
@@ -123,17 +115,10 @@ public class GameDirector : MonoBehaviourPun
     }
 
     public void DecrementGeneratorCount() {
-
       generatorCount--;
-<<<<<<< HEAD
-        //Debug.Log(generatorCount.ToString());
     }
 
-    public void DisplayEndScreen()
-    {
+    public void DisplayEndScreen() {
         _endGameScreen.Show();
-=======
-      Debug.Log(generatorCount.ToString());
->>>>>>> 71f3166552d0ea1b56f11b4a016ae1ec63ef982b
     }
 }
