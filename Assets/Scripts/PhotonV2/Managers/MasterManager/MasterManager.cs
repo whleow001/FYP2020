@@ -43,6 +43,7 @@ public class MasterManager : SingletonScriptableObject<MasterManager>
                 if (networkedPrefab.Path != string.Empty)
                 {
                     GameObject result = PhotonNetwork.InstantiateRoomObject(networkedPrefab.Path, position, rotation);
+                    //Debug.Log(networkedPrefab.Path);
                     return result;
                 }
             }

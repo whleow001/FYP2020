@@ -45,6 +45,18 @@ public class GameDirector : MonoBehaviourPun
 
         for (int i = 0; i < randomIndexes.Count; i++)
           MasterManager.RoomObjectInstantiate(prefabs[2], spawns[2].transform.GetChild(randomIndexes[i]).transform.position, Quaternion.identity);
+
+        for (int i = 0; i < 2; i++)
+        {
+                MasterManager.RoomObjectInstantiate(prefabs[3], spawns[3].transform.GetChild(i).transform.position, spawns[3].transform.GetChild(i).transform.rotation);
+                //ForceFieldClone.transform.localScale = new Vector3(4, 0.5f, 0.1f);
+            }
+
+        /*
+        foreach (GameObject item in prefabs)
+            {
+                Debug.Log(item.name);
+            }*/
       }
     }
 
