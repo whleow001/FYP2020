@@ -976,6 +976,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1c559c9ddbd66f44daa00512fc0463e7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ReadyForFiring: 0
   isMoving: 0
   isAttacking: 0
   isDodging: 0
