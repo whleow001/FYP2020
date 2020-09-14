@@ -15,7 +15,7 @@ public class PlayerSpriteEditor : MonoBehaviourPunCallbacks
             transform.GetComponentInChildren<SpriteRenderer>().drawMode = SpriteDrawMode.Simple;
         }
     }
-
+    
     // Update is called once per frame
     void Update()
     {
