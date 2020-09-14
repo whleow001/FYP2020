@@ -6,7 +6,7 @@ using UnityEngine.UI;
 using Photon.Pun;
 using Photon.Realtime;
 
-public class MainMenuMenu : MonoBehaviour
+public class InstructionMenu : MonoBehaviour
 {
     private RoomsCanvases _roomsCanvases;
 
@@ -15,13 +15,5 @@ public class MainMenuMenu : MonoBehaviour
         _roomsCanvases = canvases;
     }
 
-    public void OnClick_CreateRoomMenu()
-    {
-        _roomsCanvases.CreateOrJoinRoomCanvas.Show();
-    }
 
-    public void OnClick_InstructionsPage()
-    {
-        _roomsCanvases.InstructionCanvas.Show();
-    }
 }

@@ -16,6 +16,10 @@ public class RoomsCanvases : MonoBehaviour
     private MainMenuCanvas _mainMenuCanvas;
     public MainMenuCanvas MainMenuCanvas { get { return _mainMenuCanvas; } }
 
+    [SerializeField]
+    private InstructionCanvas _instructionCanvas;
+    public InstructionCanvas IntructionCanvas { get { return _instructionCanvas; } }
+
     private void Awake()
     {
         FirstInitialize();
@@ -26,5 +30,6 @@ public class RoomsCanvases : MonoBehaviour
         MainMenuCanvas.FirstInitialize(this);
         CreateOrJoinRoomCanvas.FirstInitialize(this);
         CurrentRoomCanvas.FirstInitialize(this);
+       // InstructionCanvas.FirstInitialize(this);
     }
 }
