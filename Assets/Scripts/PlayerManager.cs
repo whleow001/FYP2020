@@ -197,15 +197,6 @@ public class PlayerManager : MonoBehaviourPun/*, IPunObservable*/
     }
 
     [PunRPC]
-    void DisplayEndScreenRPC() {
-        foreach (Player player in PhotonNetwork.PlayerList)
-            if (player == photonView.Owner)
-            {
-                GetComponent<PlayerManager>().DisplayEndScreen();
-            }
-    }
-
-    [PunRPC]
     void WinTextRPC()
     {
         foreach (Player player in PhotonNetwork.PlayerList)
