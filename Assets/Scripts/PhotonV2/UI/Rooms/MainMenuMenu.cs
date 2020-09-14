@@ -22,6 +22,6 @@ public class MainMenuMenu : MonoBehaviour
 
     public void OnClick_InstructionsPage()
     {
-        //_roomsCanvases.InstructionCanvas.Show();
+        _roomsCanvases.InstructionCanvas.Show();
     }
 }

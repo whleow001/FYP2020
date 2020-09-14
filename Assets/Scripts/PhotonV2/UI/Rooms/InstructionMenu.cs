@@ -15,5 +15,9 @@ public class InstructionMenu : MonoBehaviour
         _roomsCanvases = canvases;
     }
 
+    public void OnClick_BackButton()
+    {
+        _roomsCanvases.InstructionCanvas.Hide();
+    }
 
 }
