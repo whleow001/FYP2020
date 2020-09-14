@@ -13,10 +13,10 @@ MonoBehaviour:
   m_Name: PhotonServerSettings
   m_EditorClassIdentifier: 
   AppSettings:
-    AppIdRealtime: ef29f474-cf4a-48f3-9a19-4b0a60c4d385
+    AppIdRealtime: 31617a37-44fe-4dff-9d9f-37b0000b026d
     AppIdChat: 
     AppIdVoice: 
-    AppVersion: 0.0.0
+    AppVersion: 
     UseNameServer: 1
     FixedRegion: 
     Server: 
@@ -33,21 +33,14 @@ MonoBehaviour:
   RunInBackground: 1
   StartInOfflineMode: 0
   RpcList:
+  - BroadcastHealth
   - ClickRpc
   - DestroyRpc
-  - RPC_ChangeReadyState
-  - RPC_Shooting
-  - TakeDamage
-  - Fire
-  - DealDamage
-  - NotifyRebelTeam
-  - NotifyGeneratorDown
-  - EndGame
   - DisplayEndScreenRPC
-  - LeaveRoom
-  - LeaveRoomNow
-  - WinTextRPC
+  - Fire
   - NotifyTeam
+  - RPC_ChangeReadyState
+  - WinTextRPC
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

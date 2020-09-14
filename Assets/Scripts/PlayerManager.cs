@@ -13,12 +13,14 @@ public class PlayerManager : MonoBehaviourPun/*, IPunObservable*/
         if(stream.IsWriting)
         {
             // we own this player, send data to others
-            stream.SendNext(_myCustomProperties["Health"]);
+            stream.SendNext((int)_myCustomProperties["Health"]);
         }
         else
         {
             // network player, to receive data
-            this._myCustomProperties["Health"] = (object)stream.ReceiveNext();
+            int value = (int)stream.ReceiveNext();
+            //_myCustomProperties["Health"] = value;
+            this._myCustomProperties["Health"] = value;
         }
     }*/
 
@@ -28,7 +30,10 @@ public class PlayerManager : MonoBehaviourPun/*, IPunObservable*/
 
     // Hp Reference
     private Text hp;
-    public Healthbar healthbar;
+    //public Healthbar healthbar;
+    public Slider slider;
+    public Gradient gradient;
+    public Image fill;
 
     // Notification Panel Reference
     private NotificationPanelManager notificationPanel;
@@ -82,6 +87,7 @@ public class PlayerManager : MonoBehaviourPun/*, IPunObservable*/
       hp.text = _myCustomProperties["Health"].ToString() + "\n" + _myCustomProperties["Kills"].ToString() + " - " + _myCustomProperties["Deaths"].ToString();
     }
 
+
     private void GetProperties() {
       _myCustomProperties = PhotonNetwork.LocalPlayer.CustomProperties;
     }
@@ -99,17 +105,34 @@ public class PlayerManager : MonoBehaviourPun/*, IPunObservable*/
       rb.useGravity = true;
     }
 
+    public void SetHealthBar(int value)
+    {
+        slider.value = value;
+        fill.color = gradient.Evaluate(slider.normalizedValue);
+    }
+
+    public void SetMaxHealthBar(int value)
+    {
+        slider.maxValue = 100;
+        slider.value = 100;
+        fill.color = gradient.Evaluate(1f);
+    }
+
     private void ChangeValue(string key, int value) {
       GetProperties();
       _myCustomProperties[key] = value;
       PhotonNetwork.SetPlayerCustomProperties(_myCustomProperties);
+      if(key == "Health")
+        {
+            SetHealthBar(value);
+        }
     }
 
     private void ResetProperty(string key) {
       if (key == "Health")
         {
             ChangeValue(key, 100);
-            healthbar.SetMaxHealth((int)_myCustomProperties["Health"]);
+            SetMaxHealthBar(100);
         }
       else
         {
@@ -134,6 +157,7 @@ public class PlayerManager : MonoBehaviourPun/*, IPunObservable*/
 
       Reset();
       gameObject.transform.position = director.GetSpawnLocation(GetProperty("Team"));
+      photonView.RPC("BroadcastHealth", RpcTarget.All, photonView.Owner);
     }
 
     private void ChangeAlpha(float value, bool incrementOrDecrement = false) {
@@ -162,7 +186,9 @@ public class PlayerManager : MonoBehaviourPun/*, IPunObservable*/
       if (!photonView.IsMine) return;
 
       ChangeValue("Health", (int)(_myCustomProperties["Health"]) - damage);
-      healthbar.SetHealth((int)_myCustomProperties["Health"]);
+      //healthbar.SetHealth((int)_myCustomProperties["Health"]);
+      Player victim = photonView.Owner;
+      photonView.RPC("BroadcastHealth", RpcTarget.All, victim);
 
       if (GetProperty("Health") <= 0) {
         Increment("Deaths");
@@ -234,4 +260,12 @@ public class PlayerManager : MonoBehaviourPun/*, IPunObservable*/
         if (player == photonView.Owner)
           GetComponent<PlayerManager>().Notify(message, 3, ignoreCooldown, layer, position);
     }
+    
+    [PunRPC]
+    void BroadcastHealth(Player victim)
+    {
+        SetHealthBar((int)victim.CustomProperties["Health"]);
+        Debug.Log("healthbar value: " + slider.value);
+    }
+    
 }

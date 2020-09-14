@@ -2014,7 +2014,7 @@ MonoBehaviour:
   _mainCamera: {fileID: 9002457119146123538, guid: 7084524851d6f364bae181932663e594,
     type: 3}
   fovMask: {fileID: 2023002162799399333, guid: cace6c961bf3c454bbda4c1e63f20198, type: 3}
-  notificationPanel: {fileID: 0}
+  notificationPanel: {fileID: 4278889625564751256}
   _endGameScreen: {fileID: 1459987295}
   spawns:
   - {fileID: 425255205}
@@ -9397,6 +9397,24 @@ PrefabInstance:
     m_RemovedComponents:
     - {fileID: 8784441846972958567, guid: 03545af53c932a24da6348d52b01aae5, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 03545af53c932a24da6348d52b01aae5, type: 3}
+--- !u!1 &4278889625564751255 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5077724556286489359, guid: 03545af53c932a24da6348d52b01aae5,
+    type: 3}
+  m_PrefabInstance: {fileID: 4278889625564751254}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &4278889625564751256
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4278889625564751255}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2af5ce6ffc566ee4381c165f313e015d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &6198211188907500793
 PrefabInstance:
   m_ObjectHideFlags: 0
