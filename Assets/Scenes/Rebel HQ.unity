@@ -2026,6 +2026,8 @@ MonoBehaviour:
   - {fileID: 8580988493813934299, guid: 7ade7539104d57a4689327a467dde8c5, type: 3}
   - {fileID: 6173012337875008129, guid: 136d1aefd4313fb438a523363f53ab9c, type: 3}
   - {fileID: 8725961496364593681, guid: df4d009e161ff5245a13aad1769c35d3, type: 3}
+  matchLength: 180
+  timer: {fileID: 4278889625564751256}
   generatorCount: 4
 --- !u!4 &488462376
 Transform:
@@ -9354,6 +9356,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: attack
       objectReference: {fileID: 0}
+    - target: {fileID: 6932133874628059458, guid: 03545af53c932a24da6348d52b01aae5,
+        type: 3}
+      propertyPath: m_Name
+      value: Timer
+      objectReference: {fileID: 0}
     - target: {fileID: 7115060831501095893, guid: 03545af53c932a24da6348d52b01aae5,
         type: 3}
       propertyPath: m_FontData.m_FontSize
@@ -9403,6 +9410,18 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 4278889625564751254}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &4278889625564751256 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1633048257825250056, guid: 03545af53c932a24da6348d52b01aae5,
+    type: 3}
+  m_PrefabInstance: {fileID: 4278889625564751254}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &6198211188907500793
 PrefabInstance:
   m_ObjectHideFlags: 0

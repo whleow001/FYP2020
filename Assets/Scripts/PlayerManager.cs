@@ -27,7 +27,6 @@ public class PlayerManager : MonoBehaviourPun/*, IPunObservable*/
     private Rigidbody rb;
 
     // Hp Reference
-    private Text hp;
     public Healthbar healthbar;
 
     // Notification Panel Reference
@@ -60,7 +59,6 @@ public class PlayerManager : MonoBehaviourPun/*, IPunObservable*/
       Reset();
       instantiated = true;
 
-      hp = GameObject.Find("Scoreboard").GetComponent<Text>();
       notificationPanel = director.GetNotificationPanel();
     }
 
@@ -78,8 +76,6 @@ public class PlayerManager : MonoBehaviourPun/*, IPunObservable*/
         if (panelElapsedTime >= panelTime)
           showPanel = false;
       }
-
-      hp.text = _myCustomProperties["Health"].ToString() + "\n" + _myCustomProperties["Kills"].ToString() + " - " + _myCustomProperties["Deaths"].ToString();
     }
 
     private void GetProperties() {

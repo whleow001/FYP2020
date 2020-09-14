@@ -4,8 +4,11 @@ using UnityEngine;
 using ExitGames.Client.Photon;
 using Photon.Pun;
 using Photon.Realtime;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
+using System.Xml.Serialization;
 
-public class GameDirector : MonoBehaviourPun
+public class GameDirector : MonoBehaviourPun, IOnEventCallback
 {
     [SerializeField]
     private GameObject _mainCamera;
@@ -21,6 +24,20 @@ public class GameDirector : MonoBehaviourPun
     private List<GameObject> prefabs = new List<GameObject>();
 
     private PlayerManager playerManager;
+
+
+    public int matchLength = 180;
+    [SerializeField]
+    private Text timer; 
+    private int currentMatchTime;
+    private Coroutine timerCoroutine;
+
+    public enum EventCodes : byte
+    {
+        //fill in for timer
+        RefreshTimer
+    }
+
 
     // Team no
     private int team;
@@ -59,6 +76,13 @@ public class GameDirector : MonoBehaviourPun
         for (int i = 0; i < 2; i++)
           MasterManager.RoomObjectInstantiate(prefabs[3], spawns[3].transform.GetChild(i).transform.position, spawns[3].transform.GetChild(i).transform.rotation);
       }
+
+        
+    }
+
+    void Start()
+    {
+        InitializeTimer();
     }
 
     void Update() {
@@ -74,7 +98,97 @@ public class GameDirector : MonoBehaviourPun
             //Debug.Log(photonView);
             playerManager.GetComponent<PhotonView>().RPC("WinTextRPC", RpcTarget.AllViaServer);
             playerManager.GetComponent<PhotonView>().RPC("DisplayEndScreenRPC", RpcTarget.AllViaServer);
+            //if game ends before timer runs out 
+            if (timerCoroutine != null) StopCoroutine(timerCoroutine);
+            currentMatchTime = 0;
+            RefreshTimerUI();
         }
+    }
+
+    private void OnEnable()
+    {
+        PhotonNetwork.AddCallbackTarget(this);
+    }
+
+    private void OnDisable()
+    {
+        PhotonNetwork.RemoveCallbackTarget(this);
+    }
+
+    private void InitializeTimer()
+    {
+        currentMatchTime = matchLength;
+        RefreshTimerUI();
+
+        if(PhotonNetwork.IsMasterClient)
+        {
+            timerCoroutine = StartCoroutine(Timer());
+        }
+    }
+
+    private void RefreshTimerUI()
+    {
+        string minutes = (currentMatchTime / 60).ToString("00");
+        string seconds = (currentMatchTime % 60).ToString("00");
+        timer.text = $"{minutes}:{seconds}";
+    }
+
+    public void RefreshTimer_S()
+    {
+        object[] package = new object[] { currentMatchTime };
+
+        PhotonNetwork.RaiseEvent(
+            (byte)EventCodes.RefreshTimer,
+            package,
+            new RaiseEventOptions { Receivers = ReceiverGroup.All },
+            new SendOptions { Reliability = true }
+        );
+    }
+
+    public void RefreshTimer_R(object[] data)
+    {
+        currentMatchTime = (int)data[0];
+        //Debug.Log(currentMatchTime.ToString());
+        RefreshTimerUI();
+    }
+
+    private IEnumerator Timer()
+    {
+        yield return new WaitForSeconds(1f);
+
+        currentMatchTime -= 1;
+        //Debug.Log(currentMatchTime.ToString());
+
+        if (currentMatchTime <= 0)
+        {
+            timerCoroutine = null;
+            playerManager.GetComponent<PhotonView>().RPC("WinTextRPC", RpcTarget.AllViaServer);
+            playerManager.GetComponent<PhotonView>().RPC("DisplayEndScreenRPC", RpcTarget.AllViaServer);
+        }
+        else
+        {
+            //Debug.Log("Call sending function now");
+            RefreshTimer_S();
+            timerCoroutine = StartCoroutine(Timer());
+        }
+    }
+
+    public void OnEvent(EventData photonEvent)
+    {
+        if (photonEvent.Code >= 200) return;
+
+        EventCodes e = (EventCodes)photonEvent.Code;
+        object[] o = (object[])photonEvent.CustomData;
+
+        switch (e)
+        {
+            //fill in for timer
+            case EventCodes.RefreshTimer:
+                //Debug.Log("Receiving event now");
+                RefreshTimer_R(o);
+                break;
+        }
+
     }
 
     private void AllocateFOVMask() {

@@ -144,6 +144,10 @@ public class EndGameScreen : MonoBehaviourPunCallbacks
         {
             _winText.text = "Government Team Win!!";
         }
+        else
+        {
+            _winText.text = "Rebels Team Win!!";
+        }
     }
 
     public void OnClick_LeaveButton()
