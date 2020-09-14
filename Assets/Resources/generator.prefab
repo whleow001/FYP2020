@@ -571,6 +571,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: be687fb7e4ece5540aa121cd62489514, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  health: 100
   takeDamage: 0
   slider: {fileID: 4554005582284619792}
   gradient:

@@ -7,7 +7,9 @@ using UnityEngine.UI;
 
 public class GeneratorHealth : MonoBehaviourPun
 {
-    private int health = 100;
+    //test notif panel
+    public int health = 100;
+    //private int health = 100;
 
     private GameDirector director;
 

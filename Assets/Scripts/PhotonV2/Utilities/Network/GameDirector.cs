@@ -96,8 +96,7 @@ public class GameDirector : MonoBehaviourPun, IOnEventCallback
 
             forcefieldDestroyed = true;
             //Debug.Log(photonView);
-            playerManager.GetComponent<PhotonView>().RPC("WinTextRPC", RpcTarget.AllViaServer);
-            playerManager.GetComponent<PhotonView>().RPC("DisplayEndScreenRPC", RpcTarget.AllViaServer);
+            playerManager.GetComponent<PhotonView>().RPC("DisplayEndScreenRPC", RpcTarget.AllViaServer, "Government Team Win!!");
             //if game ends before timer runs out 
             if (timerCoroutine != null) StopCoroutine(timerCoroutine);
             currentMatchTime = 0;
@@ -162,8 +161,7 @@ public class GameDirector : MonoBehaviourPun, IOnEventCallback
         if (currentMatchTime <= 0)
         {
             timerCoroutine = null;
-            playerManager.GetComponent<PhotonView>().RPC("WinTextRPC", RpcTarget.AllViaServer);
-            playerManager.GetComponent<PhotonView>().RPC("DisplayEndScreenRPC", RpcTarget.AllViaServer);
+            playerManager.GetComponent<PhotonView>().RPC("DisplayEndScreenRPC", RpcTarget.AllViaServer, "Rebel Team Win!!");
         }
         else
         {
@@ -234,14 +232,8 @@ public class GameDirector : MonoBehaviourPun, IOnEventCallback
       generatorCount--;
     }
 
-    public void DisplayEndScreen() {
-        _endGameScreen.Show();
-        //_endGameScreen.SetWinText();
-    }
-
-    public void WinText()
-    {
-        _endGameScreen.SetWinText();
+    public void DisplayEndScreen(string message) {
+        _endGameScreen.Show(message);
     }
 
     public NotificationPanelManager GetNotificationPanel() {

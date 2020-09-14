@@ -27,10 +27,11 @@ public class EndGameScreen : MonoBehaviourPunCallbacks
     private GameDirector director;
     private int i;
 
-    public void Show()
+    public void Show(string message)
     {
         director = GameObject.Find("Director").GetComponent<GameDirector>();
         i = GetGeneratorCount(director);
+        SetWinText(message);
         gameObject.SetActive(true);
     }
 
@@ -39,13 +40,7 @@ public class EndGameScreen : MonoBehaviourPunCallbacks
     {
         base.OnEnable();
         GetCurrentRoomPlayers();
-        SetWinText();
         Debug.Log(PhotonNetwork.InRoom);
-    }
-
-    void Update()
-    {
-        //SetWinText();
     }
 
     private void GetCurrentRoomPlayers()
@@ -138,16 +133,9 @@ public class EndGameScreen : MonoBehaviourPunCallbacks
         return director.generatorCount;
     }
 
-    public void SetWinText()
+    public void SetWinText(string message)
     {
-        if (i == 0)
-        {
-            _winText.text = "Government Team Win!!";
-        }
-        else
-        {
-            _winText.text = "Rebels Team Win!!";
-        }
+        _winText.text = message;
     }
 
     public void OnClick_LeaveButton()
