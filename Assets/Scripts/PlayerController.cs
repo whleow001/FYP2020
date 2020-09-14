@@ -33,7 +33,7 @@ public class PlayerController : MonoBehaviourPun {
     bool turning = false;
     Quaternion lookAt;
     float rotateSpeed = 10.0f;
-    bool ReadyForFiring = false;
+    public bool ReadyForFiring = false;
 
     // Flags
     [HideInInspector]
@@ -65,6 +65,7 @@ public class PlayerController : MonoBehaviourPun {
 
       Vector2 joystickVector = playerInput.GetJoystickVector();
       turning = false;
+      ReadyForFiring = false;
 
       // Movement
       Vector3 projectedVector = new Vector3(joystickVector.y * speed, rb.velocity.y, joystickVector.x * speed);
@@ -89,11 +90,12 @@ public class PlayerController : MonoBehaviourPun {
 
     public void Dodge() {
       turning = false;
+      ReadyForFiring = false;
       rb.AddForce(transform.forward * 10.0f, ForceMode.Impulse);
     }
 
     // Auto targeting
-    public bool TurnAndFireNearestTarget() {
+    public void TurnAndFireNearestTarget() {
       Collider[] targets = Physics.OverlapSphere(transform.position, range, 1 << GetOtherFactionLayer());
       float nearestDistance = 0.0f;
       Collider nearestTarget = new Collider();
@@ -115,10 +117,7 @@ public class PlayerController : MonoBehaviourPun {
       if (nearestDistance != 0.0f) {
         turning = true;
         lookAt = Quaternion.LookRotation(nearestTarget.transform.position - transform.position);
-
-        return ReadyForFiring;
-      } else
-        return true;
+      }
     }
 
     private int GetOtherFactionLayer() {
@@ -137,12 +136,6 @@ public class PlayerController : MonoBehaviourPun {
           else if (hitInfo.collider.gameObject.tag == "Generator")
             hitInfo.transform.gameObject.GetComponent<GeneratorHealth>().TakeDamage(20);
         }
-        /*hitEffect.transform.position = hitInfo.point;
-        hitEffect.transform.forward = hitInfo.normal;
-        hitEffect.Emit(1);
-
-        bullet.tracer.transform.position = hitInfo.point;
-        bullet.time = maxLifeTime;*/
       }
 
       Debug.DrawRay(ray.origin, transform.TransformDirection(Vector3.forward) * range, Color.red, 0.5f);

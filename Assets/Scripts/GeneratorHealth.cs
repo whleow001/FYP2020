@@ -12,6 +12,10 @@ public class GeneratorHealth : MonoBehaviourPun
 
     public bool takeDamage = false;
 
+    // Layer references
+    private int GOVT_LAYER = 9;
+    private int REBEL_LAYER = 10;
+
     void Start() {
         director = GameObject.Find("Director").GetComponent<GameDirector>();
     }
@@ -42,6 +46,6 @@ public class GeneratorHealth : MonoBehaviourPun
     }
 
     private void NotifyRebelTeam(string message, bool ignoreCooldown) {
-      director.GetPlayerManager().GetComponent<PhotonView>().RPC("NotifyRebelTeam", RpcTarget.All, message, transform.position, ignoreCooldown);
+      director.GetPlayerManager().GetComponent<PhotonView>().RPC("NotifyTeam", RpcTarget.All, message, transform.position, REBEL_LAYER, ignoreCooldown);
     }
 }

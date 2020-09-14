@@ -15,7 +15,7 @@ public class GameDirector : MonoBehaviourPun, IOnEventCallback
     [SerializeField]
     private GameObject fovMask;
     [SerializeField]
-    private GameObject notificationPanel;
+    private NotificationPanelManager notificationPanel;
     [SerializeField]
     private EndGameScreen _endGameScreen;
     [SerializeField]
@@ -244,7 +244,7 @@ public class GameDirector : MonoBehaviourPun, IOnEventCallback
         _endGameScreen.SetWinText();
     }
 
-    public GameObject GetNotificationPanel() {
+    public NotificationPanelManager GetNotificationPanel() {
       return notificationPanel;
     }
 
