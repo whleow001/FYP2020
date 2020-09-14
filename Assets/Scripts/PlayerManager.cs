@@ -31,7 +31,7 @@ public class PlayerManager : MonoBehaviourPun/*, IPunObservable*/
     public Healthbar healthbar;
 
     // Notification Panel Reference
-    private GameObject notificationPanel;
+    private NotificationPanelManager notificationPanel;
     private float panelTime = 3.0f;
     private float panelElapsedTime;
     private bool showPanel = false;
@@ -70,7 +70,7 @@ public class PlayerManager : MonoBehaviourPun/*, IPunObservable*/
         kill = false;
       }
 
-      notificationPanel.SetActive(showPanel);
+      notificationPanel.SetActiveState(showPanel);
 
       if (showPanel) {
         panelElapsedTime += Time.deltaTime;
@@ -187,10 +187,10 @@ public class PlayerManager : MonoBehaviourPun/*, IPunObservable*/
         director.DisplayEndScreen();
     }
 
-    public void Notify(string message, float seconds, bool ignoreCooldown = false, int layer = -1, Vector3 position = default(Vector3)) {
+    public void Notify(string message, float seconds, bool ignoreCooldown, int layer = -1, Vector3 position = default(Vector3)) {
       if (gameObject.layer == layer || layer == -1) {
         if (!showPanel || (showPanel && ignoreCooldown)) {
-          notificationPanel.transform.GetChild(0).GetComponent<Text>().text = message;
+          notificationPanel.SetText(message);
           panelElapsedTime = 0;
           panelTime = seconds;
         }
@@ -208,9 +208,9 @@ public class PlayerManager : MonoBehaviourPun/*, IPunObservable*/
     }
 
     [PunRPC]
-    void NotifyRebelTeam(string message, Vector3 position, bool ignoreCooldown) {
+    void NotifyTeam(string message, Vector3 position, int layer, bool ignoreCooldown) {
       foreach (Player player in PhotonNetwork.PlayerList)
         if (player == photonView.Owner)
-          GetComponent<PlayerManager>().Notify(message, 3, ignoreCooldown, REBEL_LAYER, position);
+          GetComponent<PlayerManager>().Notify(message, 3, ignoreCooldown, layer, position);
     }
 }

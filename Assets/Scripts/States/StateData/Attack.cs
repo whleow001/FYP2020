@@ -24,7 +24,8 @@ public class Attack : StateData {
     if (actualNormalizedTime >= attackTime && !attacked) {
       attacked = true;
 
-      if (state.GetPlayerController(animator).TurnAndFireNearestTarget())
+      state.GetPlayerController(animator).TurnAndFireNearestTarget();
+      if (state.GetPlayerController(animator).ReadyForFiring)
         state.GetPlayerController(animator).photonView.RPC("Fire", RpcTarget.All);
     }
 
@@ -35,6 +36,6 @@ public class Attack : StateData {
   }
 
   public override void OnExit(State state, Animator animator, AnimatorStateInfo stateInfo) {
-
+    state.GetPlayerController(animator).ReadyForFiring = false;
   }
 }
