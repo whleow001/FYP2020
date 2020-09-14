@@ -187,23 +187,24 @@ public class PlayerManager : MonoBehaviourPun/*, IPunObservable*/
         director.DisplayEndScreen();
     }
 
+    public void Notify(string message, float seconds, bool ignoreCooldown = false, int layer = -1, Vector3 position = default(Vector3)) {
+      if (gameObject.layer == layer || layer == -1) {
+        if (!showPanel || (showPanel && ignoreCooldown)) {
+          notificationPanel.transform.GetChild(0).GetComponent<Text>().text = message;
+          panelElapsedTime = 0;
+          panelTime = seconds;
+        }
+        //Debug.Log(position);
+
+        showPanel = true;
+      }
+    }
+
     [PunRPC]
     void DisplayEndScreenRPC() {
         foreach(Player player in PhotonNetwork.PlayerList)
           if (player == photonView.Owner)
             GetComponent<PlayerManager>().DisplayEndScreen();
-    }
-
-    public void Notify(string message, float seconds, bool ignoreCooldown = false, int layer = -1, Vector3 position = default(Vector3)) {
-      if (gameObject.layer == 1 << layer || layer == -1) {
-        notificationPanel.transform.GetChild(0).GetComponent<Text>().text = message;
-        panelElapsedTime = 0;
-        panelTime = seconds;
-
-        //Debug.Log(position);
-
-        showPanel = true;
-      }
     }
 
     [PunRPC]

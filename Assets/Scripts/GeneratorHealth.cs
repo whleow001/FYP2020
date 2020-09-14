@@ -10,6 +10,8 @@ public class GeneratorHealth : MonoBehaviourPun
 
     private GameDirector director;
 
+    public bool takeDamage = false;
+
     void Start() {
         director = GameObject.Find("Director").GetComponent<GameDirector>();
     }
@@ -18,13 +20,19 @@ public class GeneratorHealth : MonoBehaviourPun
     void Update() {
       if (health <= 0)
         DestroyGenerator();
+
+      if (takeDamage) {
+        TakeDamage(20);
+        takeDamage = false;
+      }
     }
 
     private void DestroyGenerator() {
-      NotifyRebelTeam("Generator destroyed!", false);
+      director.DecrementGeneratorCount();
+      NotifyRebelTeam("Generator destroyed!", true);
+
       if (PhotonNetwork.IsMasterClient)
         PhotonNetwork.Destroy(gameObject);
-      director.DecrementGeneratorCount();
     }
 
     public void TakeDamage(int damage) {
