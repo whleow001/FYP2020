@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
 
 [CreateAssetMenu(fileName = "Attack", menuName = "StateData/Attack")]
 public class Attack : StateData {
@@ -23,7 +24,8 @@ public class Attack : StateData {
     if (actualNormalizedTime >= attackTime && !attacked) {
       attacked = true;
 
-      state.GetPlayerController(animator).TurnAndFireNearestTarget();
+      if (state.GetPlayerController(animator).TurnAndFireNearestTarget())
+        state.GetPlayerController(animator).photonView.RPC("Fire", RpcTarget.All);
     }
 
     if (actualNormalizedTime < attackTime)

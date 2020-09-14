@@ -33,6 +33,7 @@ public class PlayerController : MonoBehaviourPun {
     bool turning = false;
     Quaternion lookAt;
     float rotateSpeed = 10.0f;
+    bool ReadyForFiring = false;
 
     // Flags
     [HideInInspector]
@@ -55,7 +56,7 @@ public class PlayerController : MonoBehaviourPun {
         transform.rotation = Quaternion.Slerp(transform.rotation, lookAt, rotateSpeed * Time.deltaTime);
 
         if (Math.Abs(transform.rotation.eulerAngles.y - lookAt.eulerAngles.y) <= 1.0f)
-          photonView.RPC("Fire", RpcTarget.All);
+          ReadyForFiring = true;
       }
     }
 
@@ -92,7 +93,7 @@ public class PlayerController : MonoBehaviourPun {
     }
 
     // Auto targeting
-    public void TurnAndFireNearestTarget() {
+    public bool TurnAndFireNearestTarget() {
       Collider[] targets = Physics.OverlapSphere(transform.position, range, 1 << GetOtherFactionLayer());
       float nearestDistance = 0.0f;
       Collider nearestTarget = new Collider();
@@ -114,7 +115,10 @@ public class PlayerController : MonoBehaviourPun {
       if (nearestDistance != 0.0f) {
         turning = true;
         lookAt = Quaternion.LookRotation(nearestTarget.transform.position - transform.position);
-      }
+
+        return ReadyForFiring;
+      } else
+        return true;
     }
 
     private int GetOtherFactionLayer() {
