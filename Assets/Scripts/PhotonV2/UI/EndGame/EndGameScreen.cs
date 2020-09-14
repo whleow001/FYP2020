@@ -25,12 +25,15 @@ public class EndGameScreen : MonoBehaviourPunCallbacks
     private List<TeamTwoListing> _listingsTwo = new List<TeamTwoListing>();
 
     private GameDirector director;
+    private int i;
 
     public void Show()
     {
         director = GameObject.Find("Director").GetComponent<GameDirector>();
+        i = GetGeneratorCount(director);
         gameObject.SetActive(true);
     }
+
 
     public override void OnEnable()
     {
@@ -40,10 +43,10 @@ public class EndGameScreen : MonoBehaviourPunCallbacks
         Debug.Log(PhotonNetwork.InRoom);
     }
 
-    //void Update()
-    //{
-    //    SetWinText();
-    //}
+    void Update()
+    {
+        //SetWinText();
+    }
 
     private void GetCurrentRoomPlayers()
     {
@@ -130,9 +133,14 @@ public class EndGameScreen : MonoBehaviourPunCallbacks
 
     }
 
+    public int GetGeneratorCount(GameDirector director)
+    {
+        return director.generatorCount;
+    }
+
     public void SetWinText()
     {
-        if (director.generatorCount == 0)
+        if (i == 0)
         {
             _winText.text = "Government Team Win!!";
         }
@@ -140,7 +148,7 @@ public class EndGameScreen : MonoBehaviourPunCallbacks
 
     public void OnClick_LeaveButton()
     {
-        if (!photonView.IsMine) return;
+        //if (!photonView.IsMine) return;
         //Debug.Log(PhotonNetwork.InRoom);
         //PhotonNetwork.AutomaticallySyncScene = true;
         if(PhotonNetwork.InRoom == true)

@@ -72,7 +72,8 @@ public class GameDirector : MonoBehaviourPun
 
             forcefieldDestroyed = true;
             //Debug.Log(photonView);
-            playerManager.GetComponent<PhotonView>().RPC("DisplayEndScreenRPC", RpcTarget.All);
+            playerManager.GetComponent<PhotonView>().RPC("WinTextRPC", RpcTarget.AllViaServer);
+            playerManager.GetComponent<PhotonView>().RPC("DisplayEndScreenRPC", RpcTarget.AllViaServer);
         }
     }
 
@@ -122,6 +123,11 @@ public class GameDirector : MonoBehaviourPun
     public void DisplayEndScreen() {
         _endGameScreen.Show();
         //_endGameScreen.SetWinText();
+    }
+
+    public void WinText()
+    {
+        _endGameScreen.SetWinText();
     }
 
     public GameObject GetNotificationPanel() {
