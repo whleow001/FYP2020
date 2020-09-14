@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
+using UnityEngine.UI;
 
 public class GeneratorHealth : MonoBehaviourPun
 {
@@ -11,6 +12,9 @@ public class GeneratorHealth : MonoBehaviourPun
     private GameDirector director;
 
     public bool takeDamage = false;
+    public Slider slider;
+    public Gradient gradient;
+    public Image fill;
 
     // Layer references
     private int GOVT_LAYER = 9;
@@ -18,6 +22,7 @@ public class GeneratorHealth : MonoBehaviourPun
 
     void Start() {
         director = GameObject.Find("Director").GetComponent<GameDirector>();
+        SetMaxHealthbar(health);
     }
 
     // Update is called once per frame
@@ -31,6 +36,19 @@ public class GeneratorHealth : MonoBehaviourPun
       }
     }
 
+    public void SetHealthbar(int value)
+    {
+        slider.value = value;
+        fill.color = gradient.Evaluate(slider.normalizedValue);
+    }
+
+    public void SetMaxHealthbar(int value)
+    {
+        slider.maxValue = value;
+        slider.value = value;
+        fill.color = gradient.Evaluate(1f);
+    }
+
     private void DestroyGenerator() {
       director.DecrementGeneratorCount();
       NotifyRebelTeam("Generator destroyed!", true);
@@ -41,6 +59,7 @@ public class GeneratorHealth : MonoBehaviourPun
 
     public void TakeDamage(int damage) {
       health -= damage;
+      SetHealthbar(health);
 
       NotifyRebelTeam("Generator Under Attack!", false);
     }
