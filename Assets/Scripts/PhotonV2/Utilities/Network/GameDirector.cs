@@ -65,7 +65,7 @@ public class GameDirector : MonoBehaviourPun, IOnEventCallback
 
       GameObject playerClone = MasterManager.NetworkInstantiate(prefabs[team], spawns[team].transform.GetChild(Random.Range(0, 3)).transform.position, Quaternion.identity);
       playerClone.GetComponent<PlayerController>().SpawnCamera(_mainCamera);
-        playerManager = playerClone.GetComponent<PlayerManager>();
+      playerManager = playerClone.GetComponent<PlayerManager>();
 
       // If client is a master client
       if (PhotonNetwork.IsMasterClient) {
