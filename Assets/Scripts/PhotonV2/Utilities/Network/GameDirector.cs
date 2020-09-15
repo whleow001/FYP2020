@@ -19,6 +19,12 @@ public class GameDirector : MonoBehaviourPun, IOnEventCallback
     [SerializeField]
     private EndGameScreen _endGameScreen;
     [SerializeField]
+    private Text fps;
+    [SerializeField]
+    private Text kd;
+    [SerializeField]
+    private Text ping;
+    [SerializeField]
     private List<GameObject> spawns = new List<GameObject>();
     [SerializeField]
     private List<GameObject> prefabs = new List<GameObject>();
@@ -28,9 +34,11 @@ public class GameDirector : MonoBehaviourPun, IOnEventCallback
 
     public int matchLength = 180;
     [SerializeField]
-    private Text timer; 
+    private Text timer;
     private int currentMatchTime;
     private Coroutine timerCoroutine;
+
+    private float deltaTime;
 
     public enum EventCodes : byte
     {
@@ -76,8 +84,6 @@ public class GameDirector : MonoBehaviourPun, IOnEventCallback
         for (int i = 0; i < 2; i++)
           MasterManager.RoomObjectInstantiate(prefabs[3], spawns[3].transform.GetChild(i).transform.position, spawns[3].transform.GetChild(i).transform.rotation);
       }
-
-        
     }
 
     void Start()
@@ -97,11 +103,22 @@ public class GameDirector : MonoBehaviourPun, IOnEventCallback
             forcefieldDestroyed = true;
             //Debug.Log(photonView);
             playerManager.GetComponent<PhotonView>().RPC("DisplayEndScreenRPC", RpcTarget.AllViaServer, "Government Team Win!!");
-            //if game ends before timer runs out 
+            //if game ends before timer runs out
             if (timerCoroutine != null) StopCoroutine(timerCoroutine);
             currentMatchTime = 0;
             RefreshTimerUI();
-        }
+      }
+
+      // Display fps
+      deltaTime += (Time.deltaTime - deltaTime) * 0.1f;
+      float fpsValue = 1.0f/deltaTime;
+      fps.text = Mathf.Ceil(fpsValue).ToString();
+
+      // Display K/D
+      kd.text = PhotonNetwork.LocalPlayer.CustomProperties["Kills"] + "/" + PhotonNetwork.LocalPlayer.CustomProperties["Deaths"];
+
+      // Display ping
+      ping.text = PhotonNetwork.GetPing().ToString();
     }
 
     private void OnEnable()
