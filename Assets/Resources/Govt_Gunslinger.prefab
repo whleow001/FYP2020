@@ -1119,6 +1119,7 @@ MonoBehaviour:
     m_NumAlphaKeys: 2
   fill: {fileID: 9118010610043125731}
   kill: 0
+  deathTimer: 3
 --- !u!114 &-4831382313337546722
 MonoBehaviour:
   m_ObjectHideFlags: 0

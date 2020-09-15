@@ -8,22 +8,6 @@ using Photon.Realtime;
 
 public class PlayerManager : MonoBehaviourPun/*, IPunObservable*/
 {
-    /*public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
-    {
-        if(stream.IsWriting)
-        {
-            // we own this player, send data to others
-            stream.SendNext((int)_myCustomProperties["Health"]);
-        }
-        else
-        {
-            // network player, to receive data
-            int value = (int)stream.ReceiveNext();
-            //_myCustomProperties["Health"] = value;
-            this._myCustomProperties["Health"] = value;
-        }
-    }*/
-
     // GameDirector reference
     private GameDirector director;
     private Rigidbody rb;
@@ -54,7 +38,7 @@ public class PlayerManager : MonoBehaviourPun/*, IPunObservable*/
     private bool instantiated = false;
 
     // Death timer
-    private float deathTimer = 3;
+    public float deathTimer = 3;
 
     // Custom player properties
     private ExitGames.Client.Photon.Hashtable _myCustomProperties;
@@ -76,6 +60,8 @@ public class PlayerManager : MonoBehaviourPun/*, IPunObservable*/
         TakeDamage(100, photonView);
         kill = false;
       }
+
+      //gameObject.SetActive((int)PhotonNetwork.LocalPlayer.CustomProperties["Health"] > 0);
 
       notificationPanel.SetActiveState(showPanel);
 
@@ -101,7 +87,6 @@ public class PlayerManager : MonoBehaviourPun/*, IPunObservable*/
       ResetProperty("Health");
       GetComponent<PlayerInput>().enabled = true;
       GetComponent<Collider>().enabled = true;
-      ChangeAlpha(1.0f);
       rb.useGravity = true;
     }
 
@@ -122,10 +107,9 @@ public class PlayerManager : MonoBehaviourPun/*, IPunObservable*/
       GetProperties();
       _myCustomProperties[key] = value;
       PhotonNetwork.SetPlayerCustomProperties(_myCustomProperties);
-      if(key == "Health")
-        {
-            SetHealthBar(value);
-        }
+      if (key == "Health") {
+        SetHealthBar(value);
+      }
     }
 
     private void ResetProperty(string key) {
@@ -145,15 +129,7 @@ public class PlayerManager : MonoBehaviourPun/*, IPunObservable*/
       GetComponent<Collider>().enabled = false;
       GetComponent<PlayerInput>().enabled = false;
 
-      // Fade
-      for (float i = deathTimer; i > 0; i -= 0.1f) {
-        Notify("Respawn in 0:0" + (int)i, 0.1f, true);
-
-        if (i > deathTimer - 1)
-          ChangeAlpha(-0.1f, true);
-
-        yield return new WaitForSeconds(.1f);
-      }
+      yield return new WaitForSeconds(deathTimer);
 
       Reset();
       gameObject.transform.position = director.GetSpawnLocation(GetProperty("Team"));
@@ -241,12 +217,10 @@ public class PlayerManager : MonoBehaviourPun/*, IPunObservable*/
         if (player == photonView.Owner)
           GetComponent<PlayerManager>().Notify(message, 3, ignoreCooldown, layer, position);
     }
-    
+
     [PunRPC]
-    void BroadcastHealth(Player victim)
-    {
+    void BroadcastHealth(Player victim) {
         SetHealthBar((int)victim.CustomProperties["Health"]);
-        Debug.Log("healthbar value: " + slider.value);
     }
-    
+
 }

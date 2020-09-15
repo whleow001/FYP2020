@@ -17,6 +17,8 @@ public class GameDirector : MonoBehaviourPun, IOnEventCallback
     [SerializeField]
     private NotificationPanelManager notificationPanel;
     [SerializeField]
+    private RespawnOverlayManager respawnPanel;
+    [SerializeField]
     private EndGameScreen _endGameScreen;
     [SerializeField]
     private Text fps;
@@ -119,10 +121,16 @@ public class GameDirector : MonoBehaviourPun, IOnEventCallback
 
       // Display ping
       ping.text = PhotonNetwork.GetPing().ToString();
+
+      respawnPanel.gameObject.SetActive((int)PhotonNetwork.LocalPlayer.CustomProperties["Health"] <= 0);
+
+      // Display Respawn Overlay
+      if ((int)PhotonNetwork.LocalPlayer.CustomProperties["Health"] <= 0 && !respawnPanel.IsActive)
+        respawnPanel.SetTimer((int)playerManager.deathTimer);
+
     }
 
-    private void OnEnable()
-    {
+    private void OnEnable() {
         PhotonNetwork.AddCallbackTarget(this);
     }
 
