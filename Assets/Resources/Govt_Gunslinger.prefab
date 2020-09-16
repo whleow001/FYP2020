@@ -1133,6 +1133,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   generatorDistance: 13
+  fov: {fileID: 2023002162799399333, guid: cace6c961bf3c454bbda4c1e63f20198, type: 3}
 --- !u!1 &4030554210917919797
 GameObject:
   m_ObjectHideFlags: 0

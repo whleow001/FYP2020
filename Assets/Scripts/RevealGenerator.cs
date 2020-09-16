@@ -5,11 +5,11 @@ using UnityEngine;
 public class RevealGenerator : MonoBehaviour
 {
     public float generatorDistance = 13.0f;
+    public GameObject fov;
 
     private void MarkGenerator()
     {
         GameObject[] allGenerators = GameObject.FindGameObjectsWithTag("Generator");
-        GameObject closestGenerator;
 
         if (allGenerators != null)
         {
@@ -20,7 +20,6 @@ public class RevealGenerator : MonoBehaviour
 
                 if (distance < generatorDistance && iconVisible.activeSelf == false)
                 {
-                    closestGenerator = generator;
                     iconVisible.SetActive(true);
                 }
             }
@@ -30,10 +29,9 @@ public class RevealGenerator : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        GameObject fov = transform.Find("FieldOfView").gameObject;
         if (fov != null)
         {
-            generatorDistance = fov.transform.localScale.x;
+            generatorDistance = fov.transform.localScale.x/2 - 2;
         }
     }
 
