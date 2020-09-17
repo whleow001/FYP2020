@@ -1,7 +1,7 @@
 {
-"companyName": "DefaultCompany",
+"companyName": "CheangKit&Friends",
 "productName": "Insurrection-S306",
-"productVersion": "0.1",
+"productVersion": "0.0.1",
 "dataUrl": "docs.data.unityweb",
 "wasmCodeUrl": "docs.wasm.code.unityweb",
 "wasmFrameworkUrl": "docs.wasm.framework.unityweb",
@@ -10,7 +10,7 @@
 "splashScreenStyle": "Dark",
 "backgroundColor": "#231F20",
 "cacheControl": {"default": "must-revalidate"},
-"developmentBuild": true,
+"developmentBuild": false,
 "multithreading": false,
 "unityVersion": "2019.4.4f1"
 }

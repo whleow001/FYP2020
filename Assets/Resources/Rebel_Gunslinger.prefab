@@ -1298,6 +1298,7 @@ MonoBehaviour:
     m_NumAlphaKeys: 2
   fill: {fileID: 5249477302556217146}
   kill: 0
+  deathTimer: 3
 --- !u!1 &8580988493817692001
 GameObject:
   m_ObjectHideFlags: 0

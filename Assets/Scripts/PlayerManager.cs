@@ -50,12 +50,22 @@ public class PlayerManager : MonoBehaviourPun/*, IPunObservable*/
       director = GameObject.Find("Director").GetComponent<GameDirector>();
 
       Reset();
-      instantiated = true;
+      //instantiated = true;
 
       notificationPanel = director.GetNotificationPanel();
     }
 
     void Update() {
+      if(instantiated == false)
+        {
+            if(PhotonNetwork.IsMasterClient == false)
+            {
+                photonView.RPC("AllocateFOV", RpcTarget.All);
+                instantiated = true;
+            }
+        }
+        
+
       if (kill) {
         TakeDamage(100, photonView);
         kill = false;
@@ -223,4 +233,11 @@ public class PlayerManager : MonoBehaviourPun/*, IPunObservable*/
         SetHealthBar((int)victim.CustomProperties["Health"]);
     }
 
+    [PunRPC]
+    void AllocateFOV()
+    {
+        //if (!photonView.IsMine) return;
+
+        director.AllocateFOVMask();
+    }
 }

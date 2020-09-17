@@ -41,6 +41,7 @@ MonoBehaviour:
   - NotifyTeam
   - RPC_ChangeReadyState
   - WinTextRPC
+  - AllocateFOV
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1
