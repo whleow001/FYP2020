@@ -34,7 +34,7 @@ public class GameDirector : MonoBehaviourPun, IOnEventCallback
     private PlayerManager playerManager;
 
 
-    public int matchLength = 180;
+    public int matchLength = 60;
     [SerializeField]
     private Text timer;
     private int currentMatchTime;
@@ -93,7 +93,7 @@ public class GameDirector : MonoBehaviourPun, IOnEventCallback
     void Start()
     {
         InitializeTimer();
-        
+
     }
 
     void Update() {
@@ -251,7 +251,7 @@ public class GameDirector : MonoBehaviourPun, IOnEventCallback
                     Destroy(player.transform.Find("FieldOfView").gameObject);
                     AddMaskAsChild(player);
                 }*/
-                
+
             }
 
         // Get all generators
