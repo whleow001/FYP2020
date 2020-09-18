@@ -3028,7 +3028,7 @@ MonoBehaviour:
   - {fileID: 8580988493813934299, guid: 7ade7539104d57a4689327a467dde8c5, type: 3}
   - {fileID: 6173012337875008129, guid: 136d1aefd4313fb438a523363f53ab9c, type: 3}
   - {fileID: 8725961496364593681, guid: df4d009e161ff5245a13aad1769c35d3, type: 3}
-  matchLength: 180
+  matchLength: 60
   timer: {fileID: 3299005256743698078}
   generatorCount: 4
 --- !u!4 &488462376

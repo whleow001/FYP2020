@@ -36,6 +36,7 @@ public class PlayerManager : MonoBehaviourPun/*, IPunObservable*/
 
     // Flags
     private bool instantiated = false;
+    private bool fovInstantiated = false;
 
     // Death timer
     public float deathTimer = 3;
@@ -50,21 +51,21 @@ public class PlayerManager : MonoBehaviourPun/*, IPunObservable*/
       director = GameObject.Find("Director").GetComponent<GameDirector>();
 
       Reset();
-      //instantiated = true;
+      instantiated = true;
 
       notificationPanel = director.GetNotificationPanel();
     }
 
     void Update() {
-      if(instantiated == false)
+      if(fovInstantiated == false)
         {
             if(PhotonNetwork.IsMasterClient == false)
             {
                 photonView.RPC("AllocateFOV", RpcTarget.All);
-                instantiated = true;
+                fovInstantiated = true;
             }
         }
-        
+
 
       if (kill) {
         TakeDamage(100, photonView);
