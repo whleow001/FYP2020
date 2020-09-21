@@ -34,7 +34,7 @@ public class GameDirector : MonoBehaviourPun, IOnEventCallback
     private PlayerManager playerManager;
 
 
-    public int matchLength = 180;
+    public int matchLength = 60;
     [SerializeField]
     private Text timer;
     private int currentMatchTime;
@@ -47,6 +47,8 @@ public class GameDirector : MonoBehaviourPun, IOnEventCallback
         //fill in for timer
         RefreshTimer
     }
+
+    //public const byte alloFOV = 2;
 
 
     // Team no
@@ -91,12 +93,15 @@ public class GameDirector : MonoBehaviourPun, IOnEventCallback
     void Start()
     {
         InitializeTimer();
+
     }
 
     void Update() {
-      if (!maskSet)
-        AllocateFOVMask();
-
+      if(!maskSet)
+        {
+            AllocateFOVMask();
+            maskSet = true;
+        }
       if (generatorCount == 0 && !forcefieldDestroyed && PhotonNetwork.IsMasterClient) {
             GameObject[] forcefields = GameObject.FindGameObjectsWithTag("Forcefield");
             foreach (GameObject gameObject in forcefields)
@@ -129,6 +134,23 @@ public class GameDirector : MonoBehaviourPun, IOnEventCallback
         respawnPanel.SetTimer((int)playerManager.deathTimer);
 
     }
+
+    /*private void LateUpdate()
+    {
+        if (!maskSet)
+        {
+            if (!PhotonNetwork.IsMasterClient)
+            {
+                playerManager.GetComponent<PhotonView>().RPC("AllocateFOV", RpcTarget.AllViaServer);
+                maskSet = true;
+            }
+            else
+            {
+                AllocateFOVMask();
+                maskSet = true;
+            }
+        }
+    }*/
 
     private void OnEnable() {
         PhotonNetwork.AddCallbackTarget(this);
@@ -214,22 +236,34 @@ public class GameDirector : MonoBehaviourPun, IOnEventCallback
 
     }
 
-    private void AllocateFOVMask() {
+    public void AllocateFOVMask() {
       // Get all players
       GameObject[] allPlayers = GameObject.FindGameObjectsWithTag("Player");
       foreach (GameObject player in allPlayers)
         if (player.layer == GetFactionLayer())
-            AddMaskAsChild(player);
+            {
+                if(player.transform.Find("FieldOfView(Clone)") == null)
+                {
+                    AddMaskAsChild(player);
+                }
+                /*else
+                {
+                    Destroy(player.transform.Find("FieldOfView").gameObject);
+                    AddMaskAsChild(player);
+                }*/
 
-      // Get all generators
-      if (GetFactionLayer() == REBEL_LAYER) {
+            }
+
+        // Get all generators
+        if (GetFactionLayer() == REBEL_LAYER) {
         GameObject[] generators = GameObject.FindGameObjectsWithTag("Generator");
 
         foreach (GameObject generator in generators)
-          AddMaskAsChild(generator);
+                if(generator.transform.Find("FieldOfView(Clone)") == null)
+                {
+                    AddMaskAsChild(generator);
+                }
       }
-
-      maskSet = true;
     }
 
     private void AddMaskAsChild(GameObject _gameObject) {

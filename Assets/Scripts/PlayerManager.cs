@@ -36,6 +36,7 @@ public class PlayerManager : MonoBehaviourPun/*, IPunObservable*/
 
     // Flags
     private bool instantiated = false;
+    private bool fovInstantiated = false;
 
     // Death timer
     public float deathTimer = 3;
@@ -56,6 +57,16 @@ public class PlayerManager : MonoBehaviourPun/*, IPunObservable*/
     }
 
     void Update() {
+      if(fovInstantiated == false)
+        {
+            if(PhotonNetwork.IsMasterClient == false)
+            {
+                photonView.RPC("AllocateFOV", RpcTarget.All);
+                fovInstantiated = true;
+            }
+        }
+
+
       if (kill) {
         TakeDamage(100, photonView);
         kill = false;
@@ -223,4 +234,11 @@ public class PlayerManager : MonoBehaviourPun/*, IPunObservable*/
         SetHealthBar((int)victim.CustomProperties["Health"]);
     }
 
+    [PunRPC]
+    void AllocateFOV()
+    {
+        //if (!photonView.IsMine) return;
+
+        director.AllocateFOVMask();
+    }
 }
