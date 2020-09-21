@@ -169,7 +169,6 @@ namespace Photon.Pun.UtilityScripts
                     // check if player switched teams, remove from previous team 
                     foreach (byte code in playersPerTeam.Keys)
                     {
-                        Debug.Log(code);
                         if (code == teamCode)
                         {
                             continue;
@@ -184,8 +183,6 @@ namespace Photon.Pun.UtilityScripts
                         }
                     }
                     PhotonTeam team = teamsByCode[teamCode];
-                    //added this for testing
-                    Debug.Log(playersPerTeam[teamCode].Add(targetPlayer));
                     if (!playersPerTeam[teamCode].Add(targetPlayer))
                     {
                         Debug.LogWarningFormat("Unexpected situation while setting team {0} for player {1}, updating teams for all", team, targetPlayer);

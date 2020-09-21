@@ -710,9 +710,9 @@ MonoBehaviour:
   listFoldIsOpen: 1
   teamsList:
   - Name: Government
-    Code: 1
+    Code: 0
   - Name: Rebels
-    Code: 2
+    Code: 1
 --- !u!4 &311319301
 Transform:
   m_ObjectHideFlags: 0

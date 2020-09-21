@@ -7,7 +7,7 @@ using Photon.Pun;
 using Photon.Realtime;
 using Photon.Pun.UtilityScripts;
 
-public class PlayerListingsMenu : MonoBehaviourPunCallbacks
+public class PlayerListingsMenu : MonoBehaviourPunCallbacks, IInRoomCallbacks
 {
     [SerializeField]
     private Transform _content;
@@ -34,35 +34,31 @@ public class PlayerListingsMenu : MonoBehaviourPunCallbacks
 
     public override void OnJoinedRoom()
     {
-        //base.OnJoinedRoom();
+        base.OnJoinedRoom();
         if(PhotonNetwork.LocalPlayer.JoinTeam("Government"))
         {
-            Debug.Log(PhotonNetwork.LocalPlayer.NickName + " has joined team 1");
-            teamOne++;
+            Debug.Log(PhotonNetwork.LocalPlayer.NickName + " has joined team 0");
         }
-        Debug.Log(_teamManager.playersPerTeam[1].Count);
     }
 
     public override void OnPlayerEnteredRoom(Player newPlayer)
     {
-        //base.OnPlayerEnteredRoom(newPlayer);
+        base.OnPlayerEnteredRoom(newPlayer);
         if(teamOne <= teamTwo)
         {
             if(newPlayer.JoinTeam("Government"))
             {
-                Debug.Log(newPlayer.NickName + " has joined team 1");
-                teamOne++;
-                Debug.Log(_teamManager.GetTeamMembersCount("Government"));
+                Debug.Log(newPlayer.NickName + " has joined team 0");
             }
+            
         }
         else
         {
             if(newPlayer.JoinTeam("Rebels"))
             {
-                Debug.Log(newPlayer.NickName + " has joined team 2");
-                teamTwo++;
-                Debug.Log(_teamManager.GetTeamMembersCount("Rebels"));
+                Debug.Log(newPlayer.NickName + " has joined team 1");
             }
+            
         }
     }
 
@@ -74,6 +70,10 @@ public class PlayerListingsMenu : MonoBehaviourPunCallbacks
             if (changedProps.ContainsKey("_pt")) { }
                 //Debug.Log(targetPlayer.CustomProperties["_pt"].ToString());
         }
+        Debug.Log("Govt team: " + _teamManager.GetTeamMembersCount(0));
+        teamOne = _teamManager.GetTeamMembersCount("Government");
+        Debug.Log("Rebel team: " + _teamManager.GetTeamMembersCount(1));
+        teamTwo = _teamManager.GetTeamMembersCount("Rebels");
     }
 
     public override void OnLeftRoom()
