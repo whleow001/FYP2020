@@ -61,7 +61,8 @@ namespace Photon.Pun.UtilityScripts
         private Dictionary<string, PhotonTeam> teamsByName;
         
         /// <summary>The main list of teams with their player-lists. Automatically kept up to date.</summary>
-        private Dictionary<byte, HashSet<Player>> playersPerTeam;
+        /// change from private to public
+        public Dictionary<byte, HashSet<Player>> playersPerTeam;
 
         /// <summary>Defines the player custom property name to use for team affinity of "this" player.</summary>
         public const string TeamPlayerProp = "_pt";
@@ -168,6 +169,7 @@ namespace Photon.Pun.UtilityScripts
                     // check if player switched teams, remove from previous team 
                     foreach (byte code in playersPerTeam.Keys)
                     {
+                        Debug.Log(code);
                         if (code == teamCode)
                         {
                             continue;
@@ -182,6 +184,8 @@ namespace Photon.Pun.UtilityScripts
                         }
                     }
                     PhotonTeam team = teamsByCode[teamCode];
+                    //added this for testing
+                    Debug.Log(playersPerTeam[teamCode].Add(targetPlayer));
                     if (!playersPerTeam[teamCode].Add(targetPlayer))
                     {
                         Debug.LogWarningFormat("Unexpected situation while setting team {0} for player {1}, updating teams for all", team, targetPlayer);
@@ -573,7 +577,7 @@ namespace Photon.Pun.UtilityScripts
                 return false;
             }
             return player.SetCustomProperties(new Hashtable { { PhotonTeamsManager.TeamPlayerProp, team.Code } },
-                new Hashtable { { PhotonTeamsManager.TeamPlayerProp, currentTeam.Code }});
+                new Hashtable { { PhotonTeamsManager.TeamPlayerProp, currentTeam.Code } });
         }
 
         /// <summary>Switch the player's team using a team code.</summary>
@@ -611,7 +615,7 @@ namespace Photon.Pun.UtilityScripts
                 Debug.LogWarningFormat("LeaveCurrentTeam failed: player ({0}) was not joined to any team", player);
                 return false;
             }
-            return player.SetCustomProperties(new Hashtable {{PhotonTeamsManager.TeamPlayerProp, null}}, new Hashtable {{PhotonTeamsManager.TeamPlayerProp, currentTeam.Code}});
+            return player.SetCustomProperties(new Hashtable { { PhotonTeamsManager.TeamPlayerProp, null } }, new Hashtable { { PhotonTeamsManager.TeamPlayerProp, currentTeam.Code } });
         }
 
         /// <summary>
@@ -624,5 +628,5 @@ namespace Photon.Pun.UtilityScripts
         {
             return PhotonTeamsManager.Instance.TryGetTeamMatesOfPlayer(player, out teamMates);
         }
-    }
+    } 
 }
