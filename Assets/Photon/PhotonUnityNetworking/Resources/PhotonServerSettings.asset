@@ -42,6 +42,7 @@ MonoBehaviour:
   - RPC_ChangeReadyState
   - WinTextRPC
   - AllocateFOV
+  - RemovePlayerListing
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

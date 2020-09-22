@@ -1,4 +1,4 @@
-﻿/*using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using ExitGames.Client.Photon;
@@ -7,6 +7,7 @@ using Photon.Realtime;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using System.Xml.Serialization;
+using Photon.Pun.UtilityScripts;
 
 public class GameDirector : MonoBehaviourPun, IOnEventCallback
 {
@@ -65,7 +66,12 @@ public class GameDirector : MonoBehaviourPun, IOnEventCallback
     private bool forcefieldDestroyed = false;
 
     private void Awake() {
-      team = (int)PhotonNetwork.LocalPlayer.CustomProperties["Team"] - 1;
+        //team = (int)PhotonNetwork.LocalPlayer.CustomProperties["_pt"];
+        if ((byte)PhotonNetwork.LocalPlayer.CustomProperties["_pt"] == 0)
+            team = 0;
+        else
+            team = 1;
+
 
       GameObject playerClone = MasterManager.NetworkInstantiate(prefabs[team], spawns[team].transform.GetChild(Random.Range(0, 3)).transform.position, Quaternion.identity);
       playerClone.GetComponent<PlayerController>().SpawnCamera(_mainCamera);
@@ -152,7 +158,7 @@ public class GameDirector : MonoBehaviourPun, IOnEventCallback
         }
     }*/
 
-/*    private void OnEnable() {
+    private void OnEnable() {
         PhotonNetwork.AddCallbackTarget(this);
     }
 
@@ -252,10 +258,10 @@ public class GameDirector : MonoBehaviourPun, IOnEventCallback
                     AddMaskAsChild(player);
                 }*/
 
-            //}
+            }
 
         // Get all generators
-/*        if (GetFactionLayer() == REBEL_LAYER) {
+        if (GetFactionLayer() == REBEL_LAYER) {
         GameObject[] generators = GameObject.FindGameObjectsWithTag("Generator");
 
         foreach (GameObject generator in generators)
@@ -302,4 +308,4 @@ public class GameDirector : MonoBehaviourPun, IOnEventCallback
     public PlayerManager GetPlayerManager() {
       return playerManager;
     }
-}*/
+}

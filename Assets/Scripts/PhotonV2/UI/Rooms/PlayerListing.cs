@@ -34,15 +34,6 @@ public class PlayerListing : MonoBehaviourPunCallbacks
 
     public void SetPlayerText(Player player)
     {
-        if (player.CustomProperties.ContainsKey("Team"))
-        {
-            int result = (int)player.CustomProperties["Team"];
-            _text.text = result.ToString() + ", " + player.NickName;
-        }
-            
-
-
-
-        //_text.text = player.CustomProperties["Team"].ToString() + ", " + player.NickName;
+        _text.text = player.NickName;
     }
 }

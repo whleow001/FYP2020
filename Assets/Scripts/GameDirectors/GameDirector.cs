@@ -1,4 +1,4 @@
-using System.Collections;
+/*using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
@@ -30,18 +30,18 @@ public abstract class GameDirector : MonoBehaviourPun {
   [Header("Misc References")]
   protected PlayerManager playerManager;
 
-  /*
-  Common UITexts
-  ==============
-  0 - k/d
-  1 - fps
-  2 - ping
+  
+  //Common UITexts
+  //==============
+  //0 - k/d
+  //1 - fps
+  //2 - ping
 
-  Common Spawns
-  =============
-  0 - GovtSpawn
-  1 - RebelSpawn
-  */
+  //Common Spawns
+  //=============
+  //0 - GovtSpawn
+  //1 - RebelSpawn
+  
 
   private void Awake() {
     teamIndex = (int)PhotonNetwork.LocalPlayer.CustomProperties["Team"];
@@ -81,4 +81,4 @@ public abstract class GameDirector : MonoBehaviourPun {
   public int GetOtherFactionLayer() {
     return teamIndex == 1 ? REBEL_LAYER : GOVT_LAYER;
   }
-}
+}*/
