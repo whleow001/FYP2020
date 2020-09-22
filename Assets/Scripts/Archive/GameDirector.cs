@@ -1,4 +1,4 @@
-﻿using System.Collections;
+﻿/*using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using ExitGames.Client.Photon;
@@ -152,7 +152,7 @@ public class GameDirector : MonoBehaviourPun, IOnEventCallback
         }
     }*/
 
-    private void OnEnable() {
+/*    private void OnEnable() {
         PhotonNetwork.AddCallbackTarget(this);
     }
 
@@ -252,10 +252,10 @@ public class GameDirector : MonoBehaviourPun, IOnEventCallback
                     AddMaskAsChild(player);
                 }*/
 
-            }
+            //}
 
         // Get all generators
-        if (GetFactionLayer() == REBEL_LAYER) {
+/*        if (GetFactionLayer() == REBEL_LAYER) {
         GameObject[] generators = GameObject.FindGameObjectsWithTag("Generator");
 
         foreach (GameObject generator in generators)
@@ -302,4 +302,4 @@ public class GameDirector : MonoBehaviourPun, IOnEventCallback
     public PlayerManager GetPlayerManager() {
       return playerManager;
     }
-}
+}*/
