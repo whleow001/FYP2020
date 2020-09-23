@@ -77,8 +77,11 @@ public class GameDirector : MonoBehaviourPun, IOnEventCallback
       playerClone.GetComponent<PlayerController>().SpawnCamera(_mainCamera);
       playerManager = playerClone.GetComponent<PlayerManager>();
 
-      // If client is a master client
-      if (PhotonNetwork.IsMasterClient) {
+        //scale player minimap icon
+        AmplifyPlayerSprite(playerClone);
+
+        // If client is a master client
+        if (PhotonNetwork.IsMasterClient) {
         // Generate random generator spawns
         List<int> randomIndexes = new List<int>();
 
@@ -241,6 +244,14 @@ public class GameDirector : MonoBehaviourPun, IOnEventCallback
         }
 
     }
+
+    private void AmplifyPlayerSprite(GameObject playerPrefab)
+    {
+        playerPrefab.transform.GetComponentInChildren<SpriteRenderer>().drawMode = SpriteDrawMode.Sliced;
+        playerPrefab.transform.GetComponentInChildren<SpriteRenderer>().size = new Vector3(1.5f, 2.0f, 1f);
+        playerPrefab.transform.GetComponentInChildren<SpriteRenderer>().drawMode = SpriteDrawMode.Simple;
+    }
+
 
     public void AllocateFOVMask() {
       // Get all players
