@@ -78,7 +78,7 @@ public class GameDirector : MonoBehaviourPun, IOnEventCallback
       playerManager = playerClone.GetComponent<PlayerManager>();
 
         //scale player minimap icon
-        AmplifyPlayerSprite(playerClone);
+        EditPlayerIcon(playerClone);
 
         // If client is a master client
         if (PhotonNetwork.IsMasterClient) {
@@ -124,6 +124,8 @@ public class GameDirector : MonoBehaviourPun, IOnEventCallback
             currentMatchTime = 0;
             RefreshTimerUI();
       }
+
+        MarkObjective();
 
       // Display fps
       deltaTime += (Time.deltaTime - deltaTime) * 0.1f;
@@ -245,7 +247,7 @@ public class GameDirector : MonoBehaviourPun, IOnEventCallback
 
     }
 
-    private void AmplifyPlayerSprite(GameObject playerPrefab)
+    private void EditPlayerIcon(GameObject playerPrefab)
     {
         playerPrefab.transform.GetComponentInChildren<SpriteRenderer>().drawMode = SpriteDrawMode.Sliced;
         playerPrefab.transform.GetComponentInChildren<SpriteRenderer>().size = new Vector3(1.5f, 2.0f, 1f);
@@ -286,6 +288,34 @@ public class GameDirector : MonoBehaviourPun, IOnEventCallback
     private void AddMaskAsChild(GameObject _gameObject) {
       GameObject FOVObject = Instantiate(fovMask, new Vector3(_gameObject.transform.position.x, _gameObject.transform.position.y + 0.03f, _gameObject.transform.position.z), Quaternion.identity);
       FOVObject.transform.SetParent(_gameObject.transform);
+    }
+
+    private void MarkObjective()
+    {
+        float fovDistance = fovMask.transform.localScale.x / 2 - 2;
+        GameObject[] allGenerators = GameObject.FindGameObjectsWithTag("Generator");
+        GameObject[] allPlayers = GameObject.FindGameObjectsWithTag("Player");
+
+        if (allGenerators != null && allPlayers != null)
+        {
+            foreach (GameObject player in allPlayers)
+            {
+                //mark government team players' objective
+                if (player.layer == GOVT_LAYER)
+                {
+                    foreach (GameObject generator in allGenerators)
+                    {
+                        float distance = Vector3.Distance(generator.transform.position, player.transform.position);
+                        GameObject iconVisible = generator.transform.Find("GeneratorIcon").gameObject;
+
+                        if (distance < fovDistance && iconVisible.activeSelf == false)
+                        {
+                            iconVisible.SetActive(true);
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private int GetFactionLayer() {
