@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Photon.Pun;
 using Photon.Realtime;
+using Photon.Pun.UtilityScripts;
 public class EndGameScreen : MonoBehaviourPunCallbacks
 {
     [SerializeField]
@@ -55,9 +56,9 @@ public class EndGameScreen : MonoBehaviourPunCallbacks
 
         foreach (KeyValuePair<int, Player> playerInfo in PhotonNetwork.CurrentRoom.Players)
         {
-            if ((int)playerInfo.Value.CustomProperties["Team"] == 1)
+            if ((byte)playerInfo.Value.CustomProperties["_pt"] == 0)
                 AddPlayerListingOne(playerInfo.Value);
-            else if ((int)playerInfo.Value.CustomProperties["Team"] == 2)
+            else if ((byte)playerInfo.Value.CustomProperties["_pt"] == 1)
                 AddPlayerListingTwo(playerInfo.Value);
         }
 
@@ -105,18 +106,15 @@ public class EndGameScreen : MonoBehaviourPunCallbacks
 
     public override void OnPlayerLeftRoom (Player otherPlayer)
     {
-        if ((int)otherPlayer.CustomProperties["Team"] == 1)
+        int index = _listingsOne.FindIndex(x => x.Player == otherPlayer);
+        if (index != -1)
         {
-            int index = _listingsOne.FindIndex(x => x.Player == otherPlayer);
-            if (index != -1)
-            {
-                Destroy(_listingsOne[index].gameObject);
-                _listingsOne.RemoveAt(index);
-            }
+            Destroy(_listingsOne[index].gameObject);
+            _listingsOne.RemoveAt(index);
         }
-        else if((int)otherPlayer.CustomProperties["Team"] == 2)
+        else
         {
-            int index = _listingsTwo.FindIndex(x => x.Player == otherPlayer);
+            index = _listingsTwo.FindIndex(x => x.Player == otherPlayer);
             if (index != -1)
             {
                 Destroy(_listingsTwo[index].gameObject);
@@ -145,6 +143,15 @@ public class EndGameScreen : MonoBehaviourPunCallbacks
         //PhotonNetwork.AutomaticallySyncScene = true;
         if(PhotonNetwork.InRoom == true)
         {
+            if (PhotonNetwork.LocalPlayer.LeaveCurrentTeam())
+            {
+                Debug.Log(PhotonNetwork.LocalPlayer.NickName + "has left his/her team");
+            }
+            else
+            {
+                Debug.Log("function not called");
+            }
+
             PhotonNetwork.LeaveRoom();
             //PhotonNetwork.LoadLevel(0);
         }

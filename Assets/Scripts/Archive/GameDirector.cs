@@ -9,7 +9,7 @@ using UnityEngine.UI;
 using System.Xml.Serialization;
 using Photon.Pun.UtilityScripts;
 
-public class GameDirector : MonoBehaviourPun, IOnEventCallback
+public class GameDirector : MonoBehaviourPun
 {
     [SerializeField]
     private GameObject _mainCamera;
@@ -20,7 +20,7 @@ public class GameDirector : MonoBehaviourPun, IOnEventCallback
     [SerializeField]
     private RespawnOverlayManager respawnPanel;
     [SerializeField]
-    private EndGameScreen _endGameScreen;
+    public EndGameScreen _endGameScreen;
     [SerializeField]
     private Text fps;
     [SerializeField]
@@ -38,7 +38,7 @@ public class GameDirector : MonoBehaviourPun, IOnEventCallback
     public int matchLength = 60;
     [SerializeField]
     private Text timer;
-    private int currentMatchTime;
+    public int currentMatchTime;
     private Coroutine timerCoroutine;
 
     private float deltaTime;
@@ -65,6 +65,8 @@ public class GameDirector : MonoBehaviourPun, IOnEventCallback
     private bool maskSet = false;
     private bool forcefieldDestroyed = false;
 
+    // Events Manager
+    private EventsManager eventsManager;
     private void Awake() {
         //team = (int)PhotonNetwork.LocalPlayer.CustomProperties["_pt"];
         if ((byte)PhotonNetwork.LocalPlayer.CustomProperties["_pt"] == 0)
@@ -72,7 +74,7 @@ public class GameDirector : MonoBehaviourPun, IOnEventCallback
         else
             team = 1;
 
-
+      eventsManager = GameObject.Find("EventsManager").GetComponent<EventsManager>();
       GameObject playerClone = MasterManager.NetworkInstantiate(prefabs[team], spawns[team].transform.GetChild(Random.Range(0, 3)).transform.position, Quaternion.identity);
       playerClone.GetComponent<PlayerController>().SpawnCamera(_mainCamera);
       playerManager = playerClone.GetComponent<PlayerManager>();
@@ -118,7 +120,8 @@ public class GameDirector : MonoBehaviourPun, IOnEventCallback
 
             forcefieldDestroyed = true;
             //Debug.Log(photonView);
-            playerManager.GetComponent<PhotonView>().RPC("DisplayEndScreenRPC", RpcTarget.AllViaServer, "Government Team Win!!");
+            //playerManager.GetComponent<PhotonView>().RPC("DisplayEndScreenRPC", RpcTarget.AllViaServer, "Government Team Win!!");
+            eventsManager.DisplayEndGame_S("Government Team Wins");
             //if game ends before timer runs out
             if (timerCoroutine != null) StopCoroutine(timerCoroutine);
             currentMatchTime = 0;
@@ -163,14 +166,14 @@ public class GameDirector : MonoBehaviourPun, IOnEventCallback
         }
     }*/
 
-    private void OnEnable() {
-        PhotonNetwork.AddCallbackTarget(this);
-    }
+   // private void OnEnable() {
+    //    PhotonNetwork.AddCallbackTarget(this);
+    //}
 
-    private void OnDisable()
-    {
-        PhotonNetwork.RemoveCallbackTarget(this);
-    }
+    //private void OnDisable()
+   // {
+     //   PhotonNetwork.RemoveCallbackTarget(this);
+   // }
 
     private void InitializeTimer()
     {
@@ -183,31 +186,31 @@ public class GameDirector : MonoBehaviourPun, IOnEventCallback
         }
     }
 
-    private void RefreshTimerUI()
+    public void RefreshTimerUI()
     {
         string minutes = (currentMatchTime / 60).ToString("00");
         string seconds = (currentMatchTime % 60).ToString("00");
         timer.text = $"{minutes}:{seconds}";
     }
 
-    public void RefreshTimer_S()
-    {
-        object[] package = new object[] { currentMatchTime };
+    //public void RefreshTimer_S()
+    //{
+    //    object[] package = new object[] { currentMatchTime };
 
-        PhotonNetwork.RaiseEvent(
-            (byte)EventCodes.RefreshTimer,
-            package,
-            new RaiseEventOptions { Receivers = ReceiverGroup.All },
-            new SendOptions { Reliability = true }
-        );
-    }
+    //    PhotonNetwork.RaiseEvent(
+    //        (byte)EventCodes.RefreshTimer,
+    //        package,
+    //        new RaiseEventOptions { Receivers = ReceiverGroup.All },
+    //        new SendOptions { Reliability = true }
+    //    );
+    //}
 
-    public void RefreshTimer_R(object[] data)
-    {
-        currentMatchTime = (int)data[0];
-        //Debug.Log(currentMatchTime.ToString());
-        RefreshTimerUI();
-    }
+    //public void RefreshTimer_R(object[] data)
+    //{
+    //    currentMatchTime = (int)data[0];
+    //    //Debug.Log(currentMatchTime.ToString());
+    //    RefreshTimerUI();
+    //}
 
     private IEnumerator Timer()
     {
@@ -219,33 +222,34 @@ public class GameDirector : MonoBehaviourPun, IOnEventCallback
         if (currentMatchTime <= 0)
         {
             timerCoroutine = null;
-            playerManager.GetComponent<PhotonView>().RPC("DisplayEndScreenRPC", RpcTarget.AllViaServer, "Rebel Team Win!!");
-        }
+            // playerManager.GetComponent<PhotonView>().RPC("DisplayEndScreenRPC", RpcTarget.AllViaServer, "Rebel Team Win!!");
+            eventsManager.DisplayEndGame_S("Rebel Team Win");
+            }
         else
         {
             //Debug.Log("Call sending function now");
-            RefreshTimer_S();
+            eventsManager.RefreshTimer_S();
             timerCoroutine = StartCoroutine(Timer());
         }
     }
 
-    public void OnEvent(EventData photonEvent)
-    {
-        if (photonEvent.Code >= 200) return;
+    //public void OnEvent(EventData photonEvent)
+    //{
+    //    if (photonEvent.Code >= 200) return;
 
-        EventCodes e = (EventCodes)photonEvent.Code;
-        object[] o = (object[])photonEvent.CustomData;
+    //    EventCodes e = (EventCodes)photonEvent.Code;
+    //    object[] o = (object[])photonEvent.CustomData;
 
-        switch (e)
-        {
-            //fill in for timer
-            case EventCodes.RefreshTimer:
-                //Debug.Log("Receiving event now");
-                RefreshTimer_R(o);
-                break;
-        }
+    //    switch (e)
+    //    {
+    //        //fill in for timer
+    //        case EventCodes.RefreshTimer:
+    //            //Debug.Log("Receiving event now");
+    //            RefreshTimer_R(o);
+    //            break;
+    //    }
 
-    }
+    //}
 
     private void EditPlayerIcon(GameObject playerPrefab)
     {
@@ -338,9 +342,9 @@ public class GameDirector : MonoBehaviourPun, IOnEventCallback
       generatorCount--;
     }
 
-    public void DisplayEndScreen(string message) {
-        _endGameScreen.Show(message);
-    }
+    //public void DisplayEndScreen(string message) {
+    //    _endGameScreen.Show(message);
+    //}
 
     public NotificationPanelManager GetNotificationPanel() {
       return notificationPanel;

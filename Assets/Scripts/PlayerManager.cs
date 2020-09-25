@@ -196,11 +196,11 @@ public class PlayerManager : MonoBehaviourPun/*, IPunObservable*/
       killer.SetCustomProperties(_myCustomProperties);
     }
 
-    public void DisplayEndScreen(string message) {
-        //if (!photonView.IsMine) return;
+    //public void DisplayEndScreen(string message) {
+    //    //if (!photonView.IsMine) return;
 
-        director.DisplayEndScreen(message);
-    }
+    //    director.DisplayEndScreen(message);
+    //}
 
     public void Notify(string message, float seconds, bool ignoreCooldown = false, int layer = -1, Vector3 position = default(Vector3)) {
       if (gameObject.layer == layer || layer == -1) {
@@ -215,12 +215,12 @@ public class PlayerManager : MonoBehaviourPun/*, IPunObservable*/
       }
     }
 
-    [PunRPC]
-    void DisplayEndScreenRPC(string message) {
-        foreach(Player player in PhotonNetwork.PlayerList)
-          if (player == photonView.Owner)
-            GetComponent<PlayerManager>().DisplayEndScreen(message);
-    }
+    //[PunRPC]
+    //void DisplayEndScreenRPC(string message) {
+    //    foreach(Player player in PhotonNetwork.PlayerList)
+    //      if (player == photonView.Owner)
+    //        GetComponent<PlayerManager>().DisplayEndScreen(message);
+    //}
 
     [PunRPC]
     void NotifyTeam(string message, Vector3 position, int layer, bool ignoreCooldown) {
@@ -238,7 +238,6 @@ public class PlayerManager : MonoBehaviourPun/*, IPunObservable*/
     void AllocateFOV()
     {
         //if (!photonView.IsMine) return;
-
         director.AllocateFOVMask();
     }
 }
