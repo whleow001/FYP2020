@@ -31,7 +31,7 @@ public class EndGameScreen : MonoBehaviourPunCallbacks
     public void Show(string message)
     {
         director = GameObject.Find("Director").GetComponent<GameDirector>();
-        i = GetGeneratorCount(director);
+        //i = GetGeneratorCount(director);
         SetWinText(message);
         gameObject.SetActive(true);
     }
@@ -125,11 +125,12 @@ public class EndGameScreen : MonoBehaviourPunCallbacks
         //PhotonNetwork.LoadLevel(0);
 
     }
-
+    /*
     public int GetGeneratorCount(GameDirector director)
     {
         return director.generatorCount;
     }
+    */
 
     public void SetWinText(string message)
     {

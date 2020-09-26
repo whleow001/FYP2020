@@ -18,6 +18,7 @@ public class PlayerController : MonoBehaviourPun {
 
     // Director reference
     private GameDirector director;
+    private PlayerManager playerManager;
 
     // Components
     Rigidbody rb;
@@ -43,12 +44,31 @@ public class PlayerController : MonoBehaviourPun {
     [HideInInspector]
     public bool isDodging = false;
 
+    public Slider slider;
+    public Gradient gradient;
+    public Image fill;
+
+    private bool fovInstantiated = false;
+
     void Start() {
       playerInput = GetComponent<PlayerInput>();
       rb = GetComponent<Rigidbody>();
 
       director = GameObject.Find("Director").GetComponent<GameDirector>();
+      playerManager = GameObject.Find("PlayerManager").GetComponent<PlayerManager>();
       raycastOrigin = transform.Find("GunPoint").transform;
+    }
+
+    private void Update()
+    {
+        if (fovInstantiated == false)
+        {
+            if (PhotonNetwork.IsMasterClient == false)
+            {
+                photonView.RPC("AllocateFOV", RpcTarget.All);
+                fovInstantiated = true;
+            }
+        }
     }
 
     void FixedUpdate() {
@@ -132,7 +152,7 @@ public class PlayerController : MonoBehaviourPun {
       if (Physics.Raycast(ray, out hitInfo, range)) {
         if (hitInfo.collider.gameObject.layer != gameObject.layer) {
           if (hitInfo.collider.gameObject.tag == "Player")
-            hitInfo.transform.gameObject.GetComponent<PlayerManager>().TakeDamage(20, photonView);
+            hitInfo.transform.gameObject.GetComponent<PlayerController>().TakeDamage(20, photonView);
           else if (hitInfo.collider.gameObject.tag == "Generator")
             hitInfo.transform.gameObject.GetComponent<GeneratorHealth>().TakeDamage(20);
         }
@@ -141,7 +161,47 @@ public class PlayerController : MonoBehaviourPun {
       Debug.DrawRay(ray.origin, transform.TransformDirection(Vector3.forward) * range, Color.red, 0.5f);
     }
 
+    public void SetHealthBar(int value)
+    {
+        slider.value = value;
+        fill.color = gradient.Evaluate(slider.normalizedValue);
+    }
+
+    public void SetMaxHealthBar(int value)
+    {
+        slider.maxValue = 100;
+        slider.value = 100;
+        fill.color = gradient.Evaluate(1f);
+    }
+
+    // Take Damage
+    public void TakeDamage(int damage, PhotonView attacker)
+    {
+        if (!photonView.IsMine) return;
+
+        playerManager.TakeDamage(damage, attacker);
+        Player victim = photonView.Owner;
+        photonView.RPC("BroadcastHealth", RpcTarget.All, victim);
+
+
+    }
+
+    //broadcast health to all clients in the server
+    [PunRPC]
+    void BroadcastHealth(Player victim)
+    {
+        SetHealthBar((int)victim.CustomProperties["Health"]);
+    }
+
+    [PunRPC]
+    void AllocateFOV()
+    {
+        director.AllocateFOVMask();
+    }
+
+    /*
     public void DecrementGeneratorCount() {
       director.DecrementGeneratorCount();
     }
+    */
 }

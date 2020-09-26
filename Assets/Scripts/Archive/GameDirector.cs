@@ -1,4 +1,4 @@
-﻿using System.Collections;
+﻿/*using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using ExitGames.Client.Photon;
@@ -149,6 +149,7 @@ public class GameDirector : MonoBehaviourPun
 
     }
 
+<<<<<<< Updated upstream
     /*private void LateUpdate()
     {
         if (!maskSet)
@@ -164,7 +165,7 @@ public class GameDirector : MonoBehaviourPun
                 maskSet = true;
             }
         }
-    }*/
+    }
 
    // private void OnEnable() {
     //    PhotonNetwork.AddCallbackTarget(this);
@@ -269,12 +270,6 @@ public class GameDirector : MonoBehaviourPun
                 {
                     AddMaskAsChild(player);
                 }
-                /*else
-                {
-                    Destroy(player.transform.Find("FieldOfView").gameObject);
-                    AddMaskAsChild(player);
-                }*/
-
             }
 
         // Get all generators
@@ -353,4 +348,4 @@ public class GameDirector : MonoBehaviourPun
     public PlayerManager GetPlayerManager() {
       return playerManager;
     }
-}
+}*/

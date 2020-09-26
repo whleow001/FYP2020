@@ -11,7 +11,7 @@ public class GeneratorHealth : MonoBehaviourPun
     public int health = 100;
     //private int health = 100;
 
-    private GameDirector director;
+    private RebelHQ_A director;
 
     public bool takeDamage = false;
     public Slider slider;
@@ -23,7 +23,7 @@ public class GeneratorHealth : MonoBehaviourPun
     private int REBEL_LAYER = 10;
 
     void Start() {
-        director = GameObject.Find("Director").GetComponent<GameDirector>();
+        director = GameObject.Find("Director").GetComponent<RebelHQ_A>();
         SetMaxHealthbar(health);
     }
 
@@ -67,6 +67,6 @@ public class GeneratorHealth : MonoBehaviourPun
     }
 
     private void NotifyRebelTeam(string message, bool ignoreCooldown) {
-      director.GetPlayerManager().GetComponent<PhotonView>().RPC("NotifyTeam", RpcTarget.All, message, transform.position, REBEL_LAYER, ignoreCooldown);
+      //director.GetPlayerManager().GetComponent<PhotonView>().RPC("NotifyTeam", RpcTarget.All, message, transform.position, REBEL_LAYER, ignoreCooldown);
     }
 }
