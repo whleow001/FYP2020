@@ -56,7 +56,7 @@ public class PlayerController : MonoBehaviourPun {
 
       director = GameObject.Find("Director").GetComponent<GameDirector>();
       playerManager = GameObject.Find("PlayerManager").GetComponent<PlayerManager>();
-      raycastOrigin = transform.Find("GunPoint").transform;
+        raycastOrigin = transform.Find("GunPoint").transform;
     }
 
     private void Update()
@@ -151,10 +151,12 @@ public class PlayerController : MonoBehaviourPun {
 
       if (Physics.Raycast(ray, out hitInfo, range)) {
         if (hitInfo.collider.gameObject.layer != gameObject.layer) {
-          if (hitInfo.collider.gameObject.tag == "Player")
-            hitInfo.transform.gameObject.GetComponent<PlayerController>().TakeDamage(20, photonView);
-          else if (hitInfo.collider.gameObject.tag == "Generator")
-            hitInfo.transform.gameObject.GetComponent<GeneratorHealth>().TakeDamage(20);
+                if (hitInfo.collider.gameObject.tag == "Player")
+                    hitInfo.transform.gameObject.GetComponent<PlayerController>().TakeDamage(20, photonView);
+                else if (hitInfo.collider.gameObject.tag == "Generator")
+                {
+                    hitInfo.transform.gameObject.GetComponent<GeneratorHealth>().TakeDamage(20);
+                }
         }
       }
 

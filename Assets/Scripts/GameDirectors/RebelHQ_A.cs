@@ -79,7 +79,7 @@ protected override void UpdateUITexts() {
 public void DecrementGeneratorCount() {
         generatorCount--;
         //notfication panel index in the UITexts List
-        UITexts[3].SetText("Generator is destroyed", 2.0f);
+        //UITexts[3].SetText("Generator is destroyed", 2.0f);
     }
 
 }

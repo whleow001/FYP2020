@@ -15,15 +15,39 @@ public class EventsManager : MonoBehaviourPun, IOnEventCallback {
     private GameDirector director;
     //private EndGameScreen endGameScreen;
 
+    enum EventsCode : byte
+    {
+        RefreshTimer,
+        DisplayEndGame,
+        GeneratorNotification
+    }
+
     //reference to game director
     private void Awake()
     {
         director = GameObject.Find("Director").GetComponent<GameDirector>();
         //endGameScreen = GameObject.Find("EndGameScreen").GetComponent<EndGameScreen>();
     }
-    enum EventsCode : byte {
-        RefreshTimer,
-        DisplayEndGame
+
+    //Void OnEvent
+    public void OnEvent(EventData photonEvent)
+    {
+        if (photonEvent.Code >= 200) return;
+        EventsCode e = (EventsCode)photonEvent.Code;
+        object[] o = (object[])photonEvent.CustomData;
+        switch (e)
+        {
+            //fill in for timer
+            case EventsCode.RefreshTimer:
+                RefreshTimer_R(o);
+                break;
+            case EventsCode.DisplayEndGame:
+                DisplayEndGame_R(o);
+                break;
+            case EventsCode.GeneratorNotification:
+                GeneratorNotification_R(o);
+                break;
+        }
     }
 
     //On enable and disable
@@ -62,7 +86,7 @@ public class EventsManager : MonoBehaviourPun, IOnEventCallback {
             (byte)EventsCode.DisplayEndGame,
             package,
             new RaiseEventOptions { Receivers = ReceiverGroup.All },
-            new SendOptions { Reliability = true }
+            new SendOptions { Reliability = false }
             );
     }
 
@@ -70,25 +94,38 @@ public class EventsManager : MonoBehaviourPun, IOnEventCallback {
     {
         string WinText = data[0].ToString();
         director._endGameScreen.Show(WinText);
-        }
+    }  
 
-    //Void OnEvent
-    public void OnEvent(EventData photonEvent)
+    public void GeneratorNotification_S(string message, float durationSeconds, bool timer)
     {
-        if (photonEvent.Code >= 200) return;
-        EventsCode e = (EventsCode)photonEvent.Code;
-        object[] o = (object[])photonEvent.CustomData;
-        switch (e) {
-            //fill in for timer
-            case EventsCode.RefreshTimer:
-                RefreshTimer_R(o);
-                break;
-            case EventsCode.DisplayEndGame:
-                DisplayEndGame_R(o);
-                break;
+        object[] package = new object[3];
+
+        package[0] = message;
+        package[1] = durationSeconds;
+        package[2] = timer;
+        
+        foreach (KeyValuePair<int, Player> playerInfo in PhotonNetwork.CurrentRoom.Players)
+        {
+            if ((byte)playerInfo.Value.CustomProperties["_pt"] == 1)
+            {
+                PhotonNetwork.RaiseEvent(
+                    (byte)EventsCode.GeneratorNotification,
+                    package,
+                    new RaiseEventOptions { TargetActors = new[] { playerInfo.Value.ActorNumber } },
+                    new SendOptions { Reliability = true }
+                );
+            }
         }
     }
 
-    
+    public void GeneratorNotification_R(object[] data)
+    {
+        string genText = data[0].ToString();
+        float duration = (float)data[1];
+        bool timerState = (bool)data[2];
+
+        director.UITexts[3].SetText(genText, duration, timerState);
+        director.UITexts[3].SetActiveState(true);
+    }
 }
 

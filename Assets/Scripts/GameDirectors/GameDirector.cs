@@ -17,9 +17,10 @@ public abstract class GameDirector : MonoBehaviourPun {
   private float deltaTime;
 
   // UI References
+  // had to change protection level for eventsmanager access
   [Header("UI Texts")]
   [SerializeField]
-  protected List<UIText> UITexts = new List<UIText>();
+  public List<UIText> UITexts = new List<UIText>();
 
   // Spawns
   [Header("Spawns")]
@@ -212,11 +213,11 @@ public abstract class GameDirector : MonoBehaviourPun {
         return UITexts[3];
     }
 
-    public void DisplayEndGameScreen()
-    {
-        string message = "hello";
-        _endGameScreen.Show(message);
-    }
+    //public void DisplayEndGameScreen()
+    //{
+    //    string message = "hello";
+    //    _endGameScreen.Show(message);
+    //}
 
     /* this function might not be needed, if we credit killer from playerManager
     public void CreditKiller()
@@ -229,6 +230,4 @@ public abstract class GameDirector : MonoBehaviourPun {
     {
 
     }
-
-
 }

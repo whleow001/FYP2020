@@ -20,6 +20,8 @@ public class UIText : MonoBehaviour {
   private float secondsElasped;
   private float seconds;
 
+    public bool OverrideCurrentText = false;
+
   void Awake() {
     SetActiveState(ActiveOnDefault);
   }
@@ -28,8 +30,12 @@ public class UIText : MonoBehaviour {
     if (secondsElasped != 0) {
       secondsElasped -= Time.deltaTime;
 
-      if (secondsElasped <= 0)
-        SetActiveState(false);
+            if (secondsElasped <= 0)
+            {
+                SetActiveState(false);
+                OverrideCurrentText = false;
+            }
+
     }
 
     if (timer)
@@ -71,8 +77,9 @@ public class UIText : MonoBehaviour {
     return $"{minutes}:{seconds}";
   }
 
-  // Function to change state of panel
-  void SetActiveState(bool state) {
+    // Function to change state of panel
+    // had to change protection level for eventsmanager access
+    public void SetActiveState(bool state) {
     panel.SetActive(state);
   }
 }

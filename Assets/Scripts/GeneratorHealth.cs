@@ -22,19 +22,27 @@ public class GeneratorHealth : MonoBehaviourPun
     private int GOVT_LAYER = 9;
     private int REBEL_LAYER = 10;
 
+    //EventsManager reference
+    protected EventsManager eventsManager;
+
     void Start() {
         director = GameObject.Find("Director").GetComponent<RebelHQ_A>();
+        eventsManager = GameObject.Find("EventsManager").GetComponent<EventsManager>();
         SetMaxHealthbar(health);
     }
 
     // Update is called once per frame
     void Update() {
-      if (health <= 0)
-        DestroyGenerator();
+        if (health <= 0)
+        {
+            DestroyGenerator();
+            director.UITexts[3].OverrideCurrentText = true;
+            eventsManager.GeneratorNotification_S("Generator Destroyed!", 3.0f, true);
+        }
 
       if (takeDamage) {
         TakeDamage(20);
-        takeDamage = false;
+            takeDamage = false;
       }
     }
 
@@ -53,7 +61,6 @@ public class GeneratorHealth : MonoBehaviourPun
 
     private void DestroyGenerator() {
       director.DecrementGeneratorCount();
-      NotifyRebelTeam("Generator destroyed!", true);
 
       if (PhotonNetwork.IsMasterClient)
         PhotonNetwork.Destroy(gameObject);
@@ -62,8 +69,8 @@ public class GeneratorHealth : MonoBehaviourPun
     public void TakeDamage(int damage) {
       health -= damage;
       SetHealthbar(health);
-
-      NotifyRebelTeam("Generator Under Attack!", false);
+        if(director.UITexts[3].OverrideCurrentText == false)
+            eventsManager.GeneratorNotification_S("Generator Under Attack!", 3.0f, true);
     }
 
     private void NotifyRebelTeam(string message, bool ignoreCooldown) {
