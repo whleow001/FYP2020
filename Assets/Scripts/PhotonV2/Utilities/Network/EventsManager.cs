@@ -96,13 +96,13 @@ public class EventsManager : MonoBehaviourPun, IOnEventCallback {
         director._endGameScreen.Show(WinText);
     }  
 
-    public void GeneratorNotification_S(string message, float durationSeconds, bool timer)
+    public void GeneratorNotification_S(string message, float durationSeconds)
     {
         object[] package = new object[3];
 
         package[0] = message;
         package[1] = durationSeconds;
-        package[2] = timer;
+        //package[2] = timer;
         
         foreach (KeyValuePair<int, Player> playerInfo in PhotonNetwork.CurrentRoom.Players)
         {
@@ -122,10 +122,10 @@ public class EventsManager : MonoBehaviourPun, IOnEventCallback {
     {
         string genText = data[0].ToString();
         float duration = (float)data[1];
-        bool timerState = (bool)data[2];
+        //bool timerState = (bool)data[2];
 
-        director.UITexts[3].SetText(genText, duration, timerState);
-        director.UITexts[3].SetActiveState(true);
+        director.UITexts[3].SetText(genText, duration);
+        //director.UITexts[3].SetActiveState(true);
     }
 }
 

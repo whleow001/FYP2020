@@ -33,7 +33,7 @@ public class UIText : MonoBehaviour {
             if (secondsElasped <= 0)
             {
                 SetActiveState(false);
-                OverrideCurrentText = false;
+                //OverrideCurrentText = false;
             }
 
     }

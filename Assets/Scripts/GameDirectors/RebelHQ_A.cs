@@ -44,15 +44,17 @@ protected override void Update()
             currentMatchTime = 0;
             RefreshTimerUI();
         }
+
+        MarkObjective();
         
- }
+}
 
     // Initialize scene specific game objects
-    protected override void InitializeGameObjects() {
+protected override void InitializeGameObjects() {
 // If client is a master client
-if (PhotonNetwork.IsMasterClient) {
-  // Generate random generator spawns
-  List<int> randomIndexes = new List<int>();
+ if (PhotonNetwork.IsMasterClient) {
+   // Generate random generator spawns
+   List<int> randomIndexes = new List<int>();
 
   while (randomIndexes.Count < generatorCount) {
     int randomIndex = Random.Range(0, generatorCount);
@@ -67,8 +69,38 @@ if (PhotonNetwork.IsMasterClient) {
   // Spawn forcefields
   for (int i = 0; i < 2; i++)
     MasterManager.RoomObjectInstantiate(prefabs[1], spawns[1].transform.GetChild(i).transform.position, spawns[1].transform.GetChild(i).transform.rotation);
+ }
 }
-}
+
+private void MarkObjective()
+    {
+        float fovDistance = fovMask.transform.localScale.x / 2 - 2;
+        GameObject[] allGenerators = GameObject.FindGameObjectsWithTag("Generator");
+        GameObject[] allPlayers = GameObject.FindGameObjectsWithTag("Player");
+
+        if (allGenerators != null && allPlayers != null)
+        {
+            foreach (GameObject player in allPlayers)
+            {
+                //mark government team players' objective
+                if (player.layer == GOVT_LAYER)
+                {
+                    foreach (GameObject generator in allGenerators)
+                    {
+                        float distance = Vector3.Distance(generator.transform.position, player.transform.position);
+                        GameObject iconVisible = generator.transform.Find("GeneratorIcon").gameObject;
+
+                        if (distance < fovDistance && iconVisible.activeSelf == false)
+                        {
+                            iconVisible.SetActive(true);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+
 
 // Updates scene specific texts
 protected override void UpdateUITexts() {

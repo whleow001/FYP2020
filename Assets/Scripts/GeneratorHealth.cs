@@ -36,8 +36,7 @@ public class GeneratorHealth : MonoBehaviourPun
         if (health <= 0)
         {
             DestroyGenerator();
-            director.UITexts[3].OverrideCurrentText = true;
-            eventsManager.GeneratorNotification_S("Generator Destroyed!", 3.0f, true);
+            eventsManager.GeneratorNotification_S("Generator Destroyed!", 2.0f);
         }
 
       if (takeDamage) {
@@ -69,8 +68,7 @@ public class GeneratorHealth : MonoBehaviourPun
     public void TakeDamage(int damage) {
       health -= damage;
       SetHealthbar(health);
-        if(director.UITexts[3].OverrideCurrentText == false)
-            eventsManager.GeneratorNotification_S("Generator Under Attack!", 3.0f, true);
+      eventsManager.GeneratorNotification_S("Generator Under Attack!", 2.0f);
     }
 
     private void NotifyRebelTeam(string message, bool ignoreCooldown) {

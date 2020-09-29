@@ -10,8 +10,8 @@ public abstract class GameDirector : MonoBehaviourPun {
   private int teamIndex;
 
   // Layer references
-  private int GOVT_LAYER = 9;
-  private int REBEL_LAYER = 10;
+  protected int GOVT_LAYER = 9;
+  protected int REBEL_LAYER = 10;
 
   // fps tracker
   private float deltaTime;

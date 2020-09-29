@@ -46,7 +46,10 @@ public class PlayerManager : MonoBehaviour
 
         Reset();
         instantiated = true;
-        
+
+        //scale player minimap icon
+        EditPlayerIcon(playerClone);
+
     }
 
     // Update is called once per frame
@@ -70,6 +73,13 @@ public class PlayerManager : MonoBehaviour
         team = director.GetTeamIndex();
         playerClone = MasterManager.NetworkInstantiate(playerPrefabs[team], PlayerSpawns[team].transform.GetChild(Random.Range(0, 3)).transform.position, Quaternion.identity);
         playerClone.GetComponent<PlayerController>().SpawnCamera(_mainCamera);
+    }
+
+    private void EditPlayerIcon(GameObject playerPrefab)
+    {
+        playerPrefab.transform.GetComponentInChildren<SpriteRenderer>().drawMode = SpriteDrawMode.Sliced;
+        playerPrefab.transform.GetComponentInChildren<SpriteRenderer>().size = new Vector3(1.5f, 2.0f, 1f);
+        playerPrefab.transform.GetComponentInChildren<SpriteRenderer>().drawMode = SpriteDrawMode.Simple;
     }
 
     private void GetProperties()
@@ -140,6 +150,8 @@ public class PlayerManager : MonoBehaviour
             Increment("Deaths");
             Player killer = attacker.Owner;
             CreditKiller(killer);
+            //Debug.Log(director.UITexts[4]);
+            director.UITexts[4].SetText("", 3.0f, true);
             Respawn();
 
             //director.AddToCombatLog(photonView, attacker);
