@@ -19,7 +19,9 @@ public class EventsManager : MonoBehaviourPun, IOnEventCallback {
     {
         RefreshTimer,
         DisplayEndGame,
-        GeneratorNotification
+        RebelNotification,
+        GovtNotification,
+        GeneralNotification
     }
 
     //reference to game director
@@ -44,8 +46,14 @@ public class EventsManager : MonoBehaviourPun, IOnEventCallback {
             case EventsCode.DisplayEndGame:
                 DisplayEndGame_R(o);
                 break;
-            case EventsCode.GeneratorNotification:
-                GeneratorNotification_R(o);
+            case EventsCode.RebelNotification:
+                RebelNotification_R(o);
+                break;
+            case EventsCode.GovtNotification:
+                GovtNotification_R(o);
+                break;
+            case EventsCode.GeneralNotification:
+                GeneralNotification_R(o);
                 break;
         }
     }
@@ -96,9 +104,9 @@ public class EventsManager : MonoBehaviourPun, IOnEventCallback {
         director._endGameScreen.Show(WinText);
     }  
 
-    public void GeneratorNotification_S(string message, float durationSeconds)
+    public void RebelNotification_S(string message, float durationSeconds)
     {
-        object[] package = new object[3];
+        object[] package = new object[2];
 
         package[0] = message;
         package[1] = durationSeconds;
@@ -109,7 +117,7 @@ public class EventsManager : MonoBehaviourPun, IOnEventCallback {
             if ((byte)playerInfo.Value.CustomProperties["_pt"] == 1)
             {
                 PhotonNetwork.RaiseEvent(
-                    (byte)EventsCode.GeneratorNotification,
+                    (byte)EventsCode.RebelNotification,
                     package,
                     new RaiseEventOptions { TargetActors = new[] { playerInfo.Value.ActorNumber } },
                     new SendOptions { Reliability = true }
@@ -118,13 +126,71 @@ public class EventsManager : MonoBehaviourPun, IOnEventCallback {
         }
     }
 
-    public void GeneratorNotification_R(object[] data)
+    public void RebelNotification_R(object[] data)
     {
-        string genText = data[0].ToString();
+        string NotifText = data[0].ToString();
         float duration = (float)data[1];
         //bool timerState = (bool)data[2];
 
-        director.UITexts[3].SetText(genText, duration);
+        director.UITexts[3].SetText(NotifText, duration);
+        //director.UITexts[3].SetActiveState(true);
+    }
+
+    public void GovtNotification_S(string message, float durationSeconds)
+    {
+        object[] package = new object[2];
+
+        package[0] = message;
+        package[1] = durationSeconds;
+        //package[2] = timer;
+
+        foreach (KeyValuePair<int, Player> playerInfo in PhotonNetwork.CurrentRoom.Players)
+        {
+            if ((byte)playerInfo.Value.CustomProperties["_pt"] == 0)
+            {
+                PhotonNetwork.RaiseEvent(
+                    (byte)EventsCode.RebelNotification,
+                    package,
+                    new RaiseEventOptions { TargetActors = new[] { playerInfo.Value.ActorNumber } },
+                    new SendOptions { Reliability = true }
+                );
+            }
+        }
+    }
+
+    public void GovtNotification_R(object[] data)
+    {
+        string NotifText = data[0].ToString();
+        float duration = (float)data[1];
+        //bool timerState = (bool)data[2];
+
+        director.UITexts[3].SetText(NotifText, duration);
+        //director.UITexts[3].SetActiveState(true);
+    }
+
+    public void GeneralNotification_S(string message, float durationSeconds)
+    {
+        object[] package = new object[2];
+
+        package[0] = message;
+        package[1] = durationSeconds;
+        //package[2] = timer;
+
+        PhotonNetwork.RaiseEvent(
+            (byte)EventsCode.RebelNotification,
+            package,
+            new RaiseEventOptions { Receivers = ReceiverGroup.All },
+            new SendOptions { Reliability = true }
+        );
+    }
+
+    public void GeneralNotification_R(object[] data)
+    {
+        string NotifText = data[0].ToString();
+        float duration = (float)data[1];
+        //bool timerState = (bool)data[2];
+
+        director.UITexts[3].SetText(NotifText, duration);
         //director.UITexts[3].SetActiveState(true);
     }
 }
