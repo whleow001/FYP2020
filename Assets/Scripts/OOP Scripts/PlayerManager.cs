@@ -36,6 +36,10 @@ public class PlayerManager : MonoBehaviour
     private bool instantiated = false;
     private GameObject playerClone;
     private int team;   // team number;
+
+    // Events Manager
+    protected EventsManager eventsManager;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -49,6 +53,8 @@ public class PlayerManager : MonoBehaviour
 
         //scale player minimap icon
         EditPlayerIcon(playerClone);
+
+        eventsManager = GameObject.Find("EventsManager").GetComponent<EventsManager>();
 
     }
 
@@ -152,8 +158,9 @@ public class PlayerManager : MonoBehaviour
             CreditKiller(killer);
             //Debug.Log(director.UITexts[4]);
             director.UITexts[4].SetText("", 3.0f, true);
+            //Notification for "player" killed "player"
+            eventsManager.GeneralNotification_S(killer.NickName + "has killed"  +PhotonNetwork.LocalPlayer.NickName, 2.0f);
             Respawn();
-
             //director.AddToCombatLog(photonView, attacker);
         }
     }
