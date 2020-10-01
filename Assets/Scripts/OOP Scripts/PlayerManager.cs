@@ -159,7 +159,7 @@ public class PlayerManager : MonoBehaviour
             //Debug.Log(director.UITexts[4]);
             director.UITexts[4].SetText("", 3.0f, true);
             //Notification for "player" killed "player"
-            eventsManager.GeneralNotification_S(killer.NickName + "has killed"  +PhotonNetwork.LocalPlayer.NickName, 2.0f);
+            eventsManager.GeneralNotification_S(killer.NickName + " has killed "  +PhotonNetwork.LocalPlayer.NickName, 2.0f);
             Respawn();
             //director.AddToCombatLog(photonView, attacker);
         }

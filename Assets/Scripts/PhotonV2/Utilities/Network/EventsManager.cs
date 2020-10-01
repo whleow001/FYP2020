@@ -14,7 +14,6 @@ public class EventsManager : MonoBehaviourPun, IOnEventCallback {
 
     private GameDirector director;
     //private EndGameScreen endGameScreen;
-    private PlayerManager pmanager;
 
     enum EventsCode : byte
     {
@@ -22,8 +21,7 @@ public class EventsManager : MonoBehaviourPun, IOnEventCallback {
         DisplayEndGame,
         RebelNotification,
         GovtNotification,
-        GeneralNotification,
-        CreditKiller
+        GeneralNotification
     }
 
     //reference to game director & Player controller
@@ -31,7 +29,6 @@ public class EventsManager : MonoBehaviourPun, IOnEventCallback {
     {
         director = GameObject.Find("Director").GetComponent<GameDirector>();
         //endGameScreen = GameObject.Find("EndGameScreen").GetComponent<EndGameScreen>();
-        pmanager = GameObject.Find("PManager").GetComponent<PlayerManager>();
     }
 
     //Void OnEvent
@@ -197,10 +194,5 @@ public class EventsManager : MonoBehaviourPun, IOnEventCallback {
         director.UITexts[3].SetText(NotifText, duration);
         //director.UITexts[3].SetActiveState(true);
     }
-
-    //Kill Credit Notification splash
-  
-
-    
 }
 
