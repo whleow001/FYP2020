@@ -14,37 +14,62 @@ public class PlayerManager : MonoBehaviour
     [SerializeField]
     private GameObject _mainCamera;
 
+    // Layer references
+    protected int GOVT_LAYER = 9;
+    protected int REBEL_LAYER = 10;
+
     // Spawns
     [Header("Spawns")]
     [SerializeField]
     protected List<GameObject> PlayerSpawns = new List<GameObject>();
 
     // Prefabs
-    [Header("Prefabs")]
+    [Header("GovtPrefabs")]
     [SerializeField]
     protected List<GameObject> playerPrefabs = new List<GameObject>();
+
+    [Header("rebelPrefabs")]
+    [SerializeField]
+    protected List<GameObject> rebelPrefabs = new List<GameObject>();
+
+    [Header("Materials")]
+    [SerializeField]
+    protected List<Material> TeamMaterials = new List<Material>();
+
+    [SerializeField]
+    protected GameObject playerContainer;
 
     // Custom player properties
     private ExitGames.Client.Photon.Hashtable properties;
 
+    //currently using int, can change back to GameObject type if we are using same character models for both teams.
     private GameObject selectedCharacter;
 
-    private Material selectedMaterial;
+    //private Material selectedMaterial;
 
-    private Vector3 spawnPoint;
+    //private Vector3 spawnPoint;
 
     private bool instantiated = false;
     private GameObject playerClone;
+    private GameObject AvatarParent;
     private int team;   // team number;
+
 
     // Events Manager
     protected EventsManager eventsManager;
 
+
+    private int charIndex; //character index
     // Start is called before the first frame update
     void Start()
     {
         GetProperties();
         director = GameObject.Find("Director").GetComponent<GameDirector>();
+
+        team = director.GetTeamIndex();
+        AvatarParent = MasterManager.NetworkInstantiate(playerContainer, PlayerSpawns[team].transform.GetChild(Random.Range(0, 3)).transform.position, Quaternion.identity);
+        //ChangeValue("Class", 0);
+        ChangeCharacter(0);
 
         InitializeCharacter();
 
@@ -64,21 +89,44 @@ public class PlayerManager : MonoBehaviour
 
     }
 
-    public void SetProperties(Material material, Vector3 spawn)
+    //this function is will be used if we using same model for both teams, changing their material and layer 
+    //do not think spawn needs to be a parameter here, should be layer instead, however currently not working as intended
+    public void SetProperties(Material selectedMaterial, int selectedLayer)
     {
-
+        playerClone.GetComponentInChildren<SkinnedMeshRenderer>().material = selectedMaterial;
+        playerClone.layer = selectedLayer;
     }
 
-    public void ChangeCharacter(GameObject selectedCharacter)
+    public void ChangeCharacter(int selectedCharacterIndex)
     {
-
+        ChangeValue("Class", selectedCharacterIndex);
+        
+        if(team == 0)
+        {
+            selectedCharacter = playerPrefabs[(int)(properties["Class"])];
+        }
+        else
+        {
+            selectedCharacter = rebelPrefabs[(int)(properties["Class"])];
+        }
+        Debug.Log(properties["Class"]);
     }
 
     private void InitializeCharacter()
     {
-        team = director.GetTeamIndex();
-        playerClone = MasterManager.NetworkInstantiate(playerPrefabs[team], PlayerSpawns[team].transform.GetChild(Random.Range(0, 3)).transform.position, Quaternion.identity);
-        playerClone.GetComponent<PlayerController>().SpawnCamera(_mainCamera);
+        //selectedCharacter = (int)(properties["Class"]);
+        playerClone = MasterManager.NetworkInstantiate(selectedCharacter, AvatarParent.transform.position, Quaternion.identity);
+        //changing material and layer not working yet
+        /*if (team == 0)
+        {
+            SetProperties(TeamMaterials[0], GOVT_LAYER);
+        }
+        else
+        {
+            SetProperties(TeamMaterials[1], REBEL_LAYER);
+        }*/
+        AvatarParent.GetComponent<PlayerContainer>().SpawnCamera(_mainCamera, playerClone);
+        //playerClone.transform.SetParent(AvatarParent.transform);
     }
 
     private void EditPlayerIcon(GameObject playerPrefab)
@@ -86,6 +134,16 @@ public class PlayerManager : MonoBehaviour
         playerPrefab.transform.GetComponentInChildren<SpriteRenderer>().drawMode = SpriteDrawMode.Sliced;
         playerPrefab.transform.GetComponentInChildren<SpriteRenderer>().size = new Vector3(1.5f, 2.0f, 1f);
         playerPrefab.transform.GetComponentInChildren<SpriteRenderer>().drawMode = SpriteDrawMode.Simple;
+        /*  // changing material and layer not working yet
+        if(team == 0)
+        {
+            playerPrefab.transform.GetComponentInChildren<SpriteRenderer>().color = Color.blue;
+        }
+        else
+        {
+            playerPrefab.transform.GetComponentInChildren<SpriteRenderer>().color = Color.red;
+        }*/
+        
     }
 
     private void GetProperties()
@@ -178,7 +236,9 @@ public class PlayerManager : MonoBehaviour
     private void Respawn()
     {
        Reset();
-       playerClone.transform.position = PlayerSpawns[team].transform.GetChild(Random.Range(0, 3)).transform.position;
+       PhotonNetwork.Destroy(playerClone);
+       AvatarParent.transform.position = PlayerSpawns[team].transform.GetChild(Random.Range(0, 3)).transform.position;
+       InitializeCharacter();
        playerClone.GetComponent<PhotonView>().RPC("BroadcastHealth", RpcTarget.All, playerClone.GetComponent<PhotonView>().Owner);
     }
 }

@@ -55,6 +55,20 @@ public abstract class GameDirector : MonoBehaviourPun {
     // Events Manager
     protected EventsManager eventsManager;
 
+    private GameObject charPanel;
+    private int charIndex;
+
+    private Button char1Button;
+    private Button char2Button;
+    private Button char3Button;
+
+    private Text char1text;
+    private Text char2text;
+    private Text char3text;
+
+    private string selectedText = "Selected";
+    private string unselectedText = "Select";
+
 
     //Common UITexts
     //==============
@@ -76,6 +90,15 @@ public abstract class GameDirector : MonoBehaviourPun {
         teamIndex = 1;
 
     eventsManager = GameObject.Find("EventsManager").GetComponent<EventsManager>();
+    charPanel = GameObject.Find("CharacterSelectionOverlay");
+    char1Button = GameObject.Find("Char1").GetComponent<Button>();
+    char2Button = GameObject.Find("Char2").GetComponent<Button>();
+    char3Button = GameObject.Find("Char3").GetComponent<Button>();
+
+    char1text = char1Button.GetComponentInChildren<Text>();
+    char2text = char2Button.GetComponentInChildren<Text>();
+    char3text = char3Button.GetComponentInChildren<Text>();
+    charPanel.SetActive(false);
 
     //GameObject notificationPanel = GameObject.Find("NotificaltionPanel");
     //notificationText = notificationPanel.transform.GetChild(0).GetComponent<Text>();
@@ -226,8 +249,47 @@ public abstract class GameDirector : MonoBehaviourPun {
     }
     */
 
-    protected void ChangeCharacter()
+    public void ChangeCharacter()
     {
+        charPanel.SetActive(true);
+    }
 
+    public void char1ButtonPress()
+    {
+        charIndex = 0;
+        playerManager.ChangeCharacter(charIndex);
+        char1text.text = selectedText;
+        char2text.text = unselectedText;
+        char3text.text = unselectedText;
+        char1Button.interactable = false;
+        char2Button.interactable = true;
+        char3Button.interactable = true;
+        charPanel.SetActive(false);
+    }
+
+    public void char2ButtonPress()
+    {
+        charIndex = 1;
+        playerManager.ChangeCharacter(charIndex);
+        char1text.text = unselectedText;
+        char2text.text = selectedText;
+        char3text.text = unselectedText;
+        char1Button.interactable = true;
+        char2Button.interactable = false;
+        char3Button.interactable = true;
+        charPanel.SetActive(false);
+    }
+
+    public void char3ButtonPress()
+    {
+        charIndex = 2;
+        playerManager.ChangeCharacter(charIndex);
+        char1text.text = unselectedText;
+        char2text.text = unselectedText;
+        char3text.text = selectedText;
+        char1Button.interactable = true;
+        char2Button.interactable = true;
+        char3Button.interactable = false;
+        charPanel.SetActive(false);
     }
 }
