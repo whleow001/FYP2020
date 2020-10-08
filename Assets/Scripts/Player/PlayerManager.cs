@@ -8,68 +8,42 @@ using UnityEngine.SceneManagement;
 
 public class PlayerManager : MonoBehaviourPunCallbacks
 {
-    //reference current scene gamedirector
-    [SerializeField]
-    private GameDirector director;
-
     [SerializeField]
     private GameObject _mainCamera;
 
-    // Layer references
-    protected int GOVT_LAYER = 9;
-    protected int REBEL_LAYER = 10;
-
-    // Spawns
-    [Header("Spawns")]
-    [SerializeField]
-    protected List<GameObject> PlayerSpawns = new List<GameObject>();
-
-    // Prefabs
-    [Header("GovtPrefabs")]
-    [SerializeField]
-    protected List<GameObject> playerPrefabs = new List<GameObject>();
-
-    [Header("rebelPrefabs")]
-    [SerializeField]
-    protected List<GameObject> rebelPrefabs = new List<GameObject>();
-
     [Header("Materials")]
     [SerializeField]
-    protected List<Material> TeamMaterials = new List<Material>();
+    private List<Material> teamMaterials = new List<Material>();
+
+    [Header("References")]
+    [SerializeField]
+    private GameDirector director;
+    private EventsManager eventsManager;
 
     [SerializeField]
-    protected GameObject playerContainer;
-
-    // Custom player properties
-    private ExitGames.Client.Photon.Hashtable properties;
+    private GameObject playerContainer;
 
     //currently using int, can change back to GameObject type if we are using same character models for both teams.
     private GameObject selectedCharacter;
 
-    //private Material selectedMaterial;
-
-    //private Vector3 spawnPoint;
+    private GameObject spawnPoint;
 
     private bool instantiated = false;
     private GameObject playerClone;
     private GameObject AvatarParent;
-    private int team;   // team number;
 
+    // Custom player properties
+    private ExitGames.Client.Photon.Hashtable properties;
 
-    // Events Manager
-    protected EventsManager eventsManager;
-
-
-    private int charIndex; //character index
     // Start is called before the first frame update
     void Start()
     {
-        GetProperties();
-        director = GameObject.Find("Director").GetComponent<GameDirector>();
-        //manager = GameObject.Find("Manager").GetComponent<EventsManager>();
+        // Get Spawn point
+        spawnPoint = director.GetSpawn(director.GetTeamIndex());
 
-        team = director.GetTeamIndex();
-        AvatarParent = MasterManager.NetworkInstantiate(playerContainer, PlayerSpawns[team].transform.GetChild(Random.Range(0, 3)).transform.position, Quaternion.identity);
+
+
+        AvatarParent = MasterManager.NetworkInstantiate(playerContainer, spawnPoint.transform.GetChild(Random.Range(0, 3)).transform.position, Quaternion.identity);
         //ChangeValue("Class", 0);
         ChangeCharacter(0);
 
@@ -81,8 +55,6 @@ public class PlayerManager : MonoBehaviourPunCallbacks
         //scale player minimap icon
         EditPlayerIcon(playerClone);
 
-        eventsManager = GameObject.Find("EventsManager").GetComponent<EventsManager>();
-
     }
 
     // Update is called once per frame
@@ -91,7 +63,11 @@ public class PlayerManager : MonoBehaviourPunCallbacks
 
     }
 
-    //this function is will be used if we using same model for both teams, changing their material and layer 
+    public GameDirector GetDirector() {
+      return director;
+    }
+
+    //this function is will be used if we using same model for both teams, changing their material and layer
     //do not think spawn needs to be a parameter here, should be layer instead, however currently not working as intended
     public void SetProperties(Material selectedMaterial, int selectedLayer)
     {
@@ -102,15 +78,17 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     public void ChangeCharacter(int selectedCharacterIndex)
     {
         ChangeValue("Class", selectedCharacterIndex);
-        
-        if(team == 0)
+
+        selectedCharacter = director.GetPrefab(selectedCharacterIndex);
+
+        /*if(team == 0)
         {
             selectedCharacter = playerPrefabs[(int)(properties["Class"])];
         }
         else
         {
             selectedCharacter = rebelPrefabs[(int)(properties["Class"])];
-        }
+        }*/
         Debug.Log(properties["Class"]);
     }
 
@@ -145,7 +123,11 @@ public class PlayerManager : MonoBehaviourPunCallbacks
         {
             playerPrefab.transform.GetComponentInChildren<SpriteRenderer>().color = Color.red;
         }*/
-        
+
+    }
+
+    public GameObject GetPlayerClone() {
+      return playerClone;
     }
 
     private void GetProperties()
@@ -167,7 +149,7 @@ public class PlayerManager : MonoBehaviourPunCallbacks
         //rb.useGravity = true;
     }
 
-    
+
 
     private void ChangeValue(string key, int value)
     {
@@ -217,7 +199,7 @@ public class PlayerManager : MonoBehaviourPunCallbacks
             Player killer = attacker.Owner;
             CreditKiller(killer);
             //Debug.Log(director.UITexts[4]);
-            director.UITexts[4].SetText("", 3.0f, true);
+            director.GetUIText(4).SetText("", 3.0f, true);
             //Notification for "player" killed "player"
             eventsManager.GeneralNotification_S(killer.NickName + " has killed "  + PhotonNetwork.LocalPlayer.NickName, 2.0f, "CombatLog");
             Respawn();
@@ -239,7 +221,7 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     {
        Reset();
        PhotonNetwork.Destroy(playerClone);
-       AvatarParent.transform.position = PlayerSpawns[team].transform.GetChild(Random.Range(0, 3)).transform.position;
+       AvatarParent.transform.position = spawnPoint.transform.GetChild(Random.Range(0, 3)).transform.position;
        InitializeCharacter();
        playerClone.GetComponent<PhotonView>().RPC("BroadcastHealth", RpcTarget.All, playerClone.GetComponent<PhotonView>().Owner);
     }

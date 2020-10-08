@@ -478,6 +478,9 @@ GameObject:
   m_Component:
   - component: {fileID: 76049903}
   - component: {fileID: 76049904}
+  - component: {fileID: 76049907}
+  - component: {fileID: 76049906}
+  - component: {fileID: 76049905}
   m_Layer: 0
   m_Name: PlayerManager
   m_TagString: Untagged
@@ -511,25 +514,91 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6692d4cfee8c2ab419630cc77b69c7b3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  director: {fileID: 488462377}
   _mainCamera: {fileID: 9002457119146123538, guid: 7084524851d6f364bae181932663e594,
     type: 3}
-  PlayerSpawns:
-  - {fileID: 425255205}
-  - {fileID: 880063842}
-  playerPrefabs:
-  - {fileID: 4030554210914171791, guid: 6523ee0f3049f31479939f75fb138071, type: 3}
-  - {fileID: 3135189456182335548, guid: 001b8d13d538c8842bdd5362bc8d51a4, type: 3}
-  - {fileID: 4030554210914171791, guid: 6523ee0f3049f31479939f75fb138071, type: 3}
-  rebelPrefabs:
-  - {fileID: 8580988493813934299, guid: 7ade7539104d57a4689327a467dde8c5, type: 3}
-  - {fileID: 8580988493813934299, guid: 7ade7539104d57a4689327a467dde8c5, type: 3}
-  - {fileID: 8580988493813934299, guid: 7ade7539104d57a4689327a467dde8c5, type: 3}
-  TeamMaterials:
-  - {fileID: 2100000, guid: 159ab3c70c823dc4ead5dee987fcc9cc, type: 2}
-  - {fileID: 2100000, guid: 9671cfdb564111f4f8ed12022c6ef40b, type: 2}
+  teamMaterials:
+  - {fileID: 2100000, guid: 4b099399e94ca7445b5844d1deef1b41, type: 2}
+  - {fileID: 2100000, guid: 3c6d990569acb194fb1e1a44929478b1, type: 2}
+  director: {fileID: 488462377}
   playerContainer: {fileID: 6487977800366431805, guid: 587e74ff3e8f3b940a351e63df26e6f3,
     type: 3}
+--- !u!114 &76049905
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 76049902}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b5d625a066d359840b65a419dd815320, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &76049906
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 76049902}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1c559c9ddbd66f44daa00512fc0463e7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ReadyForFiring: 0
+  isMoving: 0
+  isAttacking: 0
+  isDodging: 0
+  slider: {fileID: 0}
+  gradient:
+    serializedVersion: 2
+    key0: {r: 1, g: 1, b: 1, a: 1}
+    key1: {r: 1, g: 1, b: 1, a: 1}
+    key2: {r: 0, g: 0, b: 0, a: 0}
+    key3: {r: 0, g: 0, b: 0, a: 0}
+    key4: {r: 0, g: 0, b: 0, a: 0}
+    key5: {r: 0, g: 0, b: 0, a: 0}
+    key6: {r: 0, g: 0, b: 0, a: 0}
+    key7: {r: 0, g: 0, b: 0, a: 0}
+    ctime0: 0
+    ctime1: 65535
+    ctime2: 0
+    ctime3: 0
+    ctime4: 0
+    ctime5: 0
+    ctime6: 0
+    ctime7: 0
+    atime0: 0
+    atime1: 65535
+    atime2: 0
+    atime3: 0
+    atime4: 0
+    atime5: 0
+    atime6: 0
+    atime7: 0
+    m_Mode: 0
+    m_NumColorKeys: 2
+    m_NumAlphaKeys: 2
+  fill: {fileID: 0}
+--- !u!114 &76049907
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 76049902}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b226d9987a8728248a03152e090c0ddd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  joystick: {fileID: 2929252284183188034}
+  skillButtons:
+  - {fileID: 1454260149}
+  - {fileID: 447925072}
+  - {fileID: 1648561715}
+  - {fileID: 1015199394}
 --- !u!1 &82817732
 GameObject:
   m_ObjectHideFlags: 0
@@ -3653,14 +3722,18 @@ MonoBehaviour:
   - {fileID: 1119917312}
   - {fileID: 761508913}
   spawns:
+  - {fileID: 425255205}
+  - {fileID: 880063842}
   - {fileID: 600556385}
   - {fileID: 2001424639}
   prefabs:
+  - {fileID: 2023002162799399333, guid: cace6c961bf3c454bbda4c1e63f20198, type: 3}
+  - {fileID: 919132149155446097, guid: da62388a012345745ae470f617127163, type: 3}
+  - {fileID: 919132149155446097, guid: da62388a012345745ae470f617127163, type: 3}
+  - {fileID: 919132149155446097, guid: da62388a012345745ae470f617127163, type: 3}
   - {fileID: 6173012337875008129, guid: 136d1aefd4313fb438a523363f53ab9c, type: 3}
   - {fileID: 8725961496364593681, guid: df4d009e161ff5245a13aad1769c35d3, type: 3}
   playerManager: {fileID: 76049904}
-  _endGameScreen: {fileID: 1459987295}
-  fovMask: {fileID: 2023002162799399333, guid: cace6c961bf3c454bbda4c1e63f20198, type: 3}
   matchLength: 120
   timer: {fileID: 3299005256743698078}
   currentMatchTime: 60

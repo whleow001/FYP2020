@@ -55,7 +55,7 @@ public class EventsManager : MonoBehaviourPun, IOnEventCallback {
             case EventsCode.GeneralNotification:
                 GeneralNotification_R(o);
                 break;
-            
+
         }
     }
 
@@ -102,8 +102,8 @@ public class EventsManager : MonoBehaviourPun, IOnEventCallback {
     public void DisplayEndGame_R(object[] data)
     {
         string WinText = data[0].ToString();
-        director._endGameScreen.Show(WinText);
-    }  
+        director.GetEndGameScreen().Show(WinText);
+    }
 
     public void RebelNotification_S(string message, float durationSeconds)
     {
@@ -112,7 +112,7 @@ public class EventsManager : MonoBehaviourPun, IOnEventCallback {
         package[0] = message;
         package[1] = durationSeconds;
         //package[2] = timer;
-        
+
         foreach (KeyValuePair<int, Player> playerInfo in PhotonNetwork.CurrentRoom.Players)
         {
             if ((byte)playerInfo.Value.CustomProperties["_pt"] == 1)
@@ -133,7 +133,7 @@ public class EventsManager : MonoBehaviourPun, IOnEventCallback {
         float duration = (float)data[1];
         //bool timerState = (bool)data[2];
 
-        director.UITexts[3].SetText(NotifText, duration);
+        director.GetUIText(Texts.notify).SetText(NotifText, duration);
         //director.UITexts[3].SetActiveState(true);
     }
 
@@ -165,7 +165,7 @@ public class EventsManager : MonoBehaviourPun, IOnEventCallback {
         float duration = (float)data[1];
         //bool timerState = (bool)data[2];
 
-        director.UITexts[3].SetText(NotifText, duration);
+        director.GetUIText(Texts.notify).SetText(NotifText, duration);
         //director.UITexts[3].SetActiveState(true);
     }
 
@@ -196,10 +196,8 @@ public class EventsManager : MonoBehaviourPun, IOnEventCallback {
         else if (purpose == "PlayerDisconnect")
             //do stuff
 
-        director.UITexts[3].SetText(NotifText, duration);
+        director.GetUIText(Texts.notify).SetText(NotifText, duration);
         //director.UITexts[3].SetActiveState(true);
-        director.UITexts[5].SetText(NotifText, duration);
+        director.GetUIText(Texts.disconnect).SetText(NotifText, duration);
     }
 }
-
- 

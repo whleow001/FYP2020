@@ -1,4 +1,4 @@
-using System;
+/*using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -38,4 +38,4 @@ public class Attack : StateData {
   public override void OnExit(State state, Animator animator, AnimatorStateInfo stateInfo) {
     state.GetPlayerController(animator).ReadyForFiring = false;
   }
-}
+}*/

@@ -7,21 +7,13 @@ using ExitGames.Client.Photon;
 using Photon.Pun;
 using Photon.Realtime;
 
-public class PlayerController : MonoBehaviourPun {
+public class PlayerController : MonoBehaviour {
     // Input reference
     private PlayerInput playerInput;
     private Transform raycastOrigin;
 
-    // Layer references
-    private int GOVT_LAYER = 9;
-    private int REBEL_LAYER = 10;
-
-    // Director reference
-    private GameDirector director;
-    private PlayerManager playerManager;
-
     // Components
-    Rigidbody rb;
+    private Rigidbody rb;
 
     // Variables
     float speed = 10.0f;
@@ -51,12 +43,9 @@ public class PlayerController : MonoBehaviourPun {
     private bool fovInstantiated = false;
 
     void Start() {
-      playerInput = GetComponent<PlayerInput>();
       rb = GetComponent<Rigidbody>();
 
-      director = GameObject.Find("Director").GetComponent<GameDirector>();
-      playerManager = GameObject.Find("PlayerManager").GetComponent<PlayerManager>();
-        raycastOrigin = transform.Find("GunPoint").transform;
+      //raycastOrigin = transform.Find("GunPoint").transform;
     }
 
     private void Update()
@@ -65,7 +54,7 @@ public class PlayerController : MonoBehaviourPun {
         {
             if (PhotonNetwork.IsMasterClient == false)
             {
-                photonView.RPC("AllocateFOV", RpcTarget.All);
+                GetComponent<PlayerRPC>().CallRPC("AllocateFOV");
                 fovInstantiated = true;
             }
         }
@@ -81,7 +70,7 @@ public class PlayerController : MonoBehaviourPun {
     }
 
     public void Move() {
-      if (!IsPhotonViewMine()) return;
+      if (!GetComponent<PlayerRPC>().IsPhotonViewMine()) return;
 
       Vector2 joystickVector = playerInput.GetJoystickVector();
       turning = false;
@@ -98,14 +87,10 @@ public class PlayerController : MonoBehaviourPun {
     }
 
     public void SpawnCamera(GameObject camera) {
-      if (!photonView.IsMine) return;
+      if (!GetComponent<PlayerRPC>().IsPhotonViewMine()) return;
 
       GameObject _mainCamera = Instantiate(camera, Vector3.zero, Quaternion.Euler(30, 45, 0));
       _mainCamera.GetComponent<CameraMotor>().SetPlayer(gameObject);
-    }
-
-    public bool IsPhotonViewMine() {
-      return photonView.IsMine;
     }
 
     public void Dodge() {
@@ -116,7 +101,7 @@ public class PlayerController : MonoBehaviourPun {
 
     // Auto targeting
     public void TurnAndFireNearestTarget() {
-      Collider[] targets = Physics.OverlapSphere(transform.position, range, 1 << GetOtherFactionLayer());
+      Collider[] targets = Physics.OverlapSphere(transform.position, range, 1 << GetComponent<PlayerManager>().GetDirector().GetOtherFactionLayer());
       float nearestDistance = 0.0f;
       Collider nearestTarget = new Collider();
 
@@ -140,29 +125,6 @@ public class PlayerController : MonoBehaviourPun {
       }
     }
 
-    private int GetOtherFactionLayer() {
-      return gameObject.layer == GOVT_LAYER ? REBEL_LAYER : GOVT_LAYER;
-    }
-
-    [PunRPC]
-    void Fire() {
-      ray.origin = raycastOrigin.transform.position;
-      ray.direction = raycastOrigin.forward;
-
-      if (Physics.Raycast(ray, out hitInfo, range)) {
-        if (hitInfo.collider.gameObject.layer != gameObject.layer) {
-                if (hitInfo.collider.gameObject.tag == "Player")
-                    hitInfo.transform.gameObject.GetComponent<PlayerController>().TakeDamage(20, photonView);
-                else if (hitInfo.collider.gameObject.tag == "Generator")
-                {
-                    hitInfo.transform.gameObject.GetComponent<GeneratorHealth>().TakeDamage(20);
-                }
-        }
-      }
-
-      Debug.DrawRay(ray.origin, transform.TransformDirection(Vector3.forward) * range, Color.red, 0.5f);
-    }
-
     public void SetHealthBar(int value)
     {
         slider.value = value;
@@ -179,26 +141,11 @@ public class PlayerController : MonoBehaviourPun {
     // Take Damage
     public void TakeDamage(int damage, PhotonView attacker)
     {
-        if (!photonView.IsMine) return;
+        if (!GetComponent<PlayerRPC>().IsPhotonViewMine()) return;
 
-        playerManager.TakeDamage(damage, attacker);
-        Player victim = photonView.Owner;
-        photonView.RPC("BroadcastHealth", RpcTarget.All, victim);
-
-
-    }
-
-    //broadcast health to all clients in the server
-    [PunRPC]
-    void BroadcastHealth(Player victim)
-    {
-        SetHealthBar((int)victim.CustomProperties["Health"]);
-    }
-
-    [PunRPC]
-    void AllocateFOV()
-    {
-        director.AllocateFOVMask();
+        GetComponent<PlayerManager>().TakeDamage(damage, attacker);
+        Player victim = GetComponent<PlayerRPC>().GetPhotonView().Owner;
+        GetComponent<PlayerRPC>().CallRPC("BroadcastHealth", victim);
     }
 
     /*

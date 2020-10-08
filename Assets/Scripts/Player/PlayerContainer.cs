@@ -11,13 +11,13 @@ public class PlayerContainer : MonoBehaviourPun
     // Start is called before the first frame update
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
     public void SpawnCamera(GameObject camera, GameObject player)
@@ -33,6 +33,6 @@ public class PlayerContainer : MonoBehaviourPun
         {
             _mainCamera.GetComponent<CameraMotor>().SetPlayer(player);
         }
-        
+
     }
 }

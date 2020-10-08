@@ -5,45 +5,67 @@ using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine.UI;
 
+public class BaseTexts
+{
+  public const int kd = 0;
+  public const int fps = 1;
+  public const int ping = 2;
+  public const int notify = 3;
+  public const int respawn = 4;
+  public const int disconnect = 5;
+}
+
+public class BaseSpawns
+{
+  public const int Government = 0;
+  public const int Rebel = 1;
+}
+
+public class BasePrefabs
+{
+  public const int fovMask = 0;
+  public const int Gunslinger = 1;
+  public const int Sniper = 2;
+  public const int Juggernaut = 3;
+}
+
 public abstract class GameDirector : MonoBehaviourPun {
-  // Team Number
-  private int teamIndex;
+    // Team Number
+    private int teamIndex;
 
-  // Layer references
-  protected int GOVT_LAYER = 9;
-  protected int REBEL_LAYER = 10;
+    // Layer references
+    protected int GOVT_LAYER = 9;
+    protected int REBEL_LAYER = 10;
 
-  // fps tracker
-  private float deltaTime;
+    // fps tracker
+    private float deltaTime;
 
-  // UI References
-  // had to change protection level for eventsmanager access
-  [Header("UI Texts")]
-  [SerializeField]
-  public List<UIText> UITexts = new List<UIText>();
-
-  // Spawns
-  [Header("Spawns")]
-  [SerializeField]
-  protected List<GameObject> spawns = new List<GameObject>();
-
-  // Prefabs
-  [Header("Prefabs")]
-  [SerializeField]
-  protected List<GameObject> prefabs = new List<GameObject>();
-
-  [Header("Misc References")]
-  [SerializeField]
-  protected PlayerManager playerManager;
-  public EndGameScreen _endGameScreen;
-
-    //fov mask variable for child class to access
+    // UI References
+    // had to change protection level for eventsmanager access
+    [Header("UI Texts")]
     [SerializeField]
-    protected GameObject fovMask;
+    protected List<UIText> UITexts = new List<UIText>();
+
+    // Spawns
+    [Header("Spawns")]
+    [SerializeField]
+    protected List<GameObject> spawns = new List<GameObject>();
+
+    // Prefabs
+    [Header("Prefabs")]
+    [SerializeField]
+    protected List<GameObject> prefabs = new List<GameObject>();
+
+    [Header("References")]
+    [SerializeField]
+    protected PlayerManager playerManager;
+    protected EventsManager eventsManager;
+
+    [Header("Overlays")]
+    protected EndGameScreen _endGameScreen;
 
     // flags
     private bool maskSet = false;
-    protected bool forcefieldDestroyed = false;
 
     //ported from old game director regarding codes with event manager
     public int matchLength = 60;
@@ -51,9 +73,6 @@ public abstract class GameDirector : MonoBehaviourPun {
     private Text timer;
     public int currentMatchTime;
     protected Coroutine timerCoroutine;
-
-    // Events Manager
-    protected EventsManager eventsManager;
 
     private GameObject charPanel;
     private int charIndex;
@@ -70,92 +89,92 @@ public abstract class GameDirector : MonoBehaviourPun {
     private string unselectedText = "Select";
 
 
-    //Common UITexts
-    //==============
-    //0 - k/d
-    //1 - fps
-    //2 - ping
-
-    //Common Spawns
-    //=============
-    //0 - GovtSpawn
-    //1 - RebelSpawn
-
-
     private void Awake() {
-    //teamIndex = (int)PhotonNetwork.LocalPlayer.CustomProperties["Team"];
-    if ((byte)PhotonNetwork.LocalPlayer.CustomProperties["_pt"] == 0)
-        teamIndex = 0;
-    else
-        teamIndex = 1;
+      teamIndex = (int)PhotonNetwork.LocalPlayer.CustomProperties["_pt"];
 
-    eventsManager = GameObject.Find("EventsManager").GetComponent<EventsManager>();
-    charPanel = GameObject.Find("CharacterSelectionOverlay");
-    char1Button = GameObject.Find("Char1").GetComponent<Button>();
-    char2Button = GameObject.Find("Char2").GetComponent<Button>();
-    char3Button = GameObject.Find("Char3").GetComponent<Button>();
+      charPanel = GameObject.Find("CharacterSelectionOverlay");
+      char1Button = GameObject.Find("Char1").GetComponent<Button>();
+      char2Button = GameObject.Find("Char2").GetComponent<Button>();
+      char3Button = GameObject.Find("Char3").GetComponent<Button>();
 
-    char1text = char1Button.GetComponentInChildren<Text>();
-    char2text = char2Button.GetComponentInChildren<Text>();
-    char3text = char3Button.GetComponentInChildren<Text>();
-    charPanel.SetActive(false);
+      char1text = char1Button.GetComponentInChildren<Text>();
+      char2text = char2Button.GetComponentInChildren<Text>();
+      char3text = char3Button.GetComponentInChildren<Text>();
+      charPanel.SetActive(false);
 
-    //GameObject notificationPanel = GameObject.Find("NotificaltionPanel");
-    //notificationText = notificationPanel.transform.GetChild(0).GetComponent<Text>();
+      //GameObject notificationPanel = GameObject.Find("NotificaltionPanel");
+      //notificationText = notificationPanel.transform.GetChild(0).GetComponent<Text>();
 
-    //playerManager.InstantiatePrefab(prefabs[teamIndex], spawns[teamIndex]);
+      //playerManager.InstantiatePrefab(prefabs[teamIndex], spawns[teamIndex]);
 
-    // Initialize scene specific objects
-    InitializeGameObjects();
-  }
+      // Initialize scene specific objects
+      InitializeGameObjects();
+    }
 
     private void Start()
     {
         InitializeTimer();
     }
 
-    protected virtual void Update() {
-    if (!maskSet)
+    private void Update()
     {
-        AllocateFOVMask();
-        maskSet = true;
+      if (!maskSet)
+      {
+          AllocateFOVMask();
+          maskSet = true;
+      }
+
+      Debug.Log("Update");
+
+      // Update K/D
+      GetUIText(Texts.kd).SetText(PhotonNetwork.LocalPlayer.CustomProperties["Kills"] + "/" + PhotonNetwork.LocalPlayer.CustomProperties["Deaths"]);
+
+      // Update fps
+      deltaTime += (Time.deltaTime - deltaTime) * 0.1f;
+      float fpsValue = 1.0f/deltaTime;
+      GetUIText(Texts.fps).SetText(Mathf.Ceil(fpsValue).ToString());
+
+      // Update ping
+      GetUIText(Texts.ping).SetText(PhotonNetwork.GetPing().ToString());
+
+      // Update scene specific texts
+      UpdateUITexts();
+
+      // Update scene specific objectives
+      UpdateObjectives();
     }
 
-    // Update K/D
-    UITexts[0].SetText(PhotonNetwork.LocalPlayer.CustomProperties["Kills"] + "/" + PhotonNetwork.LocalPlayer.CustomProperties["Deaths"]);
-
-    // Update fps
-    deltaTime += (Time.deltaTime - deltaTime) * 0.1f;
-    float fpsValue = 1.0f/deltaTime;
-    UITexts[1].SetText(Mathf.Ceil(fpsValue).ToString());
-
-    // Update ping
-    UITexts[2].SetText(PhotonNetwork.GetPing().ToString());
-
-    // Update scene specific texts
-    UpdateUITexts();
-  }
-
-  // Abstract function to be overridden
-  protected abstract void InitializeGameObjects();
-  protected abstract void UpdateUITexts();
-
-  // Gets own faction layer
-  public int GetFactionLayer() {
-    return teamIndex == 0 ? GOVT_LAYER : REBEL_LAYER;
-  }
-
-  // Gets the opponent's faction layer
-  public int GetOtherFactionLayer() {
-    return teamIndex == 1 ? REBEL_LAYER : GOVT_LAYER;
-  }
-
-  public int GetTeamIndex()
+    public UIText GetUIText(int index)
     {
-        return teamIndex;
+      return UITexts[index];
     }
 
-  public int GetOtherTeamIndex()
+    public GameObject GetSpawn(int index)
+    {
+      return spawns[index];
+    }
+
+    public GameObject GetPrefab(int index)
+    {
+      return prefabs[index];
+    }
+
+    // Abstract functions to be overridden
+    protected abstract void InitializeGameObjects();
+    protected abstract void UpdateUITexts();
+    protected abstract void UpdateObjectives();
+
+    // Gets own faction layer
+    public int GetFactionLayer() {
+      return teamIndex == 0 ? GOVT_LAYER : REBEL_LAYER;
+    }
+
+    // Gets the opponent's faction layer
+    public int GetOtherFactionLayer() {
+      return teamIndex == 1 ? REBEL_LAYER : GOVT_LAYER;
+    }
+
+    public int GetTeamIndex()
     {
         return teamIndex;
     }
@@ -188,7 +207,7 @@ public abstract class GameDirector : MonoBehaviourPun {
 
     private void AddMaskAsChild(GameObject _gameObject)
     {
-        GameObject FOVObject = Instantiate(fovMask, new Vector3(_gameObject.transform.position.x, _gameObject.transform.position.y + 0.03f, _gameObject.transform.position.z), Quaternion.identity);
+        GameObject FOVObject = Instantiate(GetPrefab((int)Prefabs.fovMask), new Vector3(_gameObject.transform.position.x, _gameObject.transform.position.y + 0.03f, _gameObject.transform.position.z), Quaternion.identity);
         FOVObject.transform.SetParent(_gameObject.transform);
     }
 
@@ -231,9 +250,8 @@ public abstract class GameDirector : MonoBehaviourPun {
         }
     }
 
-    public UIText GetNotificationPanel()
-    {
-        return UITexts[3];
+    public EndGameScreen GetEndGameScreen() {
+      return _endGameScreen;
     }
 
     //public void DisplayEndGameScreen()

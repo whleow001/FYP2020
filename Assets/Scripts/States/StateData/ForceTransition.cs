@@ -1,4 +1,4 @@
-using System.Collections;
+/*using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -23,4 +23,4 @@ public class ForceTransition : StateData {
   public override void OnExit(State state, Animator animator, AnimatorStateInfo stateInfo) {
     animator.SetBool(state.GetForceTransitionParam(), false);
   }
-}
+}*/

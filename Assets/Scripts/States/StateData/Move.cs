@@ -1,4 +1,4 @@
-﻿using System.Collections;
+﻿/*using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -20,4 +20,4 @@ public class Move : StateData {
   public override void OnExit(State state, Animator animator, AnimatorStateInfo stateInfo) {
 
   }
-}
+}*/
