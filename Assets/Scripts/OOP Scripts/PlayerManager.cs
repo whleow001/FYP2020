@@ -4,8 +4,9 @@ using ExitGames.Client.Photon;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
-public class PlayerManager : MonoBehaviour
+public class PlayerManager : MonoBehaviourPunCallbacks
 {
     //reference current scene gamedirector
     [SerializeField]
@@ -65,6 +66,7 @@ public class PlayerManager : MonoBehaviour
     {
         GetProperties();
         director = GameObject.Find("Director").GetComponent<GameDirector>();
+        //manager = GameObject.Find("Manager").GetComponent<EventsManager>();
 
         team = director.GetTeamIndex();
         AvatarParent = MasterManager.NetworkInstantiate(playerContainer, PlayerSpawns[team].transform.GetChild(Random.Range(0, 3)).transform.position, Quaternion.identity);
@@ -217,7 +219,7 @@ public class PlayerManager : MonoBehaviour
             //Debug.Log(director.UITexts[4]);
             director.UITexts[4].SetText("", 3.0f, true);
             //Notification for "player" killed "player"
-            eventsManager.GeneralNotification_S(killer.NickName + " has killed "  +PhotonNetwork.LocalPlayer.NickName, 2.0f);
+            eventsManager.GeneralNotification_S(killer.NickName + " has killed "  + PhotonNetwork.LocalPlayer.NickName, 2.0f, "CombatLog");
             Respawn();
             //director.AddToCombatLog(photonView, attacker);
         }
@@ -241,4 +243,34 @@ public class PlayerManager : MonoBehaviour
        InitializeCharacter();
        playerClone.GetComponent<PhotonView>().RPC("BroadcastHealth", RpcTarget.All, playerClone.GetComponent<PhotonView>().Owner);
     }
+
+   //Player Disconnect PHOTON Room script
+   public override void OnPlayerLeftRoom (Player otherPlayer)
+    {
+        base.OnPlayerLeftRoom(otherPlayer);
+        Debug.Log(otherPlayer.NickName + " Has Left the game");
+        eventsManager.GeneralNotification_S(otherPlayer.NickName + " Has Left the game", 2.0f, "PlayerDisconnect");
+    }
+
+    //Master client leave room
+    public override void OnLeftRoom()
+    {
+        base.OnLeftRoom();
+        Debug.Log(PhotonNetwork.LocalPlayer.NickName + " Has Disconnected");
+        eventsManager.GeneralNotification_S(PhotonNetwork.LocalPlayer.NickName + " Has Disconnected", 2.0f, "PlayerDisconnect");
+    }
+
+    //Player disconnect under game setup script then add button for disconnect under char select
+    //public void DisconnectPlayer()
+    //{
+    //    StartCoroutine(DisconnectAndLoad());
+    //}
+
+    //IEnumerator DisonnectAndLoad()
+    //{
+    //    PhotonNetwork.Disconnect();
+    //    while (PhotonNetwork.IsConnected)
+    //        yield return null;
+    //    SceneManager.LoadScene(MultiplayerSetting.multiplayerSetting.menuScene);
+    //}
 }

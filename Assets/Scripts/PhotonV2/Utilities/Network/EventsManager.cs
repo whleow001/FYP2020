@@ -169,13 +169,13 @@ public class EventsManager : MonoBehaviourPun, IOnEventCallback {
         //director.UITexts[3].SetActiveState(true);
     }
 
-    public void GeneralNotification_S(string message, float durationSeconds)
+    public void GeneralNotification_S(string message, float durationSeconds, string purpose)
     {
-        object[] package = new object[2];
+        object[] package = new object[3];
 
         package[0] = message;
         package[1] = durationSeconds;
-        //package[2] = timer;
+        package[2] = purpose;
 
         PhotonNetwork.RaiseEvent(
             (byte)EventsCode.RebelNotification,
@@ -190,9 +190,16 @@ public class EventsManager : MonoBehaviourPun, IOnEventCallback {
         string NotifText = data[0].ToString();
         float duration = (float)data[1];
         //bool timerState = (bool)data[2];
+        string purpose = data[2].ToString();
+        if (purpose == "CombatLog");
+            //do stuff
+        else if (purpose == "PlayerDisconnect")
+            //do stuff
 
         director.UITexts[3].SetText(NotifText, duration);
         //director.UITexts[3].SetActiveState(true);
+        director.UITexts[5].SetText(NotifText, duration);
     }
 }
 
+ 
