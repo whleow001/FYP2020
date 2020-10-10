@@ -7,7 +7,7 @@ using ExitGames.Client.Photon;
 using Photon.Pun;
 using Photon.Realtime;
 
-public class PlayerController : MonoBehaviour {
+public class PlayerController : MonoBehaviourPun {
     // Input reference
     private PlayerInput playerInput;
     private Transform raycastOrigin;
@@ -36,16 +36,25 @@ public class PlayerController : MonoBehaviour {
     [HideInInspector]
     public bool isDodging = false;
 
+    /*
     public Slider slider;
     public Gradient gradient;
     public Image fill;
+    */
+
+    public PlayerManager playerManager;
+    public GameDirector director;
 
     private bool fovInstantiated = false;
 
     void Start() {
-      rb = GetComponent<Rigidbody>();
+      //rb = GetComponent<PlayerManager>().GetPlayerClone().GetComponent<Rigidbody>();
+        rb = GetComponent<Rigidbody>();
 
-      //raycastOrigin = transform.Find("GunPoint").transform;
+        playerManager = GameObject.Find("PlayerManager").GetComponent<PlayerManager>();
+        director = GameObject.Find("Director").GetComponent<GameDirector>();
+
+        raycastOrigin = transform.Find("GunPoint").transform;
     }
 
     private void Update()
@@ -85,14 +94,18 @@ public class PlayerController : MonoBehaviour {
         angle = Mathf.Atan2(joystickVector.x, -joystickVector.y) * Mathf.Rad2Deg - 45;
       transform.rotation = Quaternion.Euler(new Vector3(0, angle, 0));
     }
-
+    /*
     public void SpawnCamera(GameObject camera) {
       if (!GetComponent<PlayerRPC>().IsPhotonViewMine()) return;
 
       GameObject _mainCamera = Instantiate(camera, Vector3.zero, Quaternion.Euler(30, 45, 0));
       _mainCamera.GetComponent<CameraMotor>().SetPlayer(gameObject);
     }
-
+    
+    public bool IsPhotonViewMine() {
+      return photonView.IsMine;
+    }
+    */
     public void Dodge() {
       turning = false;
       ReadyForFiring = false;
@@ -124,7 +137,31 @@ public class PlayerController : MonoBehaviour {
         lookAt = Quaternion.LookRotation(nearestTarget.transform.position - transform.position);
       }
     }
+    /*
+    private int GetOtherFactionLayer() {
+      return gameObject.layer == GOVT_LAYER ? REBEL_LAYER : GOVT_LAYER;
+    }
+    */
 
+    [PunRPC]
+    void Fire() {
+      ray.origin = raycastOrigin.transform.position;
+      ray.direction = raycastOrigin.forward;
+
+      if (Physics.Raycast(ray, out hitInfo, range)) {
+        if (hitInfo.collider.gameObject.layer != gameObject.layer) {
+                if (hitInfo.collider.gameObject.tag == "Player")
+                    hitInfo.transform.gameObject.GetComponent<PlayerController>().TakeDamage(20, photonView);
+                else if (hitInfo.collider.gameObject.tag == "Generator")
+                {
+                    hitInfo.transform.gameObject.GetComponent<GeneratorHealth>().TakeDamage(20);
+                }
+        }
+      }
+
+      Debug.DrawRay(ray.origin, transform.TransformDirection(Vector3.forward) * range, Color.red, 0.5f);
+    }
+    /*
     public void SetHealthBar(int value)
     {
         slider.value = value;
@@ -137,15 +174,46 @@ public class PlayerController : MonoBehaviour {
         slider.value = 100;
         fill.color = gradient.Evaluate(1f);
     }
+    */
 
     // Take Damage
     public void TakeDamage(int damage, PhotonView attacker)
     {
+        /*
         if (!GetComponent<PlayerRPC>().IsPhotonViewMine()) return;
 
         GetComponent<PlayerManager>().TakeDamage(damage, attacker);
         Player victim = GetComponent<PlayerRPC>().GetPhotonView().Owner;
         GetComponent<PlayerRPC>().CallRPC("BroadcastHealth", victim);
+        */
+
+        if (!photonView.IsMine) return;
+
+        playerManager.TakeDamage(damage, attacker);
+        int VictimID = photonView.ViewID;
+        //GetComponent<PlayerRPC>().CallRPC("BroadcastHealth", VictimID);
+        photonView.RPC("BroadcastHealth", RpcTarget.All, VictimID);
+
+
+    }
+    /*
+    //broadcast health to all clients in the server
+    [PunRPC]
+    void BroadcastHealth(int VictimID)
+    {
+        PhotonView PV = PhotonView.Find(VictimID);
+        Player victim = PV.Owner;
+        Slider mainslider = PV.gameObject.GetComponentInChildren<Slider>();
+        Image mainfill = PV.gameObject.transform.Find("Canvas").Find("Healthbar").Find("fill").GetComponent<Image>();
+        playerManager.SetHealthBar((int)victim.CustomProperties["Health"], mainslider, mainfill);
+    }
+    */
+    
+
+    [PunRPC]
+    void AllocateFOV()
+    {
+        director.AllocateFOVMask();
     }
 
     /*

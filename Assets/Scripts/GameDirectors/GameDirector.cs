@@ -59,6 +59,7 @@ public abstract class GameDirector : MonoBehaviourPun {
     [Header("References")]
     [SerializeField]
     protected PlayerManager playerManager;
+    [SerializeField]
     protected EventsManager eventsManager;
 
     [Header("Overlays")]
@@ -90,7 +91,7 @@ public abstract class GameDirector : MonoBehaviourPun {
 
 
     private void Awake() {
-      teamIndex = (int)PhotonNetwork.LocalPlayer.CustomProperties["_pt"];
+      teamIndex = (byte)PhotonNetwork.LocalPlayer.CustomProperties["_pt"];
 
       charPanel = GameObject.Find("CharacterSelectionOverlay");
       char1Button = GameObject.Find("Char1").GetComponent<Button>();
@@ -124,7 +125,7 @@ public abstract class GameDirector : MonoBehaviourPun {
           maskSet = true;
       }
 
-      Debug.Log("Update");
+      //Debug.Log("Update");
 
       // Update K/D
       GetUIText(Texts.kd).SetText(PhotonNetwork.LocalPlayer.CustomProperties["Kills"] + "/" + PhotonNetwork.LocalPlayer.CustomProperties["Deaths"]);

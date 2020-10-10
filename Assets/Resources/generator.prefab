@@ -572,7 +572,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   health: 100
-  takeDamage: 0
   slider: {fileID: 4554005582284619792}
   gradient:
     serializedVersion: 2
@@ -604,6 +603,7 @@ MonoBehaviour:
     m_NumColorKeys: 3
     m_NumAlphaKeys: 2
   fill: {fileID: 7528652746278987057}
+  takeDamage: 0
 --- !u!1 &6544817894483110965
 GameObject:
   m_ObjectHideFlags: 0

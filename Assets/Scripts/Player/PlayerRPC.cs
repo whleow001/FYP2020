@@ -4,6 +4,7 @@ using UnityEngine;
 using ExitGames.Client.Photon;
 using Photon.Pun;
 using Photon.Realtime;
+using UnityEngine.UI;
 
 public class PlayerRPC : MonoBehaviourPun
 {
@@ -32,10 +33,15 @@ public class PlayerRPC : MonoBehaviourPun
 
   //broadcast health to all clients in the server
   [PunRPC]
-  void BroadcastHealth(Player victim)
+  void BroadcastHealth(int VictimID)
   {
-      GetComponent<PlayerController>().SetHealthBar((int)victim.CustomProperties["Health"]);
-  }
+      //GetComponent<PlayerManager>().SetHealthBar((int)victim.CustomProperties["Health"]);
+      PhotonView PV = PhotonView.Find(VictimID);
+      Player victim = PV.Owner;
+      Slider mainslider = PV.gameObject.GetComponentInChildren<Slider>();
+      Image mainfill = PV.gameObject.transform.Find("Canvas").Find("Healthbar").Find("fill").GetComponent<Image>();
+      GetComponent<PlayerManager>().SetHealthBar((int)victim.CustomProperties["Health"], mainslider, mainfill);
+    }
 
   [PunRPC]
   void AllocateFOV()

@@ -5,28 +5,28 @@ using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine.UI;
 
-public class GeneratorHealth : MonoBehaviourPun
+public class GeneratorHealth : Objective
 {
     //test notif panel
-    public int health = 100;
+    //public int health = 100;
     //private int health = 100;
 
-    private RebelHQ_A director;
+    private RebelHQ_A Adirector;
 
     public bool takeDamage = false;
-    public Slider slider;
-    public Gradient gradient;
-    public Image fill;
+    //public Slider slider;
+    //public Gradient gradient;
+    //public Image fill;
 
     // Layer references
     private int GOVT_LAYER = 9;
     private int REBEL_LAYER = 10;
 
     //EventsManager reference
-    protected EventsManager eventsManager;
+    //protected EventsManager eventsManager;
 
     void Start() {
-        director = GameObject.Find("Director").GetComponent<RebelHQ_A>();
+        Adirector = GameObject.Find("Director").GetComponent<RebelHQ_A>();
         eventsManager = GameObject.Find("EventsManager").GetComponent<EventsManager>();
         SetMaxHealthbar(health);
     }
@@ -35,7 +35,7 @@ public class GeneratorHealth : MonoBehaviourPun
     void Update() {
         if (health <= 0)
         {
-            DestroyGenerator();
+            DestroyObject();
             eventsManager.RebelNotification_S("Generator Destroyed!", 2.0f);
         }
 
@@ -44,7 +44,7 @@ public class GeneratorHealth : MonoBehaviourPun
             takeDamage = false;
       }
     }
-
+    /*
     public void SetHealthbar(int value)
     {
         slider.value = value;
@@ -57,9 +57,9 @@ public class GeneratorHealth : MonoBehaviourPun
         slider.value = value;
         fill.color = gradient.Evaluate(1f);
     }
-
-    private void DestroyGenerator() {
-      director.DecrementGeneratorCount();
+    */
+    protected override void DestroyObject() {
+        Adirector.DecrementGeneratorCount();
 
       if (PhotonNetwork.IsMasterClient)
         PhotonNetwork.Destroy(gameObject);
@@ -69,9 +69,5 @@ public class GeneratorHealth : MonoBehaviourPun
       health -= damage;
       SetHealthbar(health);
       eventsManager.RebelNotification_S("Generator Under Attack!", 2.0f);
-    }
-
-    private void NotifyRebelTeam(string message, bool ignoreCooldown) {
-      //director.GetPlayerManager().GetComponent<PhotonView>().RPC("NotifyTeam", RpcTarget.All, message, transform.position, REBEL_LAYER, ignoreCooldown);
     }
 }

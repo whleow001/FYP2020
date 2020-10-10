@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class PlayerManager : MonoBehaviourPunCallbacks
 {
@@ -31,6 +32,12 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     private bool instantiated = false;
     private GameObject playerClone;
     private GameObject AvatarParent;
+    private int team;   // team number;
+
+    
+    public Slider slider;
+    public Gradient gradient;
+    public Image fill;
 
     // Custom player properties
     private ExitGames.Client.Photon.Hashtable properties;
@@ -41,11 +48,10 @@ public class PlayerManager : MonoBehaviourPunCallbacks
         // Get Spawn point
         spawnPoint = director.GetSpawn(director.GetTeamIndex());
 
-
-
+        team = director.GetTeamIndex();
         AvatarParent = MasterManager.NetworkInstantiate(playerContainer, spawnPoint.transform.GetChild(Random.Range(0, 3)).transform.position, Quaternion.identity);
         //ChangeValue("Class", 0);
-        ChangeCharacter(0);
+        ChangeCharacter(1);
 
         InitializeCharacter();
 
@@ -75,6 +81,38 @@ public class PlayerManager : MonoBehaviourPunCallbacks
         playerClone.layer = selectedLayer;
     }
 
+    public void SetHealthBar(int value, Slider mainslider = null, Image mainfill = null)
+    {
+        if(mainslider != null && mainfill != null)
+        {
+            mainslider.value = value;
+            mainfill.color = gradient.Evaluate(mainslider.normalizedValue);
+        }
+        else
+        {
+            slider.value = value;
+            fill.color = gradient.Evaluate(slider.normalizedValue);
+        }
+        
+    }
+
+    public void SetMaxHealthBar(int value, Slider mainslider = null, Image mainfill = null)
+    {
+        if (mainslider != null && mainfill != null)
+        {
+            mainslider.maxValue = 100;
+            mainslider.value = 100;
+            mainfill.color = gradient.Evaluate(1f);
+        }
+        else
+        {
+            slider.maxValue = 100;
+            slider.value = 100;
+            fill.color = gradient.Evaluate(1f);
+        }
+        
+    }
+
     public void ChangeCharacter(int selectedCharacterIndex)
     {
         ChangeValue("Class", selectedCharacterIndex);
@@ -96,6 +134,8 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     {
         //selectedCharacter = (int)(properties["Class"]);
         playerClone = MasterManager.NetworkInstantiate(selectedCharacter, AvatarParent.transform.position, Quaternion.identity);
+        slider = playerClone.GetComponentInChildren<Slider>();
+        fill = playerClone.transform.Find("Canvas").Find("Healthbar").Find("fill").GetComponent<Image>();
         //changing material and layer not working yet
         /*if (team == 0)
         {
@@ -106,7 +146,7 @@ public class PlayerManager : MonoBehaviourPunCallbacks
             SetProperties(TeamMaterials[1], REBEL_LAYER);
         }*/
         AvatarParent.GetComponent<PlayerContainer>().SpawnCamera(_mainCamera, playerClone);
-        //playerClone.transform.SetParent(AvatarParent.transform);
+        //playerClone.transform.SetParent(gameObject.transform);
     }
 
     private void EditPlayerIcon(GameObject playerPrefab)
@@ -158,7 +198,7 @@ public class PlayerManager : MonoBehaviourPunCallbacks
         PhotonNetwork.SetPlayerCustomProperties(properties);
         if(key == "Health")
         {
-            playerClone.GetComponent<PlayerController>().SetHealthBar(value);
+            SetHealthBar(value);
         }
     }
 
@@ -167,7 +207,7 @@ public class PlayerManager : MonoBehaviourPunCallbacks
         if (key == "Health")
         {
             ChangeValue(key, 100);
-            playerClone.GetComponent<PlayerController>().SetMaxHealthBar(100);
+            SetMaxHealthBar(100);
         }
         else
         {
@@ -192,14 +232,19 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     public void TakeDamage(int dmg, PhotonView attacker)
     {
         ChangeValue("Health", (int)(properties["Health"]) - dmg);
+        //photonView.RPC("BroadcastHealth", RpcTarget.All, playerClone.GetComponent<PhotonView>().Owner);
 
         if (GetProperty("Health") <= 0)
         {
             Increment("Deaths");
             Player killer = attacker.Owner;
             CreditKiller(killer);
-            //Debug.Log(director.UITexts[4]);
+            //respawn timer overlay
             director.GetUIText(4).SetText("", 3.0f, true);
+
+            //respawn timer overlay
+            //director.UITexts[4].SetText("", 3.0f, true);
+
             //Notification for "player" killed "player"
             eventsManager.GeneralNotification_S(killer.NickName + " has killed "  + PhotonNetwork.LocalPlayer.NickName, 2.0f, "CombatLog");
             Respawn();
@@ -223,7 +268,7 @@ public class PlayerManager : MonoBehaviourPunCallbacks
        PhotonNetwork.Destroy(playerClone);
        AvatarParent.transform.position = spawnPoint.transform.GetChild(Random.Range(0, 3)).transform.position;
        InitializeCharacter();
-       playerClone.GetComponent<PhotonView>().RPC("BroadcastHealth", RpcTarget.All, playerClone.GetComponent<PhotonView>().Owner);
+       //playerClone.GetComponent<PhotonView>().RPC("BroadcastHealth", RpcTarget.All, playerClone.GetComponent<PhotonView>().Owner);
     }
 
    //Player Disconnect PHOTON Room script

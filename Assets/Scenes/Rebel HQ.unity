@@ -522,6 +522,37 @@ MonoBehaviour:
   director: {fileID: 488462377}
   playerContainer: {fileID: 6487977800366431805, guid: 587e74ff3e8f3b940a351e63df26e6f3,
     type: 3}
+  slider: {fileID: 0}
+  gradient:
+    serializedVersion: 2
+    key0: {r: 1, g: 0.0073724613, b: 0, a: 1}
+    key1: {r: 1, g: 0.97347474, b: 0, a: 1}
+    key2: {r: 0, g: 1, b: 0.014769077, a: 0}
+    key3: {r: 0, g: 1, b: 0.014769077, a: 0}
+    key4: {r: 0, g: 0, b: 0, a: 0}
+    key5: {r: 0, g: 0, b: 0, a: 0}
+    key6: {r: 0, g: 0, b: 0, a: 0}
+    key7: {r: 0, g: 0, b: 0, a: 0}
+    ctime0: 13107
+    ctime1: 45875
+    ctime2: 65535
+    ctime3: 65535
+    ctime4: 0
+    ctime5: 0
+    ctime6: 0
+    ctime7: 0
+    atime0: 0
+    atime1: 65535
+    atime2: 0
+    atime3: 0
+    atime4: 0
+    atime5: 0
+    atime6: 0
+    atime7: 0
+    m_Mode: 1
+    m_NumColorKeys: 3
+    m_NumAlphaKeys: 2
+  fill: {fileID: 0}
 --- !u!114 &76049905
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -541,7 +572,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 76049902}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1c559c9ddbd66f44daa00512fc0463e7, type: 3}
   m_Name: 
@@ -550,37 +581,8 @@ MonoBehaviour:
   isMoving: 0
   isAttacking: 0
   isDodging: 0
-  slider: {fileID: 0}
-  gradient:
-    serializedVersion: 2
-    key0: {r: 1, g: 1, b: 1, a: 1}
-    key1: {r: 1, g: 1, b: 1, a: 1}
-    key2: {r: 0, g: 0, b: 0, a: 0}
-    key3: {r: 0, g: 0, b: 0, a: 0}
-    key4: {r: 0, g: 0, b: 0, a: 0}
-    key5: {r: 0, g: 0, b: 0, a: 0}
-    key6: {r: 0, g: 0, b: 0, a: 0}
-    key7: {r: 0, g: 0, b: 0, a: 0}
-    ctime0: 0
-    ctime1: 65535
-    ctime2: 0
-    ctime3: 0
-    ctime4: 0
-    ctime5: 0
-    ctime6: 0
-    ctime7: 0
-    atime0: 0
-    atime1: 65535
-    atime2: 0
-    atime3: 0
-    atime4: 0
-    atime5: 0
-    atime6: 0
-    atime7: 0
-    m_Mode: 0
-    m_NumColorKeys: 2
-    m_NumAlphaKeys: 2
-  fill: {fileID: 0}
+  playerManager: {fileID: 0}
+  director: {fileID: 0}
 --- !u!114 &76049907
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -588,7 +590,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 76049902}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b226d9987a8728248a03152e090c0ddd, type: 3}
   m_Name: 
@@ -789,7 +791,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &144406902
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3728,15 +3730,16 @@ MonoBehaviour:
   - {fileID: 2001424639}
   prefabs:
   - {fileID: 2023002162799399333, guid: cace6c961bf3c454bbda4c1e63f20198, type: 3}
-  - {fileID: 919132149155446097, guid: da62388a012345745ae470f617127163, type: 3}
-  - {fileID: 919132149155446097, guid: da62388a012345745ae470f617127163, type: 3}
-  - {fileID: 919132149155446097, guid: da62388a012345745ae470f617127163, type: 3}
+  - {fileID: 6143668908579476971, guid: b5a93a5a34a46484a9422220d02dcef6, type: 3}
+  - {fileID: 6143668908579476971, guid: b5a93a5a34a46484a9422220d02dcef6, type: 3}
+  - {fileID: 6143668908579476971, guid: b5a93a5a34a46484a9422220d02dcef6, type: 3}
   - {fileID: 6173012337875008129, guid: 136d1aefd4313fb438a523363f53ab9c, type: 3}
   - {fileID: 8725961496364593681, guid: df4d009e161ff5245a13aad1769c35d3, type: 3}
   playerManager: {fileID: 76049904}
+  eventsManager: {fileID: 1657717821}
   matchLength: 120
   timer: {fileID: 3299005256743698078}
-  currentMatchTime: 60
+  currentMatchTime: 120
   generatorCount: 4
 --- !u!1001 &489950896
 PrefabInstance:

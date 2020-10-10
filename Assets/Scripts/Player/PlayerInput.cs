@@ -19,6 +19,12 @@ public class PlayerInput : MonoBehaviour
       Attack = 3
     }
 
+    private void Start()
+    {
+        joystick = FindObjectOfType<Joystick>();
+        Debug.Log(joystick);
+    }
+
     public bool IsJoystickMoving() {
       return joystick.Horizontal != 0 || joystick.Vertical != 0;
     }

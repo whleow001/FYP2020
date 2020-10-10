@@ -70,7 +70,7 @@ public class RebelHQ_A : GameDirector {
 
       // Spawn forcefields
       for (int i = 0; i < 2; i++)
-        MasterManager.RoomObjectInstantiate(GetPrefab(Prefabs.Forcefield), GetSpawn(Spawns.Forcefield).transform.GetChild(i).transform.position, spawns[1].transform.GetChild(i).transform.rotation);
+        MasterManager.RoomObjectInstantiate(GetPrefab(Prefabs.Forcefield), GetSpawn(Spawns.Forcefield).transform.GetChild(i).transform.position, GetSpawn(Spawns.Forcefield).transform.GetChild(i).transform.rotation);
     }
   }
 
