@@ -19,6 +19,7 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     [Header("References")]
     [SerializeField]
     private GameDirector director;
+    [SerializeField]
     private EventsManager eventsManager;
 
     [SerializeField]
@@ -34,7 +35,6 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     private GameObject AvatarParent;
     private int team;   // team number;
 
-    
     public Slider slider;
     public Gradient gradient;
     public Image fill;
@@ -45,22 +45,16 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     // Start is called before the first frame update
     void Start()
     {
-        // Get Spawn point
-        spawnPoint = director.GetSpawn(director.GetTeamIndex());
-
         team = director.GetTeamIndex();
-        AvatarParent = MasterManager.NetworkInstantiate(playerContainer, spawnPoint.transform.GetChild(Random.Range(0, 3)).transform.position, Quaternion.identity);
-        //ChangeValue("Class", 0);
+        spawnPoint = director.GetSpawn(team);
         ChangeCharacter(1);
 
         InitializeCharacter();
 
         Reset();
-        instantiated = true;
 
         //scale player minimap icon
         EditPlayerIcon(playerClone);
-
     }
 
     // Update is called once per frame
@@ -93,7 +87,7 @@ public class PlayerManager : MonoBehaviourPunCallbacks
             slider.value = value;
             fill.color = gradient.Evaluate(slider.normalizedValue);
         }
-        
+
     }
 
     public void SetMaxHealthBar(int value, Slider mainslider = null, Image mainfill = null)
@@ -110,7 +104,7 @@ public class PlayerManager : MonoBehaviourPunCallbacks
             slider.value = 100;
             fill.color = gradient.Evaluate(1f);
         }
-        
+
     }
 
     public void ChangeCharacter(int selectedCharacterIndex)
@@ -132,8 +126,12 @@ public class PlayerManager : MonoBehaviourPunCallbacks
 
     private void InitializeCharacter()
     {
+        AvatarParent = MasterManager.NetworkInstantiate(playerContainer, spawnPoint.transform.GetChild(Random.Range(0, 3)).transform.position, Quaternion.identity);
         //selectedCharacter = (int)(properties["Class"]);
         playerClone = MasterManager.NetworkInstantiate(selectedCharacter, AvatarParent.transform.position, Quaternion.identity);
+        playerClone.transform.SetParent(AvatarParent.transform);
+        //playerClone = Instantiate(selectedCharacter, AvatarParent.transform, false);
+
         slider = playerClone.GetComponentInChildren<Slider>();
         fill = playerClone.transform.Find("Canvas").Find("Healthbar").Find("fill").GetComponent<Image>();
         //changing material and layer not working yet
@@ -146,6 +144,7 @@ public class PlayerManager : MonoBehaviourPunCallbacks
             SetProperties(TeamMaterials[1], REBEL_LAYER);
         }*/
         AvatarParent.GetComponent<PlayerContainer>().SpawnCamera(_mainCamera, playerClone);
+        AvatarParent.GetComponent<PlayerContainer>().SetPlayerManager(this);
         //playerClone.transform.SetParent(gameObject.transform);
     }
 
@@ -170,6 +169,10 @@ public class PlayerManager : MonoBehaviourPunCallbacks
       return playerClone;
     }
 
+    public GameObject GetPlayerAvatar() {
+      return AvatarParent;
+    }
+
     private void GetProperties()
     {
         properties = PhotonNetwork.LocalPlayer.CustomProperties;
@@ -181,12 +184,11 @@ public class PlayerManager : MonoBehaviourPunCallbacks
         {
             ResetProperty("Deaths");
             ResetProperty("Kills");
+
+            instantiated = true;
         }
 
         ResetProperty("Health");
-        //GetComponent<PlayerInput>().enabled = true;
-        //GetComponent<Collider>().enabled = true;
-        //rb.useGravity = true;
     }
 
 

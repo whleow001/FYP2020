@@ -103,11 +103,6 @@ public abstract class GameDirector : MonoBehaviourPun {
       char3text = char3Button.GetComponentInChildren<Text>();
       charPanel.SetActive(false);
 
-      //GameObject notificationPanel = GameObject.Find("NotificaltionPanel");
-      //notificationText = notificationPanel.transform.GetChild(0).GetComponent<Text>();
-
-      //playerManager.InstantiatePrefab(prefabs[teamIndex], spawns[teamIndex]);
-
       // Initialize scene specific objects
       InitializeGameObjects();
     }
