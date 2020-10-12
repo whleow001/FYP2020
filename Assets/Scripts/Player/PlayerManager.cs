@@ -126,10 +126,11 @@ public class PlayerManager : MonoBehaviourPunCallbacks
 
     private void InitializeCharacter()
     {
-        AvatarParent = MasterManager.NetworkInstantiate(playerContainer, spawnPoint.transform.GetChild(Random.Range(0, 3)).transform.position, Quaternion.identity);
+        Transform spawns = spawnPoint.transform.GetChild(Random.Range(0, 3));
+        AvatarParent = MasterManager.NetworkInstantiate(playerContainer, spawns.transform.position, Quaternion.identity);
         //selectedCharacter = (int)(properties["Class"]);
-        playerClone = MasterManager.NetworkInstantiate(selectedCharacter, AvatarParent.transform.position, Quaternion.identity);
-        playerClone.transform.SetParent(AvatarParent.transform);
+        playerClone = MasterManager.NetworkInstantiate(selectedCharacter, spawns.transform.position, Quaternion.identity);
+        //playerClone.transform.SetParent(AvatarParent.transform);
         //playerClone = Instantiate(selectedCharacter, AvatarParent.transform, false);
 
         slider = playerClone.GetComponentInChildren<Slider>();

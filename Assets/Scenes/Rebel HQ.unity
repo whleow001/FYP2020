@@ -520,6 +520,7 @@ MonoBehaviour:
   - {fileID: 2100000, guid: 4b099399e94ca7445b5844d1deef1b41, type: 2}
   - {fileID: 2100000, guid: 3c6d990569acb194fb1e1a44929478b1, type: 2}
   director: {fileID: 488462377}
+  eventsManager: {fileID: 0}
   playerContainer: {fileID: 6487977800366431805, guid: 587e74ff3e8f3b940a351e63df26e6f3,
     type: 3}
   slider: {fileID: 0}
