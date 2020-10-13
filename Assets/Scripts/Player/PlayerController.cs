@@ -38,11 +38,12 @@ public class PlayerController : MonoBehaviourPun {
     private bool fovInstantiated = false;
 
     void Start() {
-      raycastOrigin = GetTransform().Find("GunPoint").transform;
+      raycastOrigin = GetComponent<PlayerManager>().GetPlayerClone().transform.Find("GunPoint").transform;
     }
 
     private void Update()
     {
+        /*
         if (fovInstantiated == false)
         {
             if (!GetComponent<PlayerRPC>().IsMasterClient())
@@ -52,6 +53,7 @@ public class PlayerController : MonoBehaviourPun {
                 fovInstantiated = true;
             }
         }
+        */
 
         if (canMove) {
 
@@ -60,20 +62,22 @@ public class PlayerController : MonoBehaviourPun {
           // Movement
           Vector3 projectedVector = new Vector3(joystickVector.y * speed, GetRigidbody().velocity.y, joystickVector.x * speed);
           GetRigidbody().velocity = Quaternion.Euler(0, 45, 0) * projectedVector;
+          //GetComponent<PlayerManager>().GetPlayerAvatar().transform.position = GetTransform().position;
 
           // Rotation
-          if (GetComponent<PlayerInput>().IsJoystickMoving())
+            if (GetComponent<PlayerInput>().IsJoystickMoving())
             angle = Mathf.Atan2(joystickVector.x, -joystickVector.y) * Mathf.Rad2Deg - 45;
           GetTransform().rotation = Quaternion.Euler(new Vector3(0, angle, 0));
+          //GetComponent<PlayerManager>().GetPlayerAvatar().transform.rotation = GetTransform().rotation;
         }
     }
 
     private Rigidbody GetRigidbody() {
-      return GetComponent<PlayerManager>().GetPlayerClone().GetComponent<Rigidbody>();
+      return GetComponent<PlayerManager>().GetPlayerAvatar().GetComponent<Rigidbody>();
     }
 
     private Transform GetTransform() {
-      return GetComponent<PlayerManager>().GetPlayerClone().transform;
+      return GetComponent<PlayerManager>().GetPlayerAvatar().transform;
     }
 
     void FixedUpdate() {

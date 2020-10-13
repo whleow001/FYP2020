@@ -9,16 +9,26 @@ public class PlayerContainer : MonoBehaviourPun
     private GameObject _mainCamera;
     private PlayerManager playerManager;
 
+    private bool fovInstantiated = false;
+
     // Start is called before the first frame update
     void Start()
     {
-
+        playerManager = GameObject.Find("PlayerManager").GetComponent<PlayerManager>();
     }
 
     // Update is called once per frame
     void Update()
     {
-
+        if (fovInstantiated == false)
+        {
+            if (!PhotonNetwork.IsMasterClient)
+            {
+                Debug.Log("FOV");
+                photonView.RPC("AllocateFOV", RpcTarget.All);
+                fovInstantiated = true;
+            }
+        }
     }
 
     public void SpawnCamera(GameObject camera, GameObject player)

@@ -5,7 +5,6 @@ using UnityEngine;
 
 public class ParentTest : MonoBehaviourPun
 {
-    public Transform prefabParent;
 
     private void Awake()
     {

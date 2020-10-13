@@ -63,6 +63,7 @@ public abstract class GameDirector : MonoBehaviourPun {
     protected EventsManager eventsManager;
 
     [Header("Overlays")]
+    [SerializeField]
     protected EndGameScreen _endGameScreen;
 
     // flags

@@ -3737,6 +3737,7 @@ MonoBehaviour:
   - {fileID: 8725961496364593681, guid: df4d009e161ff5245a13aad1769c35d3, type: 3}
   playerManager: {fileID: 76049904}
   eventsManager: {fileID: 1657717821}
+  _endGameScreen: {fileID: 1459987295}
   matchLength: 120
   timer: {fileID: 3299005256743698078}
   currentMatchTime: 120

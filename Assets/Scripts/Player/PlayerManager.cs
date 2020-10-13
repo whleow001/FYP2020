@@ -71,7 +71,10 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     //do not think spawn needs to be a parameter here, should be layer instead, however currently not working as intended
     public void SetProperties(Material selectedMaterial, int selectedLayer)
     {
-        playerClone.GetComponentInChildren<SkinnedMeshRenderer>().material = selectedMaterial;
+        AvatarParent.layer = selectedLayer;
+        Material[] materials = playerClone.GetComponentInChildren<SkinnedMeshRenderer>().materials;
+        materials[1] = selectedMaterial;
+        playerClone.GetComponentInChildren<SkinnedMeshRenderer>().materials = materials;
         playerClone.layer = selectedLayer;
     }
 
@@ -126,26 +129,26 @@ public class PlayerManager : MonoBehaviourPunCallbacks
 
     private void InitializeCharacter()
     {
-        Transform spawns = spawnPoint.transform.GetChild(Random.Range(0, 3));
-        AvatarParent = MasterManager.NetworkInstantiate(playerContainer, spawns.transform.position, Quaternion.identity);
+        if(AvatarParent == null)
+        {
+            AvatarParent = MasterManager.NetworkInstantiate(playerContainer, spawnPoint.transform.GetChild(Random.Range(0, 3)).transform.position, Quaternion.identity);
+        }
         //selectedCharacter = (int)(properties["Class"]);
-        playerClone = MasterManager.NetworkInstantiate(selectedCharacter, spawns.transform.position, Quaternion.identity);
-        //playerClone.transform.SetParent(AvatarParent.transform);
-        //playerClone = Instantiate(selectedCharacter, AvatarParent.transform, false);
+        playerClone = MasterManager.NetworkInstantiate(selectedCharacter, AvatarParent.transform.position, Quaternion.identity);
 
         slider = playerClone.GetComponentInChildren<Slider>();
         fill = playerClone.transform.Find("Canvas").Find("Healthbar").Find("fill").GetComponent<Image>();
         //changing material and layer not working yet
-        /*if (team == 0)
+        if (team == 0)
         {
-            SetProperties(TeamMaterials[0], GOVT_LAYER);
+            SetProperties(teamMaterials[0], director.GetFactionLayer());
         }
         else
         {
-            SetProperties(TeamMaterials[1], REBEL_LAYER);
-        }*/
+            SetProperties(teamMaterials[1], director.GetFactionLayer());
+        }
         AvatarParent.GetComponent<PlayerContainer>().SpawnCamera(_mainCamera, playerClone);
-        AvatarParent.GetComponent<PlayerContainer>().SetPlayerManager(this);
+        //AvatarParent.GetComponent<PlayerContainer>().SetPlayerManager(this);
         //playerClone.transform.SetParent(gameObject.transform);
     }
 
@@ -154,7 +157,7 @@ public class PlayerManager : MonoBehaviourPunCallbacks
         playerPrefab.transform.GetComponentInChildren<SpriteRenderer>().drawMode = SpriteDrawMode.Sliced;
         playerPrefab.transform.GetComponentInChildren<SpriteRenderer>().size = new Vector3(1.5f, 2.0f, 1f);
         playerPrefab.transform.GetComponentInChildren<SpriteRenderer>().drawMode = SpriteDrawMode.Simple;
-        /*  // changing material and layer not working yet
+        // changing material and layer not working yet
         if(team == 0)
         {
             playerPrefab.transform.GetComponentInChildren<SpriteRenderer>().color = Color.blue;
@@ -162,7 +165,7 @@ public class PlayerManager : MonoBehaviourPunCallbacks
         else
         {
             playerPrefab.transform.GetComponentInChildren<SpriteRenderer>().color = Color.red;
-        }*/
+        }
 
     }
 
