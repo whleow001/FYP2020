@@ -16,4 +16,14 @@ public class MainMenuCanvas : MonoBehaviour
         _mainMenuMenu.FirstInitialize(canvases);
 
     }
+
+    public void Show()
+    {
+        gameObject.SetActive(true);
+    }
+
+    public void Hide()
+    {
+        gameObject.SetActive(false);
+    }
 }

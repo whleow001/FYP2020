@@ -3,25 +3,50 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
+using PlayFab;
+using PlayFab.ClientModels;
 
 public class TestConnect : MonoBehaviourPunCallbacks
 {
-    // Start is called before the first frame update
-    private void Start()
+    public GameObject[] DisableOnConnect;
+    public GameObject[] EnableOnConnect;
+
+    public static void ConnectToPhoton()
     {
-        Debug.Log("Connecting to server.", this);
+        Debug.Log("Connecting to server.");
         PhotonNetwork.AutomaticallySyncScene = true;
-        PhotonNetwork.NickName = MasterManager.GameSettings.NickName;
+
+        GetAccountInfoRequest request = new GetAccountInfoRequest();
+        PlayFabClientAPI.GetAccountInfo(request, OnGetUsernameResult, OnGetUsernameError);
         PhotonNetwork.GameVersion = MasterManager.GameSettings.GameVersion;
         PhotonNetwork.ConnectUsingSettings();
     }
 
-    public override void OnConnectedToMaster()
+    public static void OnGetUsernameResult(GetAccountInfoResult result)
     {
+        PhotonNetwork.NickName = result.AccountInfo.Username;
+    }
+
+    public static void OnGetUsernameError(PlayFabError error)
+    {
+        Debug.Log("Error");
+    }
+
+    public override void OnConnectedToMaster()
+    { 
         Debug.Log("Connected to server.", this);
         print(PhotonNetwork.LocalPlayer.NickName);
         if(!PhotonNetwork.InLobby)
             PhotonNetwork.JoinLobby();
+
+        foreach(GameObject g in DisableOnConnect)
+        {
+            g.SetActive(false);
+        }
+        foreach(GameObject g in EnableOnConnect)
+        {
+            g.SetActive(true);
+        }
     }
 
     public override void OnDisconnected(DisconnectCause cause)
