@@ -12,7 +12,7 @@ public class PlayerContainer : MonoBehaviourPun
     private bool fovInstantiated = false;
 
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         playerManager = GameObject.Find("PlayerManager").GetComponent<PlayerManager>();
     }
@@ -81,5 +81,17 @@ public class PlayerContainer : MonoBehaviourPun
       }
 
       Debug.DrawRay(ray.origin, transform.TransformDirection(Vector3.forward) * range, Color.red, 0.5f);*/
+    }
+
+    [PunRPC]
+    void ChangeMaterials(int ParentViewID, int ModelViewID, int selectedMaterial, int selectedLayer)
+    {
+        PhotonView ParentPV = PhotonView.Find(ParentViewID);
+        PhotonView ModelPV = PhotonView.Find(ModelViewID);
+        ParentPV.gameObject.layer = selectedLayer;
+        Material[] materials = ModelPV.gameObject.GetComponentInChildren<SkinnedMeshRenderer>().materials;
+        materials[1] = playerManager.GetTeamMaterials(selectedMaterial);
+        ModelPV.gameObject.GetComponentInChildren<SkinnedMeshRenderer>().materials = materials;
+        ModelPV.gameObject.layer = selectedLayer;
     }
 }

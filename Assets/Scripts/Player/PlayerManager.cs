@@ -67,15 +67,19 @@ public class PlayerManager : MonoBehaviourPunCallbacks
       return director;
     }
 
+    public Material GetTeamMaterials(int material)
+    {
+        return teamMaterials[material];
+    }
+
     //this function is will be used if we using same model for both teams, changing their material and layer
     //do not think spawn needs to be a parameter here, should be layer instead, however currently not working as intended
-    public void SetProperties(Material selectedMaterial, int selectedLayer)
+    public void SetProperties(int selectedMaterial)
     {
-        AvatarParent.layer = selectedLayer;
-        Material[] materials = playerClone.GetComponentInChildren<SkinnedMeshRenderer>().materials;
-        materials[1] = selectedMaterial;
-        playerClone.GetComponentInChildren<SkinnedMeshRenderer>().materials = materials;
-        playerClone.layer = selectedLayer;
+        int ModelViewID = playerClone.GetComponent<PhotonView>().ViewID;
+        int ParentViewID = AvatarParent.GetComponent<PhotonView>().ViewID;
+        int selectedLayer = director.GetFactionLayer();
+        GetComponent<PlayerRPC>().ChangeMaterial(ParentViewID, ModelViewID, selectedMaterial, selectedLayer);
     }
 
     public void SetHealthBar(int value, Slider mainslider = null, Image mainfill = null)
@@ -139,14 +143,8 @@ public class PlayerManager : MonoBehaviourPunCallbacks
         slider = playerClone.GetComponentInChildren<Slider>();
         fill = playerClone.transform.Find("Canvas").Find("Healthbar").Find("fill").GetComponent<Image>();
         //changing material and layer not working yet
-        if (team == 0)
-        {
-            SetProperties(teamMaterials[0], director.GetFactionLayer());
-        }
-        else
-        {
-            SetProperties(teamMaterials[1], director.GetFactionLayer());
-        }
+        SetProperties(team);
+
         AvatarParent.GetComponent<PlayerContainer>().SpawnCamera(_mainCamera, playerClone);
         //AvatarParent.GetComponent<PlayerContainer>().SetPlayerManager(this);
         //playerClone.transform.SetParent(gameObject.transform);

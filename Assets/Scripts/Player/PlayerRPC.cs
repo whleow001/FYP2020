@@ -7,26 +7,31 @@ using Photon.Realtime;
 
 public class PlayerRPC : MonoBehaviour
 {
-  public bool IsPhotonViewMine()
-  {
-    return GetPhotonView().IsMine;
-  }
+    public bool IsPhotonViewMine()
+    {
+        return GetPhotonView().IsMine;
+    }
 
-  public bool IsMasterClient()
-  {
-    return PhotonNetwork.IsMasterClient;
-  }
+    public bool IsMasterClient()
+    {
+        return PhotonNetwork.IsMasterClient;
+    }
 
-  public void CallRPC(string rpcCall, Player target = null)
-  {
-    if (target != null)
-      GetPhotonView().RPC(rpcCall, RpcTarget.All, target);
-    else
-      GetPhotonView().RPC(rpcCall, RpcTarget.All);
-  }
+    public void CallRPC(string rpcCall, Player target = null)
+    {
+        if (target != null)
+            GetPhotonView().RPC(rpcCall, RpcTarget.All, target);
+        else
+            GetPhotonView().RPC(rpcCall, RpcTarget.All);
+    }
 
-  public PhotonView GetPhotonView()
-  {
-    return GetComponent<PlayerManager>().GetPlayerAvatar().GetComponent<PhotonView>();
-  }
+    public PhotonView GetPhotonView()
+    {
+        return GetComponent<PlayerManager>().GetPlayerAvatar().GetComponent<PhotonView>();
+    }
+
+    public void ChangeMaterial(int ParentViewID, int ModelViewID, int selectedMaterial, int selectedLayer)
+    {
+        GetPhotonView().RPC("ChangeMaterials", RpcTarget.All, ParentViewID, ModelViewID, selectedMaterial, selectedLayer);
+    }
 }
