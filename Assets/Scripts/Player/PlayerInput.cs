@@ -1,3 +1,4 @@
+using System;
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -27,7 +28,11 @@ public class PlayerInput : MonoBehaviour
       return skillButtons[(int)index].pressed;
     }
 
-    public Vector2 GetJoystickVector() {
-      return new Vector2(joystick.Vertical, joystick.Horizontal);
+    public int GetJoystickAngle() {
+      double angle = (Math.Atan2(joystick.Vertical, -joystick.Horizontal) * 180 / Math.PI) - 90;
+      if (angle < 0)
+        angle += 360;
+
+      return Convert.ToInt32(angle);
     }
 }

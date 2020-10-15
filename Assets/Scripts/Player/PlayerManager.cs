@@ -43,7 +43,7 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     private ExitGames.Client.Photon.Hashtable properties;
 
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         team = director.GetTeamIndex();
         spawnPoint = director.GetSpawn(team);

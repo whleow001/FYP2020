@@ -9,10 +9,10 @@ using Photon.Realtime;
 
 public class PlayerController : MonoBehaviourPun {
     private Transform raycastOrigin;
+    private PlayerInput playerInput;
 
     // Variables
     float speed = 10.0f;
-    float angle;
 
     // firing
     Ray ray;
@@ -23,53 +23,57 @@ public class PlayerController : MonoBehaviourPun {
     float rotateSpeed = 10.0f;
     public bool ReadyForFiring = false;
 
-    // Flags
+    public enum CharacterState {
+      Idle = 0,
+      Running = 1,
+      Attacking = 2,
+      Dodging = 3,
+      Dead = 4,
+      Victory = 5,
+      Defeat = 6
+    };
+
     [HideInInspector]
-    public bool isMoving = false;
-    [HideInInspector]
-    public bool isAttacking = false;
-    [HideInInspector]
-    public bool isDodging = false;
+    public CharacterState characterState = CharacterState.Idle;
 
     // Flags
-    [HideInInspector]
-    public bool canMove = true;
-
     private bool fovInstantiated = false;
 
     void Start() {
       raycastOrigin = GetComponent<PlayerManager>().GetPlayerClone().transform.Find("GunPoint").transform;
+      playerInput = GetComponent<PlayerInput>();
     }
 
     private void Update()
     {
-        /*
-        if (fovInstantiated == false)
-        {
-            if (!GetComponent<PlayerRPC>().IsMasterClient())
-            {
-                Debug.Log("FOV");
-                GetComponent<PlayerRPC>().CallRPC("AllocateFOV");
-                fovInstantiated = true;
-            }
-        }
-        */
+        if (!playerInput.IsJoystickMoving() && !playerInput.IsPressed(PlayerInput.Ability.Attack) && !playerInput.IsPressed(PlayerInput.Ability.Dodge))
+          ChangeState(CharacterState.Idle);
+        else if (playerInput.IsPressed(PlayerInput.Ability.Dodge))
+          ChangeState(CharacterState.Dodging);
+        else if (playerInput.IsPressed(PlayerInput.Ability.Attack))
+          ChangeState(CharacterState.Attacking);
+        else if (playerInput.IsJoystickMoving())
+          ChangeState(CharacterState.Running);
 
-        if (canMove) {
+        Rotate();
 
-          Vector2 joystickVector = GetComponent<PlayerInput>().GetJoystickVector();
-
-          // Movement
-          Vector3 projectedVector = new Vector3(joystickVector.y * speed, GetRigidbody().velocity.y, joystickVector.x * speed);
-          GetRigidbody().velocity = Quaternion.Euler(0, 45, 0) * projectedVector;
-          //GetComponent<PlayerManager>().GetPlayerAvatar().transform.position = GetTransform().position;
-
-          // Rotation
-            if (GetComponent<PlayerInput>().IsJoystickMoving())
-            angle = Mathf.Atan2(joystickVector.x, -joystickVector.y) * Mathf.Rad2Deg - 45;
-          GetTransform().rotation = Quaternion.Euler(new Vector3(0, angle, 0));
-          //GetComponent<PlayerManager>().GetPlayerAvatar().transform.rotation = GetTransform().rotation;
-        }
+        if (GetComponent<PlayerManager>().GetPlayerClone())
+          switch (characterState) {
+            case CharacterState.Idle:
+              Stop();
+              break;
+            case CharacterState.Running:
+              Move();
+              break;
+            case CharacterState.Dodging:
+              Dodge();
+              break;
+            case CharacterState.Attacking:
+              Attack();
+              break;
+            default:
+              break;
+          }
     }
 
     private Rigidbody GetRigidbody() {
@@ -80,6 +84,35 @@ public class PlayerController : MonoBehaviourPun {
       return GetComponent<PlayerManager>().GetPlayerAvatar().transform;
     }
 
+    private void ChangeState(CharacterState _characterState) {
+      if (characterState == _characterState)
+        return;
+      characterState = _characterState;
+    }
+
+    private void Stop() {
+      GetRigidbody().velocity = Vector3.zero;
+    }
+
+    private void Move() {
+      GetRigidbody().velocity = GetTransform().forward * speed;
+    }
+
+    private void Rotate() {
+      if (characterState == CharacterState.Dodging)
+        return;
+      int angle = playerInput.GetJoystickAngle();
+      GetTransform().rotation = Quaternion.Euler(new Vector3(0, angle, 0));
+    }
+
+    private void Dodge() {
+      //GetRigidbody().AddForce(GetTransform().forward * 10.0f, ForceMode.Impulse);
+    }
+
+    private void Attack() {
+
+    }
+
     void FixedUpdate() {
       /*if (turning) {
         transform.rotation = Quaternion.Slerp(transform.rotation, lookAt, rotateSpeed * Time.deltaTime);
@@ -87,12 +120,6 @@ public class PlayerController : MonoBehaviourPun {
         if (Math.Abs(transform.rotation.eulerAngles.y - lookAt.eulerAngles.y) <= 1.0f)
           ReadyForFiring = true;
       }*/
-    }
-
-    public void Dodge() {
-      turning = false;
-      ReadyForFiring = false;
-      //rb.AddForce(transform.forward * 10.0f, ForceMode.Impulse);
     }
 
     // Auto targeting
