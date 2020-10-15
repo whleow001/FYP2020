@@ -13,6 +13,7 @@ public class PlayerController : MonoBehaviourPun {
 
     // Variables
     float speed = 10.0f;
+    float angle;
 
     // firing
     Ray ray;
@@ -101,7 +102,9 @@ public class PlayerController : MonoBehaviourPun {
     private void Rotate() {
       if (characterState == CharacterState.Dodging)
         return;
-      int angle = playerInput.GetJoystickAngle();
+
+      if (playerInput.IsJoystickMoving())
+        angle = playerInput.GetJoystickAngle();
       GetTransform().rotation = Quaternion.Euler(new Vector3(0, angle, 0));
     }
 
