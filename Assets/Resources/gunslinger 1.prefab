@@ -754,8 +754,8 @@ Animator:
   m_Avatar: {fileID: 9000000, guid: 3b1edb35d9e08dc46a583f22471ad05d, type: 3}
   m_Controller: {fileID: 9100000, guid: 38b0c83002708c2488bcb9bb2f210a60, type: 2}
   m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
+  m_UpdateMode: 1
+  m_ApplyRootMotion: 1
   m_LinearVelocityBlending: 0
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
@@ -810,9 +810,6 @@ MonoBehaviour:
     Name: isAttacking
   - Type: 4
     SynchronizeType: 1
-    Name: isDodging
-  - Type: 4
-    SynchronizeType: 1
     Name: isDead
   - Type: 4
     SynchronizeType: 1
@@ -820,6 +817,9 @@ MonoBehaviour:
   - Type: 4
     SynchronizeType: 1
     Name: hasLost
+  - Type: 9
+    SynchronizeType: 0
+    Name: dodge
   m_SynchronizeLayers:
   - SynchronizeType: 0
     LayerIndex: 0

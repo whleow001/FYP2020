@@ -11,12 +11,14 @@ public class PlayerAnimation : MonoBehaviour
     private int isIdleParam = Animator.StringToHash("isIdle");
     private int isRunningParam = Animator.StringToHash("isRunning");
     private int isAttackingParam = Animator.StringToHash("isAttacking");
-    private int isDodingParam = Animator.StringToHash("isDodging");
+    private int dodgeParam = Animator.StringToHash("dodge");
     private int deadParam = Animator.StringToHash("isDead");
     private int victoryParam = Animator.StringToHash("hasWon");
     private int defeatParam = Animator.StringToHash("hasLost");
 
     private List<int> paramList = new List<int>();
+
+    private bool triggered = false;
 
     void Start() {
       anim = GetComponent<PlayerManager>().GetPlayerClone().GetComponent<Animator>();
@@ -25,7 +27,7 @@ public class PlayerAnimation : MonoBehaviour
       paramList.Add(isIdleParam);
       paramList.Add(isRunningParam);
       paramList.Add(isAttackingParam);
-      paramList.Add(isDodingParam);
+      paramList.Add(dodgeParam);
       paramList.Add(deadParam);
       paramList.Add(victoryParam);
       paramList.Add(defeatParam);
@@ -35,6 +37,16 @@ public class PlayerAnimation : MonoBehaviour
     void Update() {
       if (anim)
         foreach (PlayerController.CharacterState state in Enum.GetValues(typeof(PlayerController.CharacterState)))
-          anim.SetBool(paramList[(int)state], playerController.characterState == state);
+          if (state != PlayerController.CharacterState.Dodging)
+            anim.SetBool(paramList[(int)state], playerController.characterState == state);
+
+        if (playerController.characterState == PlayerController.CharacterState.Dodging) {
+          if (!triggered) {
+            anim.SetTrigger(dodgeParam);
+            triggered = true;
+          }
+        }
+        else
+          triggered = false;
     }
 }

@@ -45,6 +45,10 @@ public class PlayerContainer : MonoBehaviourPun
       playerManager = _playerManager;
     }
 
+    public PlayerManager GetPlayerManager() {
+      return playerManager;
+    }
+
     //broadcast health to all clients in the server
     [PunRPC]
     void BroadcastHealth(Player victim)

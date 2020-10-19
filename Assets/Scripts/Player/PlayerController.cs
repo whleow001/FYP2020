@@ -12,17 +12,19 @@ public class PlayerController : MonoBehaviourPun {
     private PlayerInput playerInput;
 
     // Variables
-    float speed = 10.0f;
-    float angle;
+    private float speed = 10.0f;
+    private float angle;
+    private float dodgeDistance = 7.0f;
+    private bool readyForDoding = false;
 
     // firing
-    Ray ray;
-    RaycastHit hitInfo;
-    float range = 10.0f;
-    bool turning = false;
-    Quaternion lookAt;
-    float rotateSpeed = 10.0f;
-    public bool ReadyForFiring = false;
+    private Ray ray;
+    private RaycastHit hitInfo;
+    private float range = 10.0f;
+    private bool turning = false;
+    private Quaternion lookAt;
+    private float rotateSpeed = 10.0f;
+    private bool ReadyForFiring = false;
 
     public enum CharacterState {
       Idle = 0,
@@ -47,34 +49,44 @@ public class PlayerController : MonoBehaviourPun {
 
     private void Update()
     {
-        if (!playerInput.IsJoystickMoving() && !playerInput.IsPressed(PlayerInput.Ability.Attack) && !playerInput.IsPressed(PlayerInput.Ability.Dodge))
-          ChangeState(CharacterState.Idle);
-        else if (playerInput.IsPressed(PlayerInput.Ability.Dodge))
-          ChangeState(CharacterState.Dodging);
-        else if (playerInput.IsPressed(PlayerInput.Ability.Attack))
-          ChangeState(CharacterState.Attacking);
-        else if (playerInput.IsJoystickMoving())
-          ChangeState(CharacterState.Running);
+        if (characterState != CharacterState.Dodging) {
+          UpdateState();
+          Rotate();
+        } else if (readyForDoding)
+          GetTransform().position += GetTransform().forward * dodgeDistance * Time.deltaTime;
 
-        Rotate();
+    }
 
-        if (GetComponent<PlayerManager>().GetPlayerClone())
-          switch (characterState) {
-            case CharacterState.Idle:
-              Stop();
-              break;
-            case CharacterState.Running:
-              Move();
-              break;
-            case CharacterState.Dodging:
-              Dodge();
-              break;
-            case CharacterState.Attacking:
-              Attack();
-              break;
-            default:
-              break;
-          }
+    private void UpdateState() {
+      if (!playerInput.IsJoystickMoving() && !playerInput.IsPressed(PlayerInput.Ability.Attack) && !playerInput.IsPressed(PlayerInput.Ability.Dodge))
+        ChangeState(CharacterState.Idle);
+      else if (playerInput.IsPressed(PlayerInput.Ability.Dodge))
+        ChangeState(CharacterState.Dodging);
+      else if (playerInput.IsPressed(PlayerInput.Ability.Attack))
+        ChangeState(CharacterState.Attacking);
+      else if (playerInput.IsJoystickMoving())
+        ChangeState(CharacterState.Running);
+
+      if (GetComponent<PlayerManager>().GetPlayerClone())
+        switch (characterState) {
+          case CharacterState.Idle:
+            Stop();
+            break;
+          case CharacterState.Running:
+            Move();
+            break;
+          case CharacterState.Dodging:
+            Stop();
+            StartCoroutine(Dodge());
+            //Dodge();
+            break;
+          case CharacterState.Attacking:
+            Stop();
+            Attack();
+            break;
+          default:
+            break;
+        }
     }
 
     private Rigidbody GetRigidbody() {
@@ -100,16 +112,14 @@ public class PlayerController : MonoBehaviourPun {
     }
 
     private void Rotate() {
-      if (characterState == CharacterState.Dodging)
-        return;
-
       if (playerInput.IsJoystickMoving())
         angle = playerInput.GetJoystickAngle();
       GetTransform().rotation = Quaternion.Euler(new Vector3(0, angle, 0));
     }
 
-    private void Dodge() {
-      //GetRigidbody().AddForce(GetTransform().forward * 10.0f, ForceMode.Impulse);
+    private IEnumerator Dodge() {
+      yield return new WaitForSeconds(.3f);
+      readyForDoding = true;
     }
 
     private void Attack() {
@@ -123,6 +133,13 @@ public class PlayerController : MonoBehaviourPun {
         if (Math.Abs(transform.rotation.eulerAngles.y - lookAt.eulerAngles.y) <= 1.0f)
           ReadyForFiring = true;
       }*/
+    }
+
+    public void OnDodgeAnimationFinish() {
+      if (characterState == CharacterState.Dodging) {
+        ChangeState(CharacterState.Idle);
+        readyForDoding = false;
+      }
     }
 
     // Auto targeting
