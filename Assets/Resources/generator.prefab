@@ -451,6 +451,7 @@ GameObject:
   - component: {fileID: -3360826536660763577}
   - component: {fileID: 4329363571618913200}
   - component: {fileID: -1436308831197666719}
+  - component: {fileID: 2866887822377670264}
   m_Layer: 10
   m_Name: generator
   m_TagString: Generator
@@ -604,6 +605,18 @@ MonoBehaviour:
     m_NumAlphaKeys: 2
   fill: {fileID: 7528652746278987057}
   takeDamage: 0
+--- !u!114 &2866887822377670264
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6173012337875008129}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e038bf700cfa444fb16c6ef963be9f9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &6544817894483110965
 GameObject:
   m_ObjectHideFlags: 0

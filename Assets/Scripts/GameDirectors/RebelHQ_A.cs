@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 using UnityEngine.UI;
 using Photon.Pun;
 using Photon.Realtime;
@@ -26,6 +27,9 @@ public class RebelHQ_A : GameDirector {
   // Win/Loss condition
   [SerializeField]
   private int generatorCount;
+
+  // NavMeshBuilder for creep
+  private LocalNavMeshBuilder nvb;
 
   // Flags
   private bool forcefieldDestroyed = false;
@@ -71,6 +75,17 @@ public class RebelHQ_A : GameDirector {
       // Spawn forcefields
       for (int i = 0; i < 2; i++)
         MasterManager.RoomObjectInstantiate(GetPrefab(Prefabs.Forcefield), GetSpawn(Spawns.Forcefield).transform.GetChild(i).transform.position, GetSpawn(Spawns.Forcefield).transform.GetChild(i).transform.rotation);
+
+      // Spawn navmesh
+      nvb = gameObject.AddComponent<LocalNavMeshBuilder>();
+
+      // spawn govt creep
+      for(int i = 0; i < 3; i++)
+        MasterManager.RoomObjectInstantiate(prefabs[6], spawns[0].transform.GetChild(i+3).transform.position, Quaternion.identity);
+
+      // spawn rebel creep
+      for (int i = 0; i < 3; i++)
+        MasterManager.RoomObjectInstantiate(prefabs[7], spawns[1].transform.GetChild(i+3).transform.position, Quaternion.identity);
     }
   }
 
