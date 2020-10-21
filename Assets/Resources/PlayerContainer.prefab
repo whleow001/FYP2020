@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: -1156899054871481477}
   - component: {fileID: -2754890157445799992}
   - component: {fileID: -3548279819107587017}
+  - component: {fileID: 1428139064572974023}
   m_Layer: 0
   m_Name: PlayerContainer
   m_TagString: Player
@@ -115,3 +116,17 @@ MonoBehaviour:
   m_SynchronizePosition: 1
   m_SynchronizeRotation: 1
   m_SynchronizeScale: 0
+--- !u!136 &1428139064572974023
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6487977800366431805}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  m_Radius: 0.4
+  m_Height: 2
+  m_Direction: 1
+  m_Center: {x: 0, y: 1, z: 0}

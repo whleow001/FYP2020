@@ -43,7 +43,7 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     private ExitGames.Client.Photon.Hashtable properties;
 
     // Start is called before the first frame update
-    void Awake()
+    void Start()
     {
         team = director.GetTeamIndex();
         spawnPoint = director.GetSpawn(team);
@@ -236,7 +236,7 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     public void TakeDamage(int dmg, PhotonView attacker)
     {
         ChangeValue("Health", (int)(properties["Health"]) - dmg);
-        //photonView.RPC("BroadcastHealth", RpcTarget.All, playerClone.GetComponent<PhotonView>().Owner);
+        GetComponent<PlayerRPC>().CallRPC("BroadcastHealth", GetComponent<PlayerRPC>().GetPhotonView().Owner);
 
         if (GetProperty("Health") <= 0)
         {
@@ -272,6 +272,7 @@ public class PlayerManager : MonoBehaviourPunCallbacks
        PhotonNetwork.Destroy(playerClone);
        AvatarParent.transform.position = spawnPoint.transform.GetChild(Random.Range(0, 3)).transform.position;
        InitializeCharacter();
+       GetComponent<PlayerRPC>().CallRPC("BroadcastHealth", GetComponent<PlayerRPC>().GetPhotonView().Owner);
        //playerClone.GetComponent<PhotonView>().RPC("BroadcastHealth", RpcTarget.All, playerClone.GetComponent<PhotonView>().Owner);
     }
 

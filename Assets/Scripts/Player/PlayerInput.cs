@@ -33,6 +33,6 @@ public class PlayerInput : MonoBehaviour
       if (angle < 0)
         angle += 360;
 
-      return Convert.ToInt32(angle);
+      return Convert.ToInt32(angle+45);
     }
 }
