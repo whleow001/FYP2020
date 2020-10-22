@@ -17,10 +17,10 @@ public class PlayerRPC : MonoBehaviour
         return PhotonNetwork.IsMasterClient;
     }
 
-    public void CallRPC(string rpcCall, Player target = null)
+    public void CallRPC(string rpcCall, int viewID = 0)
     {
-        if (target != null)
-            GetPhotonView().RPC(rpcCall, RpcTarget.All, target);
+        if (viewID != 0)
+            GetPhotonView().RPC(rpcCall, RpcTarget.All, viewID);
         else
             GetPhotonView().RPC(rpcCall, RpcTarget.All);
     }

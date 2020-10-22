@@ -234,7 +234,7 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     public void TakeDamage(int dmg, PhotonView attacker)
     {
         ChangeValue("Health", (int)(properties["Health"]) - dmg);
-        GetComponent<PlayerRPC>().CallRPC("BroadcastHealth", GetComponent<PlayerRPC>().GetPhotonView().Owner);
+        GetComponent<PlayerRPC>().CallRPC("BroadcastHealth", playerClone.GetComponent<PhotonView>().ViewID);
 
         if (GetProperty("Health") <= 0)
         {
@@ -270,7 +270,7 @@ public class PlayerManager : MonoBehaviourPunCallbacks
        PhotonNetwork.Destroy(playerClone);
        AvatarParent.transform.position = spawnPoint.transform.GetChild(Random.Range(0, 3)).transform.position;
        InitializeCharacter();
-       GetComponent<PlayerRPC>().CallRPC("BroadcastHealth", GetComponent<PlayerRPC>().GetPhotonView().Owner);
+       //GetComponent<PlayerRPC>().CallRPC("BroadcastHealth", GetComponent<PlayerRPC>().GetPhotonView().Owner);
        //playerClone.GetComponent<PhotonView>().RPC("BroadcastHealth", RpcTarget.All, playerClone.GetComponent<PhotonView>().Owner);
     }
 

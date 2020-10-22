@@ -59,14 +59,15 @@ public class PlayerContainer : MonoBehaviourPun
 
     //broadcast health to all clients in the server
     [PunRPC]
-    void BroadcastHealth(Player victim)
+    void BroadcastHealth(int victimID)
     {
-        playerManager.SetHealthBar((int)victim.CustomProperties["Health"]);
-        /*PhotonView PV = PhotonView.Find(VictimID);
+        //playerManager.SetHealthBar((int)victim.CustomProperties["Health"]);
+        PhotonView PV = PhotonView.Find(victimID);
         Player victim = PV.Owner;
         Slider mainslider = PV.gameObject.GetComponentInChildren<Slider>();
         Image mainfill = PV.gameObject.transform.Find("Canvas").Find("Healthbar").Find("fill").GetComponent<Image>();
-        GetComponent<PlayerManager>().SetHealthBar((int)victim.CustomProperties["Health"], mainslider, mainfill);*/
+        playerManager.SetHealthBar((int)victim.CustomProperties["Health"], mainslider, mainfill);
+        //GetComponent<PlayerManager>().SetHealthBar((int)victim.CustomProperties["Health"], mainslider, mainfill);
       }
 
     [PunRPC]
