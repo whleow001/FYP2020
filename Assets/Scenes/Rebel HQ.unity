@@ -597,6 +597,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1c559c9ddbd66f44daa00512fc0463e7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  tracerEffect: {fileID: 6543365495401987922, guid: 4c244db0b4c55ca43a545a6aa7a96e75,
+    type: 3}
   characterState: 0
 --- !u!114 &76049907
 MonoBehaviour:
@@ -3956,7 +3958,7 @@ MonoBehaviour:
   playerManager: {fileID: 76049904}
   eventsManager: {fileID: 1657717821}
   _endGameScreen: {fileID: 1459987295}
-  matchLength: 120
+  matchLength: 999
   timer: {fileID: 3299005256743698078}
   currentMatchTime: 120
   generatorCount: 4

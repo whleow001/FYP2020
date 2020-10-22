@@ -6,6 +6,8 @@ TagManager:
   tags:
   - Generator
   - Forcefield
+  - Creep
+  - Projectile
   layers:
   - Default
   - TransparentFX

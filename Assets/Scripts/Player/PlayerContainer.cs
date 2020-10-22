@@ -49,6 +49,13 @@ public class PlayerContainer : MonoBehaviourPun
       return playerManager;
     }
 
+    private void OnCollisionEnter(Collision other) {
+
+      if (other.gameObject.tag == "Projectile" && other.gameObject.layer == playerManager.GetDirector().GetOtherFactionLayer()) {
+        playerManager.TakeDamage(20, other.gameObject.GetComponent<PhotonViewReference>().GetPhotonView());
+      }
+    }
+
     //broadcast health to all clients in the server
     [PunRPC]
     void BroadcastHealth(Player victim)
@@ -68,26 +75,6 @@ public class PlayerContainer : MonoBehaviourPun
     }
 
     [PunRPC]
-    void Fire()
-    {
-      /*ray.origin = raycastOrigin.transform.position;
-      ray.direction = raycastOrigin.forward;
-
-      if (Physics.Raycast(ray, out hitInfo, range)) {
-        if (hitInfo.collider.gameObject.layer != gameObject.layer) {
-                if (hitInfo.collider.gameObject.tag == "Player")
-                    hitInfo.transform.gameObject.GetComponent<PlayerController>().TakeDamage(20, photonView);
-                else if (hitInfo.collider.gameObject.tag == "Generator")
-                {
-                    hitInfo.transform.gameObject.GetComponent<GeneratorHealth>().TakeDamage(20);
-                }
-        }
-      }
-
-      Debug.DrawRay(ray.origin, transform.TransformDirection(Vector3.forward) * range, Color.red, 0.5f);*/
-    }
-
-    [PunRPC]
     void ChangeMaterials(int ParentViewID, int ModelViewID, int selectedMaterial, int selectedLayer)
     {
         PhotonView ParentPV = PhotonView.Find(ParentViewID);
@@ -97,5 +84,11 @@ public class PlayerContainer : MonoBehaviourPun
         materials[1] = playerManager.GetTeamMaterials(selectedMaterial);
         ModelPV.gameObject.GetComponentInChildren<SkinnedMeshRenderer>().materials = materials;
         ModelPV.gameObject.layer = selectedLayer;
+    }
+
+    [PunRPC]
+    void InstantiateBullet(Vector3 position, Vector3 velocity, int layer, PhotonMessageInfo info) {
+      Debug.Log("Instantiate");
+      playerManager.GetComponent<PlayerController>().InstantiateBullet(position, velocity, layer, info.photonView);
     }
 }

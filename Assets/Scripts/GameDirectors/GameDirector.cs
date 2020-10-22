@@ -168,7 +168,7 @@ public abstract class GameDirector : MonoBehaviourPun {
 
     // Gets the opponent's faction layer
     public int GetOtherFactionLayer() {
-      return teamIndex == 1 ? REBEL_LAYER : GOVT_LAYER;
+      return teamIndex == 0 ? REBEL_LAYER : GOVT_LAYER;
     }
 
     public int GetTeamIndex()

@@ -58,7 +58,7 @@ public class CreepBot : MonoBehaviour
         //if can't find objective, creep will become idle
         if (obj==null)
         {
-            Debug.Log("Obj not found");
+            //Debug.Log("Obj not found");
             this.gameObject.GetComponent<NavMeshAgent>().enabled = false;
             creepAnimator.SetBool("isIdle",true);
             //return;
@@ -71,20 +71,20 @@ public class CreepBot : MonoBehaviour
         Vector3 objDirection = obj.transform.position - transform.position;
 
         GameObject closestTarget = FindClosestTarget(targets);
-        Debug.Log(closestTarget);
+        //Debug.Log(closestTarget);
         Vector3 targetDirection = closestTarget.transform.position - transform.position;
 
 
             //if target closeby is not on the same team, move towards them
             if (targetDirection.magnitude <= 13 && closestTarget.layer != this.gameObject.layer)
             {
-                transform.rotation = Quaternion.LookRotation(agent.velocity.normalized);
+                //transform.rotation = Quaternion.LookRotation(agent.velocity.normalized);
                 //if close enough to attack, stop moving and attack closest player enemy
                 if (targetDirection.magnitude <= 1.1f)
                 {
                     creepAnimator.SetBool("isAttacking", true);
                     this.gameObject.GetComponent<NavMeshAgent>().enabled = false;
-                    transform.rotation = Quaternion.LookRotation(targetDirection);
+                    //transform.rotation = Quaternion.LookRotation(targetDirection);
                 }
                 else
                 {
@@ -92,18 +92,18 @@ public class CreepBot : MonoBehaviour
                     this.gameObject.GetComponent<NavMeshAgent>().enabled = true;
                     agent.SetDestination(closestTarget.transform.position);
                 }
-                
+
             }
 
             //if no enemy target nearby, creep will move toward objective
             else
             {
-                transform.rotation = Quaternion.LookRotation(agent.velocity.normalized);
+                //transform.rotation = Quaternion.LookRotation(agent.velocity.normalized);
                 this.gameObject.GetComponent<NavMeshAgent>().enabled = true;
                 agent.SetDestination(obj.transform.position);
             }
 
-        
+
     }
 
     private GameObject FindClosestTarget(GameObject[] targets)
@@ -126,5 +126,3 @@ public class CreepBot : MonoBehaviour
     }
 
 }
-
-

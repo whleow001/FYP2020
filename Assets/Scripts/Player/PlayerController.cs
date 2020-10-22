@@ -7,24 +7,44 @@ using ExitGames.Client.Photon;
 using Photon.Pun;
 using Photon.Realtime;
 
-public class PlayerController : MonoBehaviourPun {
-    private Transform raycastOrigin;
+public class PlayerController : MonoBehaviour {
+
+    // Firing
+    class Bullet {
+      public float time;
+      public Vector3 initialPosition;
+      public Vector3 initialVelocity;
+      public TrailRenderer tracer;
+    }
+
+    [SerializeField]
+    private TrailRenderer tracerEffect;
+    /*[SerializeField]
+    private ParticleSystem muzzleFlash;
+    [SerializeField]
+    private ParticleSystem hitMetalEffect;
+    [SerializeField]
+    private ParticleSystem hitFleshEffect;*/
+    private Transform raycastDestination;
+    private Transform raycastOrigins;
+    private int fireRate = 1;
+    private bool isFiring = false;
+    private float bulletSpeed = 70.0f;
+    private float bulletDrop = 0.0f;
+
+    Ray ray;
+    RaycastHit hitInfo;
+    float accumulatedTime;
+    List<Bullet> bullets = new List<Bullet>();
+    float maxLifetime = 2.0f;
+
     private PlayerInput playerInput;
 
-    // Variables
+    // Movement variables
     private float speed = 10.0f;
     private float angle;
-    private float dodgeDistance = 7.0f;
     private bool readyForDoding = false;
-
-    // firing
-    private Ray ray;
-    private RaycastHit hitInfo;
-    private float range = 10.0f;
-    private bool turning = false;
-    private Quaternion lookAt;
-    private float rotateSpeed = 10.0f;
-    private bool ReadyForFiring = false;
+    private float dodgeSpeed = 7;
 
     public enum CharacterState {
       Idle = 0,
@@ -43,18 +63,31 @@ public class PlayerController : MonoBehaviourPun {
     private bool fovInstantiated = false;
 
     void Start() {
-      raycastOrigin = GetComponent<PlayerManager>().GetPlayerClone().transform.Find("GunPoint").transform;
+      raycastOrigins = GetComponent<PlayerManager>().GetPlayerClone().transform.Find("RaycastOrigins").transform;
+      raycastDestination = GetComponent<PlayerManager>().GetPlayerClone().transform.Find("RaycastDestination").transform;
       playerInput = GetComponent<PlayerInput>();
     }
 
     private void Update()
     {
-        if (characterState != CharacterState.Dodging) {
-          UpdateState();
-          Rotate();
-        } else if (readyForDoding)
-          GetTransform().position += GetTransform().forward * dodgeDistance * Time.deltaTime;
+        if (characterState == CharacterState.Dodging)
+          return;
 
+        UpdateState();
+        UpdateBullets(Time.deltaTime);
+        Rotate();
+    }
+
+    void FixedUpdate() {
+      /*if (turning) {
+        transform.rotation = Quaternion.Slerp(transform.rotation, lookAt, rotateSpeed * Time.deltaTime);
+
+        if (Math.Abs(transform.rotation.eulerAngles.y - lookAt.eulerAngles.y) <= 1.0f)
+          ReadyForFiring = true;
+      }*/
+
+      if (readyForDoding)
+        GetTransform().position += GetTransform().forward * dodgeSpeed * Time.deltaTime;
     }
 
     private void UpdateState() {
@@ -67,6 +100,9 @@ public class PlayerController : MonoBehaviourPun {
       else if (playerInput.IsJoystickMoving())
         ChangeState(CharacterState.Running);
 
+      if (!playerInput.IsPressed(PlayerInput.Ability.Attack))
+        StopFiring();
+
       if (GetComponent<PlayerManager>().GetPlayerClone())
         switch (characterState) {
           case CharacterState.Idle:
@@ -78,11 +114,10 @@ public class PlayerController : MonoBehaviourPun {
           case CharacterState.Dodging:
             Stop();
             StartCoroutine(Dodge());
-            //Dodge();
             break;
           case CharacterState.Attacking:
             Stop();
-            Attack();
+            Attack(Time.deltaTime);
             break;
           default:
             break;
@@ -122,17 +157,91 @@ public class PlayerController : MonoBehaviourPun {
       readyForDoding = true;
     }
 
-    private void Attack() {
-
+    private void Attack(float deltaTime) {
+      if (!isFiring)
+        StartFiring();
+      else
+        UpdateFiring(deltaTime);
     }
 
-    void FixedUpdate() {
-      /*if (turning) {
-        transform.rotation = Quaternion.Slerp(transform.rotation, lookAt, rotateSpeed * Time.deltaTime);
+    private void StartFiring() {
+      isFiring = true;
+      accumulatedTime = 0.0f;
+      FireBullet();
+    }
 
-        if (Math.Abs(transform.rotation.eulerAngles.y - lookAt.eulerAngles.y) <= 1.0f)
-          ReadyForFiring = true;
-      }*/
+    private void StopFiring() {
+      isFiring = false;
+    }
+
+    private void UpdateBullets(float deltaTime) {
+      SimulateBullets(deltaTime);
+      DestroyBullets();
+    }
+
+    private void DestroyBullets() {
+      bullets.RemoveAll(bullet => bullet.time >= maxLifetime);
+    }
+
+    private void SimulateBullets(float deltaTime) {
+      bullets.ForEach(bullet => {
+            Vector3 p0 = GetPosition(bullet);
+            bullet.time += deltaTime;
+            Vector3 p1 = GetPosition(bullet);
+            RaycastSegment(p0, p1, bullet);
+      });
+    }
+
+    private void RaycastSegment(Vector3 start, Vector3 end, Bullet bullet) {
+      Vector3 direction = end - start;
+      float distance = direction.magnitude;
+      ray.origin = start;
+      ray.direction = end - start;
+      if (Physics.Raycast(ray, out hitInfo, distance)) {
+        bullet.tracer.transform.position = hitInfo.point;
+        bullet.time = maxLifetime;
+      } else
+        bullet.tracer.transform.position = end;
+    }
+
+    private void FireBullet() {
+      foreach (Transform raycastOrigin in raycastOrigins) {
+        Vector3 velocity = (raycastDestination.position - raycastOrigin.position).normalized * bulletSpeed;
+        GetComponent<PlayerRPC>().InstantiateBullet(raycastOrigin.position, velocity, GetComponent<PlayerManager>().GetDirector().GetFactionLayer());
+      }
+    }
+
+    private void UpdateFiring(float deltaTime) {
+      accumulatedTime += deltaTime;
+      float fireInterval = 1.0f / fireRate;
+      while (accumulatedTime >= 0.0f) {
+        FireBullet();
+        accumulatedTime -= fireInterval;
+      }
+    }
+
+    Bullet CreateBullet(Vector3 position, Vector3 velocity, int layer, PhotonView source) {
+      Bullet bullet = new Bullet();
+      bullet.initialPosition = position;
+      bullet.initialVelocity = velocity;
+      bullet.time = 0;
+      bullet.tracer = Instantiate(tracerEffect, position, Quaternion.identity);
+      bullet.tracer.gameObject.layer = layer;
+      bullet.tracer.GetComponent<PhotonViewReference>().SetPhotonView(source);
+      return bullet;
+    }
+
+    public void InstantiateBullet(Vector3 position, Vector3 velocity, int layer, PhotonView source) {
+      if (!GetComponent<PlayerRPC>().IsPhotonViewMine())
+        return;
+
+      bullets.Add(CreateBullet(position, velocity, layer, source));
+    }
+
+    Vector3 GetPosition(Bullet bullet) {
+      // p + v*t + 0.5*g*t*t
+      Vector3 gravity = Vector3.down * bulletDrop;
+      return bullet.initialPosition + bullet.initialVelocity * bullet.time + 0.5f*gravity*bullet.time*bullet.time;
     }
 
     public void OnDodgeAnimationFinish() {
@@ -143,7 +252,7 @@ public class PlayerController : MonoBehaviourPun {
     }
 
     // Auto targeting
-    public void TurnAndFireNearestTarget() {
+    /*public void TurnAndFireNearestTarget() {
       Collider[] targets = Physics.OverlapSphere(transform.position, range, 1 << GetComponent<PlayerManager>().GetDirector().GetOtherFactionLayer());
       float nearestDistance = 0.0f;
       Collider nearestTarget = new Collider();
@@ -166,10 +275,10 @@ public class PlayerController : MonoBehaviourPun {
         turning = true;
         lookAt = Quaternion.LookRotation(nearestTarget.transform.position - transform.position);
       }
-    }
+    }*/
 
     // Take Damage
-    public void TakeDamage(int damage, PhotonView attacker)
+    /*public void TakeDamage(int damage, PhotonView attacker)
     {
         /*
         if (!GetComponent<PlayerRPC>().IsPhotonViewMine()) return;
@@ -179,7 +288,7 @@ public class PlayerController : MonoBehaviourPun {
         GetComponent<PlayerRPC>().CallRPC("BroadcastHealth", victim);
         */
 
-        if (!photonView.IsMine) return;
+        /*if (!photonView.IsMine) return;
 
         GetComponent<PlayerManager>().TakeDamage(damage, attacker);
         int VictimID = photonView.ViewID;
@@ -187,5 +296,5 @@ public class PlayerController : MonoBehaviourPun {
         photonView.RPC("BroadcastHealth", RpcTarget.All, VictimID);
 
 
-    }
+    }*/
 }
