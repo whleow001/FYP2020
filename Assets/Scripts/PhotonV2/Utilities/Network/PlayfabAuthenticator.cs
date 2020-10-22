@@ -23,6 +23,10 @@ public class PlayfabAuthenticator : MonoBehaviour
     private GameObject ConnectingPanel;
     [SerializeField]
     private GameObject AccountCreatedPanel;
+    [SerializeField]
+    private GameObject LoginErrorPanel;
+    [SerializeField]
+    private GameObject RegisterErrorPanel;
 
     //input fields
     //login
@@ -64,6 +68,7 @@ public class PlayfabAuthenticator : MonoBehaviour
     public void OnClick_AuthenticateWithPlayFabLogin()
     {
         Debug.Log("PlayFab authenticating using custom ID");
+        LoginErrorPanel.SetActive(false);
 
         //LoginWithCustomIDRequest request = new LoginWithCustomIDRequest();
         //request.CreateAccount = true;
@@ -75,7 +80,7 @@ public class PlayfabAuthenticator : MonoBehaviour
         request.Username = Login_User.text;
         request.Password = Login_Pass.text;
 
-        PlayFabClientAPI.LoginWithPlayFab(request, RequestToken, OnError);
+        PlayFabClientAPI.LoginWithPlayFab(request, RequestToken, OnLoginError);
         LoginPanel.SetActive(false);
         ConnectingPanel.SetActive(true);
     }
@@ -86,14 +91,17 @@ public class PlayfabAuthenticator : MonoBehaviour
         request.Username = Register_User.text;
         request.Password = Register_Pass.text;
         request.Email = Register_Email.text;
-        PlayFabClientAPI.RegisterPlayFabUser(request, result => { Debug.Log("Account Made!"); }, OnError);
+        PlayFabClientAPI.RegisterPlayFabUser(request, result => { Debug.Log("Account Made!"); 
+            AccountCreatedPanel.SetActive(true);
+            GameObject.Find("RegisterUsername").SetActive(false);
+            GameObject.Find("RegisterPassword").SetActive(false);
+            GameObject.Find("RegisterEmail").SetActive(false);
+            GameObject.Find("RegistrationButton").SetActive(false);
+            GameObject.Find("RegisterBackButton").SetActive(false);
+            RegisterErrorPanel.SetActive(false);
+        }, OnRegisterError);
 
-        AccountCreatedPanel.SetActive(true);
-        GameObject.Find("RegisterUsername").SetActive(false);
-        GameObject.Find("RegisterPassword").SetActive(false);
-        GameObject.Find("RegisterEmail").SetActive(false);
-        GameObject.Find("RegistrationButton").SetActive(false);
-        GameObject.Find("RegisterBackButton").SetActive(false);
+        
 
         //LoginWithPlayFabRequest LoginRequest = new LoginWithPlayFabRequest();
         //LoginRequest.Username = Register_User.text;
@@ -132,6 +140,21 @@ public class PlayfabAuthenticator : MonoBehaviour
 
     void OnError(PlayFabError error)
     {
+        Debug.LogError($"[ERROR] | {error.GenerateErrorReport()}");
+    }
+
+    void OnLoginError(PlayFabError error)
+    {
+        //Debug.Log(AuthError.ToString());
+        LoginPanel.SetActive(true);
+        ConnectingPanel.SetActive(false);
+        LoginErrorPanel.SetActive(true);
+        Debug.LogError($"[ERROR] | {error.GenerateErrorReport()}");
+    }
+
+    void OnRegisterError(PlayFabError error)
+    {
+        RegisterErrorPanel.SetActive(true);
         Debug.LogError($"[ERROR] | {error.GenerateErrorReport()}");
     }
 }
