@@ -98,7 +98,7 @@ LightmapSettings:
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
   m_LightingDataAsset: {fileID: 0}
-  m_UseShadowmask: 1
+  m_UseShadowmask: 0
 --- !u!196 &4
 NavMeshSettings:
   serializedVersion: 2
@@ -9337,8 +9337,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1677559399}
   m_TextComponent: {fileID: 1174333553}
   m_Placeholder: {fileID: 1856789844}
-  m_ContentType: 0
-  m_InputType: 0
+  m_ContentType: 7
+  m_InputType: 2
   m_AsteriskChar: 42
   m_KeyboardType: 0
   m_LineType: 0
@@ -10215,8 +10215,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1850911280}
   m_TextComponent: {fileID: 130952323}
   m_Placeholder: {fileID: 1463305363}
-  m_ContentType: 0
-  m_InputType: 0
+  m_ContentType: 7
+  m_InputType: 2
   m_AsteriskChar: 42
   m_KeyboardType: 0
   m_LineType: 0
