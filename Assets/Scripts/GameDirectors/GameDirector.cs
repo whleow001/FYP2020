@@ -4,6 +4,7 @@ using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine.UI;
+using Photon.Pun.UtilityScripts;
 
 public class BaseTexts
 {
@@ -90,9 +91,24 @@ public abstract class GameDirector : MonoBehaviourPun {
     private string selectedText = "Selected";
     private string unselectedText = "Select";
 
+    private PhotonTeamsManager photonTeamManager;
+
+    public Player[] GovtPlayers;
+    public Player[] RebelPlayers;
+    //public List<HashSet<Player>> RebelPlayers = new List<HashSet<Player>>();
+
 
     private void Awake() {
       teamIndex = (byte)PhotonNetwork.LocalPlayer.CustomProperties["_pt"];
+      Debug.Log("team index number is " + teamIndex);
+
+      photonTeamManager = GameObject.Find("TeamManager").GetComponent<PhotonTeamsManager>();
+      Debug.Log(photonTeamManager.playersPerTeam.Count);
+
+      getGovtPlayers();
+      getRebelPlayer();
+      Debug.Log(GovtPlayers.Length);
+      Debug.Log(RebelPlayers.Length);
 
       charPanel = GameObject.Find("CharacterSelectionOverlay");
       char1Button = GameObject.Find("Char1").GetComponent<Button>();
@@ -264,6 +280,34 @@ public abstract class GameDirector : MonoBehaviourPun {
     }
     */
 
+    public void getGovtPlayers()
+    {
+        HashSet<Player> allPlayers;
+        photonTeamManager.playersPerTeam.TryGetValue(0, out allPlayers);
+
+        GovtPlayers = new Player[allPlayers.Count];
+        int i = 0;
+        foreach (var player in allPlayers)
+        {
+            GovtPlayers[i] = player;
+            i++;
+        }
+    }
+
+    public void getRebelPlayer()
+    {
+        HashSet<Player> allPlayers;
+        photonTeamManager.playersPerTeam.TryGetValue(1, out allPlayers);
+
+        RebelPlayers = new Player[allPlayers.Count];
+        int i = 0;
+        foreach (var player in allPlayers)
+        {
+            RebelPlayers[i] = player;
+            i++;
+        }
+    }
+
     public void ChangeCharacter()
     {
         charPanel.SetActive(true);
@@ -271,7 +315,7 @@ public abstract class GameDirector : MonoBehaviourPun {
 
     public void char1ButtonPress()
     {
-        charIndex = 0;
+        charIndex = 1;
         playerManager.ChangeCharacter(charIndex);
         char1text.text = selectedText;
         char2text.text = unselectedText;
@@ -284,7 +328,7 @@ public abstract class GameDirector : MonoBehaviourPun {
 
     public void char2ButtonPress()
     {
-        charIndex = 1;
+        charIndex = 2;
         playerManager.ChangeCharacter(charIndex);
         char1text.text = unselectedText;
         char2text.text = selectedText;
@@ -297,7 +341,7 @@ public abstract class GameDirector : MonoBehaviourPun {
 
     public void char3ButtonPress()
     {
-        charIndex = 2;
+        charIndex = 3;
         playerManager.ChangeCharacter(charIndex);
         char1text.text = unselectedText;
         char2text.text = unselectedText;

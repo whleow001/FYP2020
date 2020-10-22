@@ -35,7 +35,15 @@ public class PlayerRPC : MonoBehaviour
         GetPhotonView().RPC("ChangeMaterials", RpcTarget.All, ParentViewID, ModelViewID, selectedMaterial, selectedLayer);
     }
 
-    public void InstantiateBullet(Vector3 position, Vector3 velocity, int layer) {
-      GetPhotonView().RPC("InstantiateBullet", RpcTarget.All, position, velocity, layer);
+
+    public void InstantiateBullet(Vector3 position, Vector3 velocity, int layer)
+    {
+        GetPhotonView().RPC("InstantiateBullet", RpcTarget.All, position, velocity, layer);
+    }
+
+    public void ChangeIcons()
+    {
+        GetPhotonView().RPC("ChangeIcons", RpcTarget.All, GetPhotonView().ViewID);
+
     }
 }

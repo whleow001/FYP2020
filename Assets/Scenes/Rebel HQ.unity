@@ -540,6 +540,8 @@ MonoBehaviour:
   - {fileID: 2100000, guid: 3c6d990569acb194fb1e1a44929478b1, type: 2}
   director: {fileID: 488462377}
   eventsManager: {fileID: 0}
+  GovtIcons: {fileID: 1401243361}
+  RebelIcons: {fileID: 796468070}
   playerContainer: {fileID: 6487977800366431805, guid: 587e74ff3e8f3b940a351e63df26e6f3,
     type: 3}
   slider: {fileID: 0}

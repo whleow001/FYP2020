@@ -3,6 +3,7 @@ using Photon.Realtime;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerContainer : MonoBehaviourPun
 {
@@ -87,8 +88,37 @@ public class PlayerContainer : MonoBehaviourPun
     }
 
     [PunRPC]
-    void InstantiateBullet(Vector3 position, Vector3 velocity, int layer, PhotonMessageInfo info) {
-      Debug.Log("Instantiate");
-      playerManager.GetComponent<PlayerController>().InstantiateBullet(position, velocity, layer, info.photonView);
+    void InstantiateBullet(Vector3 position, Vector3 velocity, int layer, PhotonMessageInfo info)
+    {
+        Debug.Log("Instantiate");
+        playerManager.GetComponent<PlayerController>().InstantiateBullet(position, velocity, layer, info.photonView);
+    }
+
+    [PunRPC]
+    void ChangeIcons(int viewID)
+    {
+        PhotonView PV = PhotonView.Find(viewID);
+        Player player = PV.Owner;
+
+        if ((byte)player.CustomProperties["_pt"] == 0)
+        {
+            for (int i = 0; i < playerManager.GetDirector().GovtPlayers.Length; i++)
+            {
+                if (playerManager.GetDirector().GovtPlayers[i] == player)
+                {
+                    playerManager.GovtIcons.transform.GetChild(i).GetComponent<Image>().sprite = Resources.Load<Sprite>("UISprites/number" + (int)player.CustomProperties["Class"]);
+                }
+            }
+        }
+        else
+        {
+            for (int i = 0; i < playerManager.GetDirector().RebelPlayers.Length; i++)
+            {
+                if (playerManager.GetDirector().RebelPlayers[i] == player)
+                {
+                    playerManager.RebelIcons.transform.GetChild(i).GetComponent<Image>().sprite = Resources.Load<Sprite>("UISprites/number" + (int)player.CustomProperties["Class"]);
+                }
+            }
+        }
     }
 }

@@ -21,6 +21,10 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     private GameDirector director;
     [SerializeField]
     private EventsManager eventsManager;
+    [SerializeField]
+    public GameObject GovtIcons;
+    [SerializeField]
+    public GameObject RebelIcons;
 
     [SerializeField]
     private GameObject playerContainer;
@@ -46,6 +50,7 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     void Start()
     {
         team = director.GetTeamIndex();
+        Debug.Log("team number is " + team);
         spawnPoint = director.GetSpawn(team);
         ChangeCharacter(1);
 
@@ -120,14 +125,6 @@ public class PlayerManager : MonoBehaviourPunCallbacks
 
         selectedCharacter = director.GetPrefab(selectedCharacterIndex);
 
-        /*if(team == 0)
-        {
-            selectedCharacter = playerPrefabs[(int)(properties["Class"])];
-        }
-        else
-        {
-            selectedCharacter = rebelPrefabs[(int)(properties["Class"])];
-        }*/
         Debug.Log(properties["Class"]);
     }
 
@@ -144,6 +141,7 @@ public class PlayerManager : MonoBehaviourPunCallbacks
         fill = playerClone.transform.Find("Canvas").Find("Healthbar").Find("fill").GetComponent<Image>();
         //changing material and layer not working yet
         SetProperties(team);
+        GetComponent<PlayerRPC>().ChangeIcons();
 
         AvatarParent.GetComponent<PlayerContainer>().SpawnCamera(_mainCamera, playerClone);
         //AvatarParent.GetComponent<PlayerContainer>().SetPlayerManager(this);
