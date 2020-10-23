@@ -74,9 +74,10 @@ public class CreepBot : MonoBehaviour
         //Debug.Log(closestTarget);
         Vector3 targetDirection = closestTarget.transform.position - transform.position;
 
+        
 
-            //if target closeby is not on the same team, move towards them
-            if (targetDirection.magnitude <= 13 && closestTarget.layer != this.gameObject.layer)
+        //if target closeby is not on the same team, move towards them
+        if (targetDirection.magnitude <= 13 && closestTarget.layer != this.gameObject.layer)
             {
                 //transform.rotation = Quaternion.LookRotation(agent.velocity.normalized);
                 //if close enough to attack, stop moving and attack closest player enemy
@@ -84,13 +85,14 @@ public class CreepBot : MonoBehaviour
                 {
                     creepAnimator.SetBool("isAttacking", true);
                     this.gameObject.GetComponent<NavMeshAgent>().enabled = false;
-                    //transform.rotation = Quaternion.LookRotation(targetDirection);
+                    transform.rotation = Quaternion.LookRotation(targetDirection);
                 }
                 else
                 {
                     creepAnimator.SetBool("isAttacking", false);
                     this.gameObject.GetComponent<NavMeshAgent>().enabled = true;
                     agent.SetDestination(closestTarget.transform.position);
+                    transform.rotation = Quaternion.LookRotation(agent.velocity.normalized);
                 }
 
             }
@@ -98,9 +100,9 @@ public class CreepBot : MonoBehaviour
             //if no enemy target nearby, creep will move toward objective
             else
             {
-                //transform.rotation = Quaternion.LookRotation(agent.velocity.normalized);
                 this.gameObject.GetComponent<NavMeshAgent>().enabled = true;
                 agent.SetDestination(obj.transform.position);
+                transform.rotation = Quaternion.LookRotation(agent.velocity.normalized);
             }
 
 
