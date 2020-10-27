@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
+using Photon.Pun;
 
 public class CreepBot : MonoBehaviour
 {
@@ -16,13 +17,11 @@ public class CreepBot : MonoBehaviour
     private GameObject obj;
     private GameObject[] creeps, players, targets;
 
-    /*
-    public float normalSpeed = 0.015f;
-    private float speed;
-    private float immobile = 0.0f;*/
-
     private NavMeshAgent agent;
     private Animator creepAnimator;
+
+    private bool attack = false;
+    private float creepRange;
 
     // Start is called before the first frame update
     void Start()
@@ -35,10 +34,13 @@ public class CreepBot : MonoBehaviour
                 obj = objective;
             }
         }
-//        obj = GameObject.Find("GovtSpawn");
+
         creepAnimator = GetComponent<Animator>();
         agent = GetComponent<NavMeshAgent>();
         agent.updateRotation = false;
+
+        // range of creep attack based on creep size
+        creepRange = transform.localScale.x + 0.1f;
 
         //combining players and creeps as targets
         creeps = GameObject.FindGameObjectsWithTag("Creep");
@@ -78,32 +80,54 @@ public class CreepBot : MonoBehaviour
 
         //if target closeby is not on the same team, move towards them
         if (targetDirection.magnitude <= 13 && closestTarget.layer != this.gameObject.layer)
+        {
+            //transform.rotation = Quaternion.LookRotation(agent.velocity.normalized);
+            //if close enough to attack, stop moving and attack closest player enemy
+            if (targetDirection.magnitude <= creepRange)
             {
-                //transform.rotation = Quaternion.LookRotation(agent.velocity.normalized);
-                //if close enough to attack, stop moving and attack closest player enemy
-                if (targetDirection.magnitude <= 1.1f)
+                creepAnimator.SetBool("isAttacking", true);
+                this.gameObject.GetComponent<NavMeshAgent>().enabled = false;
+                transform.rotation = Quaternion.LookRotation(targetDirection);
+
+                if (this.creepAnimator.GetCurrentAnimatorStateInfo(0).IsName("Attack1"))
                 {
-                    creepAnimator.SetBool("isAttacking", true);
-                    this.gameObject.GetComponent<NavMeshAgent>().enabled = false;
-                    transform.rotation = Quaternion.LookRotation(targetDirection);
+                    if (creepAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.5f && attack == false)
+                    {
+                        Debug.Log("attack");
+                        attack = true;
+                    }
                 }
                 else
                 {
-                    creepAnimator.SetBool("isAttacking", false);
-                    this.gameObject.GetComponent<NavMeshAgent>().enabled = true;
-                    agent.SetDestination(closestTarget.transform.position);
-                    transform.rotation = Quaternion.LookRotation(agent.velocity.normalized);
+                    attack = false;
                 }
-
             }
-
-            //if no enemy target nearby, creep will move toward objective
             else
             {
+                creepAnimator.SetBool("isAttacking", false);
+                if (PhotonNetwork.IsMasterClient)
+                {
+                    transform.rotation = Quaternion.LookRotation(agent.velocity.normalized);
+                    agent.SetDestination(closestTarget.transform.position);
+                }
                 this.gameObject.GetComponent<NavMeshAgent>().enabled = true;
-                agent.SetDestination(obj.transform.position);
-                transform.rotation = Quaternion.LookRotation(agent.velocity.normalized);
+                attack = false;
+                
             }
+
+        }
+
+        //if no enemy target nearby, creep will move toward objective
+        else
+        {
+            if (PhotonNetwork.IsMasterClient)
+            {
+                transform.rotation = Quaternion.LookRotation(agent.velocity.normalized);
+                agent.SetDestination(obj.transform.position);
+            }
+            this.gameObject.GetComponent<NavMeshAgent>().enabled = true;
+            attack = false;
+        }
 
 
     }
