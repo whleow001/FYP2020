@@ -1889,7 +1889,7 @@ Canvas:
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_TargetDisplay: 0
 --- !u!224 &248889410
 RectTransform:
@@ -3951,8 +3951,8 @@ MonoBehaviour:
   prefabs:
   - {fileID: 2023002162799399333, guid: cace6c961bf3c454bbda4c1e63f20198, type: 3}
   - {fileID: 3155477757679561855, guid: fa6c2e83d56108140bc7d3e69deedb6e, type: 3}
-  - {fileID: 3155477757679561855, guid: fa6c2e83d56108140bc7d3e69deedb6e, type: 3}
-  - {fileID: 3155477757679561855, guid: fa6c2e83d56108140bc7d3e69deedb6e, type: 3}
+  - {fileID: 8223428677710402815, guid: 5e711a03e9aad504b8ad5c79313a35af, type: 3}
+  - {fileID: 4203113211004667601, guid: 8e9b052ab0c82cd42906e1024344b4ad, type: 3}
   - {fileID: 6173012337875008129, guid: 136d1aefd4313fb438a523363f53ab9c, type: 3}
   - {fileID: 8725961496364593681, guid: df4d009e161ff5245a13aad1769c35d3, type: 3}
   - {fileID: 8315261775295507800, guid: 6eb1afc75fbff0a4ca633efae8d1530f, type: 3}

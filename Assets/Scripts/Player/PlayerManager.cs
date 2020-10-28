@@ -31,6 +31,7 @@ public class PlayerManager : MonoBehaviourPunCallbacks
 
     //currently using int, can change back to GameObject type if we are using same character models for both teams.
     private GameObject selectedCharacter;
+    private int selectedCharacterIndex;
 
     private GameObject spawnPoint;
 
@@ -42,6 +43,8 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     public Slider slider;
     public Gradient gradient;
     public Image fill;
+
+    public bool kill = false;
 
     // Custom player properties
     private ExitGames.Client.Photon.Hashtable properties;
@@ -65,7 +68,11 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     // Update is called once per frame
     void Update()
     {
+      if (kill) {
+        TakeDamage(100);
 
+        kill = false;
+      }
     }
 
     public GameDirector GetDirector() {
@@ -119,8 +126,9 @@ public class PlayerManager : MonoBehaviourPunCallbacks
 
     }
 
-    public void ChangeCharacter(int selectedCharacterIndex)
+    public void ChangeCharacter(int index)
     {
+        selectedCharacterIndex = index;
         ChangeValue("Class", selectedCharacterIndex);
 
         selectedCharacter = director.GetPrefab(selectedCharacterIndex);
@@ -135,7 +143,9 @@ public class PlayerManager : MonoBehaviourPunCallbacks
             AvatarParent = MasterManager.NetworkInstantiate(playerContainer, spawnPoint.transform.GetChild(Random.Range(0, 3)).transform.position, Quaternion.identity);
         }
         //selectedCharacter = (int)(properties["Class"]);
+        AvatarParent.transform.rotation = Quaternion.identity;
         playerClone = MasterManager.NetworkInstantiate(selectedCharacter, AvatarParent.transform.position, Quaternion.identity);
+        Debug.Log(playerClone);
 
         slider = playerClone.GetComponentInChildren<Slider>();
         fill = playerClone.transform.Find("Canvas").Find("Healthbar").Find("fill").GetComponent<Image>();
@@ -231,7 +241,7 @@ public class PlayerManager : MonoBehaviourPunCallbacks
         return 0;
     }
 
-    public void TakeDamage(int dmg, PhotonView attacker)
+    public void TakeDamage(int dmg, PhotonView attacker = null)
     {
         ChangeValue("Health", (int)(properties["Health"]) - dmg);
         GetComponent<PlayerRPC>().CallRPC("BroadcastHealth", playerClone.GetComponent<PhotonView>().ViewID);
@@ -239,16 +249,20 @@ public class PlayerManager : MonoBehaviourPunCallbacks
         if (GetProperty("Health") <= 0)
         {
             Increment("Deaths");
-            Player killer = attacker.Owner;
-            CreditKiller(killer);
+
+            if (attacker) {
+              Player killer = attacker.Owner;
+              CreditKiller(killer);
+
+              //Notification for "player" killed "player"
+              eventsManager.GeneralNotification_S(killer.NickName + " has killed "  + PhotonNetwork.LocalPlayer.NickName, 2.0f, "CombatLog");
+            }
+
             //respawn timer overlay
             director.GetUIText(4).SetText("", 3.0f, true);
 
             //respawn timer overlay
             //director.UITexts[4].SetText("", 3.0f, true);
-
-            //Notification for "player" killed "player"
-            eventsManager.GeneralNotification_S(killer.NickName + " has killed "  + PhotonNetwork.LocalPlayer.NickName, 2.0f, "CombatLog");
             Respawn();
             //director.AddToCombatLog(photonView, attacker);
         }
@@ -270,6 +284,9 @@ public class PlayerManager : MonoBehaviourPunCallbacks
        PhotonNetwork.Destroy(playerClone);
        AvatarParent.transform.position = spawnPoint.transform.GetChild(Random.Range(0, 3)).transform.position;
        InitializeCharacter();
+
+       GetComponent<PlayerController>().ReinitializeGunpoints();
+       GetComponent<PlayerAnimation>().ReinitializeAnimator();
        //GetComponent<PlayerRPC>().CallRPC("BroadcastHealth", GetComponent<PlayerRPC>().GetPhotonView().Owner);
        //playerClone.GetComponent<PhotonView>().RPC("BroadcastHealth", RpcTarget.All, playerClone.GetComponent<PhotonView>().Owner);
     }
@@ -288,6 +305,10 @@ public class PlayerManager : MonoBehaviourPunCallbacks
         base.OnLeftRoom();
         Debug.Log(PhotonNetwork.LocalPlayer.NickName + " Has Disconnected");
         eventsManager.GeneralNotification_S(PhotonNetwork.LocalPlayer.NickName + " Has Disconnected", 2.0f, "PlayerDisconnect");
+    }
+
+    public int getSelectedCharacterIndex() {
+      return selectedCharacterIndex;
     }
 
     //Player disconnect under game setup script then add button for disconnect under char select

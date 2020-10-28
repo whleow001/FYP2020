@@ -91,7 +91,6 @@ public class PlayerContainer : MonoBehaviourPun
     [PunRPC]
     void InstantiateBullet(Vector3 position, Vector3 velocity, int layer, PhotonMessageInfo info)
     {
-        Debug.Log("Instantiate");
         playerManager.GetComponent<PlayerController>().InstantiateBullet(position, velocity, layer, info.photonView);
     }
 

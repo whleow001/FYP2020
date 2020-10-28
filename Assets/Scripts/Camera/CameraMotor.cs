@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class CameraMotor : MonoBehaviour {
 
+    [SerializeField]
     private Vector3 offset = new Vector3(-10, 9, -10);
     GameObject player;
 

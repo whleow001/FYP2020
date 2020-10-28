@@ -27,7 +27,6 @@ public class PlayerController : MonoBehaviour {
     private ParticleSystem hitFleshEffect;*/
     private Transform raycastDestination;
     private Transform raycastOrigins;
-    private int fireRate = 1;
     private bool isFiring = false;
     private float bulletSpeed = 70.0f;
     private float bulletDrop = 0.0f;
@@ -41,10 +40,8 @@ public class PlayerController : MonoBehaviour {
     private PlayerInput playerInput;
 
     // Movement variables
-    private float speed = 10.0f;
     private float angle;
     private bool readyForDoding = false;
-    private float dodgeSpeed = 7;
 
     public enum CharacterState {
       Idle = 0,
@@ -56,6 +53,24 @@ public class PlayerController : MonoBehaviour {
       Defeat = 6
     };
 
+    private struct Stats {
+      public Stats(float _speed, float _dodgeDistance, float _fireRate) {
+        speed = _speed;
+        dodgeDistance = _dodgeDistance;
+        fireRate = _fireRate;
+      }
+
+      public float speed { get; }
+      public float dodgeDistance { get; }
+      public float fireRate { get; }
+    }
+
+    private Stats[] stats = {
+      new Stats(10, 7, 1),       // Gunslinger
+      new Stats(8, 5, 1),        // Sniper
+      new Stats(5, 3, 1)         // Juggernaut
+    };
+
     [HideInInspector]
     public CharacterState characterState = CharacterState.Idle;
 
@@ -63,8 +78,7 @@ public class PlayerController : MonoBehaviour {
     private bool fovInstantiated = false;
 
     void Start() {
-      raycastOrigins = GetComponent<PlayerManager>().GetPlayerClone().transform.Find("RaycastOrigins").transform;
-      raycastDestination = GetComponent<PlayerManager>().GetPlayerClone().transform.Find("RaycastDestination").transform;
+      ReinitializeGunpoints();
       playerInput = GetComponent<PlayerInput>();
     }
 
@@ -87,7 +101,12 @@ public class PlayerController : MonoBehaviour {
       }*/
 
       if (readyForDoding)
-        GetTransform().position += GetTransform().forward * dodgeSpeed * Time.deltaTime;
+        GetTransform().position += GetTransform().forward * stats[GetComponent<PlayerManager>().getSelectedCharacterIndex()-1].dodgeDistance * Time.deltaTime;
+    }
+
+    public void ReinitializeGunpoints() {
+      raycastOrigins = GetComponent<PlayerManager>().GetPlayerClone().transform.Find("RaycastOrigins").transform;
+      raycastDestination = GetComponent<PlayerManager>().GetPlayerClone().transform.Find("RaycastDestination").transform;
     }
 
     private void UpdateState() {
@@ -143,7 +162,7 @@ public class PlayerController : MonoBehaviour {
     }
 
     private void Move() {
-      GetRigidbody().velocity = GetTransform().forward * speed;
+      GetRigidbody().velocity = GetTransform().forward * stats[GetComponent<PlayerManager>().getSelectedCharacterIndex()-1].speed;
     }
 
     private void Rotate() {
@@ -207,13 +226,14 @@ public class PlayerController : MonoBehaviour {
     private void FireBullet() {
       foreach (Transform raycastOrigin in raycastOrigins) {
         Vector3 velocity = (raycastDestination.position - raycastOrigin.position).normalized * bulletSpeed;
+        raycastOrigin.GetChild(0).GetComponent<ParticleSystem>().Emit(1);
         GetComponent<PlayerRPC>().InstantiateBullet(raycastOrigin.position, velocity, GetComponent<PlayerManager>().GetDirector().GetFactionLayer());
       }
     }
 
     private void UpdateFiring(float deltaTime) {
       accumulatedTime += deltaTime;
-      float fireInterval = 1.0f / fireRate;
+      float fireInterval = 1.0f / stats[GetComponent<PlayerManager>().getSelectedCharacterIndex()-1].fireRate;
       while (accumulatedTime >= 0.0f) {
         FireBullet();
         accumulatedTime -= fireInterval;
