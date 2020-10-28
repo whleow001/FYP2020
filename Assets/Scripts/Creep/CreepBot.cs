@@ -1,10 +1,13 @@
-﻿using System.Collections;
+﻿using Photon.Pun;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
+using Photon.Pun;
+using UnityEngine.UI;
 
-public class CreepBot : MonoBehaviour
+public class CreepBot : MonoBehaviourPun
 {
     /*
         obj     = enemy spawn
@@ -16,17 +19,25 @@ public class CreepBot : MonoBehaviour
     private GameObject obj;
     private GameObject[] creeps, players, targets;
 
-    /*
-    public float normalSpeed = 0.015f;
-    private float speed;
-    private float immobile = 0.0f;*/
-
     private NavMeshAgent agent;
     private Animator creepAnimator;
+
+
+    private bool attack = false;
+    private float creepRange;
+
+    private int health = 100;
+    public Slider slider;
+    public Gradient gradient;
+    public Image fill;
+
+    public PlayerManager playerManager;
+
 
     // Start is called before the first frame update
     void Start()
     {
+        playerManager = GameObject.Find("PlayerManager").GetComponent<PlayerManager>();
         GameObject[] objectives = GameObject.FindGameObjectsWithTag("Respawn");
         foreach (GameObject objective in objectives)
         {
@@ -35,10 +46,13 @@ public class CreepBot : MonoBehaviour
                 obj = objective;
             }
         }
-//        obj = GameObject.Find("GovtSpawn");
+
         creepAnimator = GetComponent<Animator>();
         agent = GetComponent<NavMeshAgent>();
         agent.updateRotation = false;
+
+        // range of creep attack based on creep size
+        creepRange = transform.localScale.x + 0.1f;
 
         //combining players and creeps as targets
         creeps = GameObject.FindGameObjectsWithTag("Creep");
@@ -78,32 +92,54 @@ public class CreepBot : MonoBehaviour
 
         //if target closeby is not on the same team, move towards them
         if (targetDirection.magnitude <= 13 && closestTarget.layer != this.gameObject.layer)
+        {
+            //transform.rotation = Quaternion.LookRotation(agent.velocity.normalized);
+            //if close enough to attack, stop moving and attack closest player enemy
+            if (targetDirection.magnitude <= creepRange)
             {
-                //transform.rotation = Quaternion.LookRotation(agent.velocity.normalized);
-                //if close enough to attack, stop moving and attack closest player enemy
-                if (targetDirection.magnitude <= 1.1f)
+                creepAnimator.SetBool("isAttacking", true);
+                this.gameObject.GetComponent<NavMeshAgent>().enabled = false;
+                transform.rotation = Quaternion.LookRotation(targetDirection);
+
+                if (this.creepAnimator.GetCurrentAnimatorStateInfo(0).IsName("Attack1"))
                 {
-                    creepAnimator.SetBool("isAttacking", true);
-                    this.gameObject.GetComponent<NavMeshAgent>().enabled = false;
-                    transform.rotation = Quaternion.LookRotation(targetDirection);
+                    if (creepAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.5f && attack == false)
+                    {
+                        Debug.Log("attack");
+                        attack = true;
+                    }
                 }
                 else
                 {
-                    creepAnimator.SetBool("isAttacking", false);
-                    this.gameObject.GetComponent<NavMeshAgent>().enabled = true;
-                    agent.SetDestination(closestTarget.transform.position);
-                    transform.rotation = Quaternion.LookRotation(agent.velocity.normalized);
+                    attack = false;
                 }
-
             }
-
-            //if no enemy target nearby, creep will move toward objective
             else
             {
+                creepAnimator.SetBool("isAttacking", false);
+                if (PhotonNetwork.IsMasterClient)
+                {
+                    transform.rotation = Quaternion.LookRotation(agent.velocity.normalized);
+                    agent.SetDestination(closestTarget.transform.position);
+                }
                 this.gameObject.GetComponent<NavMeshAgent>().enabled = true;
-                agent.SetDestination(obj.transform.position);
-                transform.rotation = Quaternion.LookRotation(agent.velocity.normalized);
+                attack = false;
+                
             }
+
+        }
+
+        //if no enemy target nearby, creep will move toward objective
+        else
+        {
+            if (PhotonNetwork.IsMasterClient)
+            {
+                transform.rotation = Quaternion.LookRotation(agent.velocity.normalized);
+                agent.SetDestination(obj.transform.position);
+            }
+            this.gameObject.GetComponent<NavMeshAgent>().enabled = true;
+            attack = false;
+        }
 
 
     }
@@ -127,4 +163,44 @@ public class CreepBot : MonoBehaviour
         return closestTarget;
     }
 
+    public void SetHealthBar(int value)
+    {
+        slider.value = value;
+        fill.color = gradient.Evaluate(slider.normalizedValue);
+
+    }
+
+    public void SetMaxHealthBar(int value)
+    {
+        slider.maxValue = 100;
+        slider.value = 100;
+        fill.color = gradient.Evaluate(1f);
+
+    }
+    /*
+    private void OnCollisionEnter(Collision other)
+    {
+
+        if (other.gameObject.tag == "Projectile" && other.gameObject.layer == playerManager.GetDirector().GetOtherFactionLayer())
+        {
+            TakeDamage(20);
+        }
+    }
+
+    public void TakeDamage(int dmg)
+    {
+        health -= dmg;
+        photonView.RPC("BroadcastHealth", RpcTarget.All, photonView.ViewID);
+        
+    }
+
+    //broadcast health to all clients in the server
+    [PunRPC]
+    void BroadcastHealth(int victimID)
+    {
+        PhotonView PV = PhotonView.Find(victimID);
+        SetHealthBar(health);
+        //GetComponent<PlayerManager>().SetHealthBar((int)victim.CustomProperties["Health"], mainslider, mainfill);
+    }
+    */
 }

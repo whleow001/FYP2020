@@ -41,6 +41,9 @@ public abstract class GameDirector : MonoBehaviourPun {
     // fps tracker
     private float deltaTime;
 
+    // NavMeshBuilder for creep
+    private LocalNavMeshBuilder nvb;
+
     // UI References
     // had to change protection level for eventsmanager access
     [Header("UI Texts")]
@@ -137,10 +140,16 @@ public abstract class GameDirector : MonoBehaviourPun {
           maskSet = true;
       }
 
-      //Debug.Log("Update");
+      if (PhotonNetwork.IsMasterClient && nvb == null)
+      {
+          // Spawn navmesh on master client if no navmesh
+          nvb = gameObject.AddComponent<LocalNavMeshBuilder>();
+      }
 
-      // Update K/D
-      GetUIText(Texts.kd).SetText(PhotonNetwork.LocalPlayer.CustomProperties["Kills"] + "/" + PhotonNetwork.LocalPlayer.CustomProperties["Deaths"]);
+        //Debug.Log("Update");
+
+        // Update K/D
+        GetUIText(Texts.kd).SetText(PhotonNetwork.LocalPlayer.CustomProperties["Kills"] + "/" + PhotonNetwork.LocalPlayer.CustomProperties["Deaths"]);
 
       // Update fps
       deltaTime += (Time.deltaTime - deltaTime) * 0.1f;

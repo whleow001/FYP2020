@@ -28,9 +28,6 @@ public class RebelHQ_A : GameDirector {
   [SerializeField]
   private int generatorCount;
 
-  // NavMeshBuilder for creep
-  private LocalNavMeshBuilder nvb;
-
   // Flags
   private bool forcefieldDestroyed = false;
 
@@ -75,9 +72,6 @@ public class RebelHQ_A : GameDirector {
       // Spawn forcefields
       for (int i = 0; i < 2; i++)
         MasterManager.RoomObjectInstantiate(GetPrefab(Prefabs.Forcefield), GetSpawn(Spawns.Forcefield).transform.GetChild(i).transform.position, GetSpawn(Spawns.Forcefield).transform.GetChild(i).transform.rotation);
-
-      // Spawn navmesh
-      nvb = gameObject.AddComponent<LocalNavMeshBuilder>();
 
       // spawn govt creep
       for(int i = 0; i < 3; i++)
