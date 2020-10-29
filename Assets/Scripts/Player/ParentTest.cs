@@ -23,6 +23,8 @@ public class ParentTest : MonoBehaviourPun
             if (parent.GetComponent<PhotonView>().Owner == PV.Owner)
             {
                 PV.gameObject.transform.parent = parent.transform;
+                PV.gameObject.transform.localPosition = new Vector3(0, 0, 0);
+                PV.gameObject.transform.localRotation = Quaternion.identity;
             }
         }
     }

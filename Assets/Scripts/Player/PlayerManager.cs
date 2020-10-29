@@ -68,11 +68,11 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     // Update is called once per frame
     void Update()
     {
-      if (kill) {
-        TakeDamage(100);
+      //if (kill) {
+      //  TakeDamage(100);
 
-        kill = false;
-      }
+      //  kill = false;
+      //}
     }
 
     public GameDirector GetDirector() {
@@ -138,7 +138,7 @@ public class PlayerManager : MonoBehaviourPunCallbacks
 
     private void InitializeCharacter()
     {
-        if(AvatarParent == null)
+        if (AvatarParent == null)
         {
             AvatarParent = MasterManager.NetworkInstantiate(playerContainer, spawnPoint.transform.GetChild(Random.Range(0, 3)).transform.position, Quaternion.identity);
         }
@@ -146,9 +146,11 @@ public class PlayerManager : MonoBehaviourPunCallbacks
         AvatarParent.transform.rotation = Quaternion.identity;
         playerClone = MasterManager.NetworkInstantiate(selectedCharacter, AvatarParent.transform.position, Quaternion.identity);
         Debug.Log(playerClone);
+        //GetComponent<PlayerRPC>().SyncPosition()
 
         slider = playerClone.GetComponentInChildren<Slider>();
         fill = playerClone.transform.Find("Canvas").Find("Healthbar").Find("fill").GetComponent<Image>();
+
         //changing material and layer not working yet
         SetProperties(team);
         GetComponent<PlayerRPC>().ChangeIcons();
@@ -250,19 +252,17 @@ public class PlayerManager : MonoBehaviourPunCallbacks
         {
             Increment("Deaths");
 
-            if (attacker) {
-              Player killer = attacker.Owner;
-              CreditKiller(killer);
+            if (attacker)
+            {
+                Player killer = attacker.Owner;
+                CreditKiller(killer);
 
-              //Notification for "player" killed "player"
-              eventsManager.GeneralNotification_S(killer.NickName + " has killed "  + PhotonNetwork.LocalPlayer.NickName, 2.0f, "CombatLog");
+                //Notification for "player" killed "player"
+                //eventsManager.GeneralNotification_S(killer.NickName + " has killed " + PhotonNetwork.LocalPlayer.NickName, 2.0f, "CombatLog");
             }
 
             //respawn timer overlay
             director.GetUIText(4).SetText("", 3.0f, true);
-
-            //respawn timer overlay
-            //director.UITexts[4].SetText("", 3.0f, true);
             Respawn();
             //director.AddToCombatLog(photonView, attacker);
         }
@@ -280,12 +280,14 @@ public class PlayerManager : MonoBehaviourPunCallbacks
 
     private void Respawn()
     {
-       Reset();
+       
        PhotonNetwork.Destroy(playerClone);
        AvatarParent.transform.position = spawnPoint.transform.GetChild(Random.Range(0, 3)).transform.position;
        InitializeCharacter();
+       Reset();
 
        GetComponent<PlayerController>().ReinitializeGunpoints();
+       GetComponent<PlayerController>().SetStatsOnRespawn();
        GetComponent<PlayerAnimation>().ReinitializeAnimator();
        //GetComponent<PlayerRPC>().CallRPC("BroadcastHealth", GetComponent<PlayerRPC>().GetPhotonView().Owner);
        //playerClone.GetComponent<PhotonView>().RPC("BroadcastHealth", RpcTarget.All, playerClone.GetComponent<PhotonView>().Owner);

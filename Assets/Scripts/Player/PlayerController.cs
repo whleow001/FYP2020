@@ -71,6 +71,8 @@ public class PlayerController : MonoBehaviour {
       new Stats(5, 3, 1)         // Juggernaut
     };
 
+    private Stats currentStats;
+
     [HideInInspector]
     public CharacterState characterState = CharacterState.Idle;
 
@@ -80,6 +82,7 @@ public class PlayerController : MonoBehaviour {
     void Start() {
       ReinitializeGunpoints();
       playerInput = GetComponent<PlayerInput>();
+      SetStatsOnRespawn();
     }
 
     private void Update()
@@ -101,12 +104,17 @@ public class PlayerController : MonoBehaviour {
       }*/
 
       if (readyForDoding)
-        GetTransform().position += GetTransform().forward * stats[GetComponent<PlayerManager>().getSelectedCharacterIndex()-1].dodgeDistance * Time.deltaTime;
+        GetTransform().position += GetTransform().forward * currentStats.dodgeDistance * Time.deltaTime;
     }
 
     public void ReinitializeGunpoints() {
       raycastOrigins = GetComponent<PlayerManager>().GetPlayerClone().transform.Find("RaycastOrigins").transform;
       raycastDestination = GetComponent<PlayerManager>().GetPlayerClone().transform.Find("RaycastDestination").transform;
+    }
+
+    public void SetStatsOnRespawn()
+    {
+        currentStats = stats[GetComponent<PlayerManager>().getSelectedCharacterIndex() - 1];
     }
 
     private void UpdateState() {
@@ -162,7 +170,7 @@ public class PlayerController : MonoBehaviour {
     }
 
     private void Move() {
-      GetRigidbody().velocity = GetTransform().forward * stats[GetComponent<PlayerManager>().getSelectedCharacterIndex()-1].speed;
+      GetRigidbody().velocity = GetTransform().forward * currentStats.speed;
     }
 
     private void Rotate() {
@@ -233,7 +241,7 @@ public class PlayerController : MonoBehaviour {
 
     private void UpdateFiring(float deltaTime) {
       accumulatedTime += deltaTime;
-      float fireInterval = 1.0f / stats[GetComponent<PlayerManager>().getSelectedCharacterIndex()-1].fireRate;
+      float fireInterval = 1.0f / currentStats.fireRate;
       while (accumulatedTime >= 0.0f) {
         FireBullet();
         accumulatedTime -= fireInterval;
