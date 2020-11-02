@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 6188283564845140735}
   - component: {fileID: 8216188962040675893}
   - component: {fileID: 8676087588492258399}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: grave_fence
   m_TagString: Untagged
   m_Icon: {fileID: 0}
