@@ -1,10 +1,10 @@
 ﻿using Photon.Pun;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
-using Photon.Pun;
 using UnityEngine.UI;
 
 public class CreepBot : MonoBehaviourPun
@@ -16,8 +16,9 @@ public class CreepBot : MonoBehaviourPun
         targets = array of all creep and player gameobjects
     */
 
-    private GameObject obj;
+    private GameObject obj, gate;
     private GameObject[] creeps, players, targets;
+    private float objRadius;
 
     private NavMeshAgent agent;
     private Animator creepAnimator;
@@ -41,11 +42,17 @@ public class CreepBot : MonoBehaviourPun
         GameObject[] objectives = GameObject.FindGameObjectsWithTag("Respawn");
         foreach (GameObject objective in objectives)
         {
-            if(objective.layer != this.gameObject.layer)
+            if (objective.layer != this.gameObject.layer)
             {
                 obj = objective;
             }
         }
+
+        // get radius of enemy spawn
+        objRadius = obj.GetComponent<Renderer>().bounds.extents.magnitude / 2;
+
+        //get game object gate
+        gate = GameObject.FindGameObjectWithTag("Gate");
 
         creepAnimator = GetComponent<Animator>();
         agent = GetComponent<NavMeshAgent>();
@@ -63,18 +70,22 @@ public class CreepBot : MonoBehaviourPun
     // Update is called once per frame
     void Update()
     {
-        //combining players and creeps as targets
+        //combining players, creeps and gate as targets
         creeps = GameObject.FindGameObjectsWithTag("Creep");
         players = GameObject.FindGameObjectsWithTag("Player");
         targets = players.Concat(creeps).ToArray();
-
+        if (gate != null)
+        {
+            Array.Resize(ref targets, targets.Length + 1);
+            targets[targets.Length - 1] = gate;
+        }
 
         //if can't find objective, creep will become idle
-        if (obj==null)
+        if (obj == null)
         {
             //Debug.Log("Obj not found");
             this.gameObject.GetComponent<NavMeshAgent>().enabled = false;
-            creepAnimator.SetBool("isIdle",true);
+            creepAnimator.SetBool("isIdle", true);
             //return;
         }
         else
@@ -83,12 +94,13 @@ public class CreepBot : MonoBehaviourPun
         }
 
         Vector3 objDirection = obj.transform.position - transform.position;
+        Vector3 gateDirection = gate.transform.position - transform.position;
 
         GameObject closestTarget = FindClosestTarget(targets);
         //Debug.Log(closestTarget);
         Vector3 targetDirection = closestTarget.transform.position - transform.position;
 
-        
+
 
         //if target closeby is not on the same team, move towards them
         if (targetDirection.magnitude <= 13 && closestTarget.layer != this.gameObject.layer)
@@ -124,21 +136,23 @@ public class CreepBot : MonoBehaviourPun
                 }
                 this.gameObject.GetComponent<NavMeshAgent>().enabled = true;
                 attack = false;
-                
+
             }
 
         }
 
-        //if no enemy target nearby, creep will move toward objective
+        //if no enemy target nearby, creep will move toward objective's edge
         else
         {
             if (PhotonNetwork.IsMasterClient)
             {
                 transform.rotation = Quaternion.LookRotation(agent.velocity.normalized);
-                agent.SetDestination(obj.transform.position);
+                agent.SetDestination(obj.transform.position - (obj.transform.position - this.transform.position).normalized * objRadius);
+
             }
             this.gameObject.GetComponent<NavMeshAgent>().enabled = true;
             attack = false;
+
         }
 
 
