@@ -105,6 +105,8 @@ public class CreepBot : MonoBehaviourPun
         //if target closeby is not on the same team, move towards them
         if (targetDirection.magnitude <= 13 && closestTarget.layer != this.gameObject.layer)
         {
+            creepAnimator.SetBool("isIdle", false);
+
             //transform.rotation = Quaternion.LookRotation(agent.velocity.normalized);
             //if close enough to attack, stop moving and attack closest player enemy
             if (targetDirection.magnitude <= creepRange)
@@ -144,13 +146,22 @@ public class CreepBot : MonoBehaviourPun
         //if no enemy target nearby, creep will move toward objective's edge
         else
         {
-            if (PhotonNetwork.IsMasterClient)
+            if (objDirection.magnitude <= objRadius)
             {
-                transform.rotation = Quaternion.LookRotation(agent.velocity.normalized);
-                agent.SetDestination(obj.transform.position - (obj.transform.position - this.transform.position).normalized * objRadius);
-
+                creepAnimator.SetBool("isIdle", true);
+                this.gameObject.GetComponent<NavMeshAgent>().enabled = false;
             }
-            this.gameObject.GetComponent<NavMeshAgent>().enabled = true;
+            else
+            {
+                creepAnimator.SetBool("isIdle", false);
+                if (PhotonNetwork.IsMasterClient)
+                {
+                    transform.rotation = Quaternion.LookRotation(agent.velocity.normalized);
+                    agent.SetDestination(obj.transform.position - (obj.transform.position - this.transform.position).normalized * objRadius);
+
+                }
+                this.gameObject.GetComponent<NavMeshAgent>().enabled = true;
+            }
             attack = false;
 
         }
