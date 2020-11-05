@@ -15,12 +15,18 @@ public class Spawns : BaseSpawns
 {
   public const int Generator = 2;
   public const int Forcefield = 3;
+  public const int ForcefieldSphere = 4;
+  public const int CryptSpawn = 5;
+  public const int GateSpawn = 6;
 }
 
 public class Prefabs : BasePrefabs
 {
   public const int Generator = 4;
   public const int Forcefield = 5;
+  public const int ForcefieldSphere = 8;
+  public const int Crypt = 9;
+  public const int Gate = 10;
 }
 
 public class RebelHQ_A : GameDirector {
@@ -73,13 +79,24 @@ public class RebelHQ_A : GameDirector {
       for (int i = 0; i < 2; i++)
         MasterManager.RoomObjectInstantiate(GetPrefab(Prefabs.Forcefield), GetSpawn(Spawns.Forcefield).transform.GetChild(i).transform.position, GetSpawn(Spawns.Forcefield).transform.GetChild(i).transform.rotation);
 
-      //// spawn govt creep
-      for(int i = 0; i < 3; i++)
-        MasterManager.RoomObjectInstantiate(prefabs[6], spawns[0].transform.GetChild(i+3).transform.position, Quaternion.identity);
-
-      //// spawn rebel creep
+      // Spawn crypt
       for (int i = 0; i < 3; i++)
-       MasterManager.RoomObjectInstantiate(prefabs[7], spawns[1].transform.GetChild(i+3).transform.position, Quaternion.identity);
+        MasterManager.RoomObjectInstantiate(GetPrefab(Prefabs.Crypt), GetSpawn(Spawns.CryptSpawn).transform.GetChild(i).transform.position, GetSpawn(Spawns.CryptSpawn).transform.GetChild(i).transform.rotation);
+
+      //forcefield sphere spawn on rebel side
+      MasterManager.RoomObjectInstantiate(GetPrefab(Prefabs.ForcefieldSphere), GetSpawn(Spawns.ForcefieldSphere).transform.position, GetSpawn(Spawns.ForcefieldSphere).transform.rotation);
+      //sphere.transform.localScale = new Vector3(2, 2, 2);
+
+      //Gate spawn
+      MasterManager.RoomObjectInstantiate(GetPrefab(Prefabs.Gate), GetSpawn(Spawns.GateSpawn).transform.position, GetSpawn(Spawns.GateSpawn).transform.rotation);
+
+      //// spawn govt creep
+      //for(int i = 0; i < 3; i++)
+      //  MasterManager.RoomObjectInstantiate(prefabs[6], spawns[0].transform.GetChild(i+3).transform.position, Quaternion.identity);
+
+      ////// spawn rebel creep
+      //for (int i = 0; i < 3; i++)
+      // MasterManager.RoomObjectInstantiate(prefabs[7], spawns[1].transform.GetChild(i+3).transform.position, Quaternion.identity);
     }
   }
 

@@ -33,16 +33,20 @@ public class GeneratorHealth : Objective
 
     // Update is called once per frame
     void Update() {
+
         if (health <= 0)
         {
             DestroyObject();
             eventsManager.RebelNotification_S("Generator Destroyed!", 2.0f);
         }
 
-      if (takeDamage) {
-        TakeDamage(20);
+        /*
+        if(takeDamage)
+        {
+            TakeDamage(20);
             takeDamage = false;
-      }
+        }
+        */
     }
     /*
     public void SetHealthbar(int value)
@@ -58,16 +62,27 @@ public class GeneratorHealth : Objective
         fill.color = gradient.Evaluate(1f);
     }
     */
-    protected override void DestroyObject() {
+    protected override void DestroyObject()
+    {
         Adirector.DecrementGeneratorCount();
 
-      if (PhotonNetwork.IsMasterClient)
-        PhotonNetwork.Destroy(gameObject);
+        if (PhotonNetwork.IsMasterClient)
+            PhotonNetwork.Destroy(gameObject);
     }
 
     public void TakeDamage(int damage) {
-      health -= damage;
+      health = health - damage;
       SetHealthbar(health);
       eventsManager.RebelNotification_S("Generator Under Attack!", 2.0f);
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+
+        if (collision.gameObject.tag == "Projectile" && collision.gameObject.layer == 9)
+        {
+            Debug.Log("generator is hit");
+            TakeDamage(20);
+        }
     }
 }

@@ -227,8 +227,12 @@ public class PlayerController : MonoBehaviour {
       if (Physics.Raycast(ray, out hitInfo, distance)) {
         bullet.tracer.transform.position = hitInfo.point;
         bullet.time = maxLifetime;
-      } else
-        bullet.tracer.transform.position = end;
+      }
+      else
+        {
+            bullet.tracer.transform.position = end;
+        }
+            
     }
 
     private void FireBullet() {
