@@ -57,6 +57,11 @@ public class PlayerContainer : MonoBehaviourPun
       }
     }
 
+   /* public void TakeDamage(int damage)
+    {
+        playerManager.TakeDamage(damage,)
+    }*/
+
     //broadcast health to all clients in the server
     [PunRPC]
     void BroadcastHealth(int victimID)

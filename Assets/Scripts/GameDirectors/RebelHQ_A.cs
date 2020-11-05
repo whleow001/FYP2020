@@ -91,12 +91,12 @@ public class RebelHQ_A : GameDirector {
       MasterManager.RoomObjectInstantiate(GetPrefab(Prefabs.Gate), GetSpawn(Spawns.GateSpawn).transform.position, GetSpawn(Spawns.GateSpawn).transform.rotation);
 
       //// spawn govt creep
-      //for(int i = 0; i < 3; i++)
-      //  MasterManager.RoomObjectInstantiate(prefabs[6], spawns[0].transform.GetChild(i+3).transform.position, Quaternion.identity);
+      for(int i = 0; i < 3; i++)
+        MasterManager.RoomObjectInstantiate(prefabs[6], spawns[0].transform.GetChild(i+3).transform.position, Quaternion.identity);
 
       ////// spawn rebel creep
-      //for (int i = 0; i < 3; i++)
-      // MasterManager.RoomObjectInstantiate(prefabs[7], spawns[1].transform.GetChild(i+3).transform.position, Quaternion.identity);
+      for (int i = 0; i < 3; i++)
+       MasterManager.RoomObjectInstantiate(prefabs[7], spawns[1].transform.GetChild(i+3).transform.position, Quaternion.identity);
     }
   }
 

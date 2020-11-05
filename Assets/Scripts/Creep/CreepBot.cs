@@ -94,79 +94,89 @@ public class CreepBot : MonoBehaviourPun
         }
 
         Vector3 objDirection = obj.transform.position - transform.position;
-        Vector3 gateDirection = gate.transform.position - transform.position;
 
         GameObject closestTarget = FindClosestTarget(targets);
         //Debug.Log(closestTarget);
         Vector3 targetDirection = closestTarget.transform.position - transform.position;
 
-
-
-        //if target closeby is not on the same team, move towards them
-        if (targetDirection.magnitude <= 13 && closestTarget.layer != this.gameObject.layer)
+        if (health > 0)
         {
-            creepAnimator.SetBool("isIdle", false);
 
-            //transform.rotation = Quaternion.LookRotation(agent.velocity.normalized);
-            //if close enough to attack, stop moving and attack closest player enemy
-            if (targetDirection.magnitude <= creepRange)
+            //if target closeby is not on the same team, move towards them
+            if (targetDirection.magnitude <= 13 && closestTarget.layer != this.gameObject.layer)
             {
-                creepAnimator.SetBool("isAttacking", true);
-                this.gameObject.GetComponent<NavMeshAgent>().enabled = false;
-                transform.rotation = Quaternion.LookRotation(targetDirection);
+                creepAnimator.SetBool("isIdle", false);
 
-                if (this.creepAnimator.GetCurrentAnimatorStateInfo(0).IsName("Attack1"))
+                //transform.rotation = Quaternion.LookRotation(agent.velocity.normalized);
+                //if close enough to attack, stop moving and attack closest player enemy
+                if (targetDirection.magnitude <= creepRange)
                 {
-                    if (creepAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.5f && attack == false)
+                    creepAnimator.SetBool("isAttacking", true);
+                    this.gameObject.GetComponent<NavMeshAgent>().enabled = false;
+                    transform.rotation = Quaternion.LookRotation(targetDirection);
+
+                    if (this.creepAnimator.GetCurrentAnimatorStateInfo(0).IsName("Attack1"))
                     {
-                        Debug.Log("attack");
-                        attack = true;
+                        if (creepAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.5f && attack == false)
+                        {
+                            Debug.Log(closestTarget);
+                            //closestTarget.GetComponent<CreepBot>().TakeDamage(20);
+                            closestTarget.SendMessage("TakeDamage", 20);
+                            attack = true;
+                        }
+                    }
+                    else
+                    {
+                        attack = false;
                     }
                 }
                 else
                 {
+                    creepAnimator.SetBool("isAttacking", false);
+                    this.gameObject.GetComponent<NavMeshAgent>().enabled = true;
+                    if (PhotonNetwork.IsMasterClient)
+                    {
+                        transform.rotation = Quaternion.LookRotation(agent.velocity.normalized);
+                        agent.SetDestination(closestTarget.transform.position);
+                    }
                     attack = false;
+
                 }
+
             }
+
+            //if no enemy target nearby, creep will move toward objective's edge
             else
             {
                 creepAnimator.SetBool("isAttacking", false);
-                if (PhotonNetwork.IsMasterClient)
+                if (objDirection.magnitude <= objRadius)
                 {
-                    transform.rotation = Quaternion.LookRotation(agent.velocity.normalized);
-                    agent.SetDestination(closestTarget.transform.position);
+                    creepAnimator.SetBool("isIdle", true);
+                    //this.gameObject.GetComponent<NavMeshAgent>().enabled = false;
                 }
-                this.gameObject.GetComponent<NavMeshAgent>().enabled = true;
+                else
+                {
+                    creepAnimator.SetBool("isIdle", false);
+                    this.gameObject.GetComponent<NavMeshAgent>().enabled = true;
+                    if (PhotonNetwork.IsMasterClient)
+                    {
+                        transform.rotation = Quaternion.LookRotation(agent.velocity.normalized);
+                        agent.SetDestination(obj.transform.position - (obj.transform.position - this.transform.position).normalized * objRadius);
+
+                    }
+                }
                 attack = false;
 
             }
 
         }
-
-        //if no enemy target nearby, creep will move toward objective's edge
         else
         {
-            if (objDirection.magnitude <= objRadius)
+            if (PhotonNetwork.IsMasterClient)
             {
-                creepAnimator.SetBool("isIdle", true);
-                this.gameObject.GetComponent<NavMeshAgent>().enabled = false;
+                PhotonNetwork.Destroy(gameObject);
             }
-            else
-            {
-                creepAnimator.SetBool("isIdle", false);
-                if (PhotonNetwork.IsMasterClient)
-                {
-                    transform.rotation = Quaternion.LookRotation(agent.velocity.normalized);
-                    agent.SetDestination(obj.transform.position - (obj.transform.position - this.transform.position).normalized * objRadius);
-
-                }
-                this.gameObject.GetComponent<NavMeshAgent>().enabled = true;
-            }
-            attack = false;
-
         }
-
-
     }
 
     private GameObject FindClosestTarget(GameObject[] targets)
@@ -202,7 +212,7 @@ public class CreepBot : MonoBehaviourPun
         fill.color = gradient.Evaluate(1f);
 
     }
-    /*
+    
     private void OnCollisionEnter(Collision other)
     {
 
@@ -227,5 +237,5 @@ public class CreepBot : MonoBehaviourPun
         SetHealthBar(health);
         //GetComponent<PlayerManager>().SetHealthBar((int)victim.CustomProperties["Health"], mainslider, mainfill);
     }
-    */
+    
 }
