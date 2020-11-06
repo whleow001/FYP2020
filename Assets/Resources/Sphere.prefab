@@ -250,9 +250,9 @@ GameObject:
   - component: {fileID: 6910693080231662259}
   - component: {fileID: 6910693080231662270}
   - component: {fileID: 4152094689212264281}
-  m_Layer: 17
+  m_Layer: 10
   m_Name: Sphere
-  m_TagString: Untagged
+  m_TagString: Crypt
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
