@@ -23,8 +23,10 @@ public class CreepBot : MonoBehaviourPun
     private NavMeshAgent agent;
     private Animator creepAnimator;
 
-
+    // to determine whether creep has dealt damage or not in one attack animation
     private bool attack = false;
+
+    // for creep attack range
     private float creepRange;
 
     private int health = 100;
@@ -61,7 +63,7 @@ public class CreepBot : MonoBehaviourPun
         // range of creep attack based on creep size
         creepRange = transform.localScale.x/2 + 0.1f;
 
-        //combining players and creeps as targets
+        //combining players, creeps, and crypts as targets
         creeps = GameObject.FindGameObjectsWithTag("Creep");
         players = GameObject.FindGameObjectsWithTag("Player");
         crypts = GameObject.FindGameObjectsWithTag("Crypt");
@@ -72,7 +74,7 @@ public class CreepBot : MonoBehaviourPun
     // Update is called once per frame
     void Update()
     {
-        //combining players, creeps and gate as targets
+        //combining players, creeps, crypts and gate as targets
         creeps = GameObject.FindGameObjectsWithTag("Creep");
         players = GameObject.FindGameObjectsWithTag("Player");
         crypts = GameObject.FindGameObjectsWithTag("Crypt");
@@ -97,12 +99,15 @@ public class CreepBot : MonoBehaviourPun
             creepAnimator.SetBool("isIdle", false);
         }
 
+        //counting position of objective according to creep position
         Vector3 objDirection = obj.transform.position - transform.position;
+        //calculating closest edge of the objective according to creep position
         Vector3 objEdge = obj.transform.position - (obj.transform.position - this.transform.position).normalized * objRadius;
 
         GameObject closestTarget = FindClosestTarget(targets);
-        //Debug.Log(closestTarget);
         Vector3 targetDirection = closestTarget.transform.position - transform.position;
+
+        // change range according to target's tag (creep will have longer range against building as centre of the building is the target)
         if (closestTarget.tag == "Player" || closestTarget.tag == "Creep")
         {
             creepRange = transform.localScale.x / 2 + 0.5f;
@@ -112,6 +117,7 @@ public class CreepBot : MonoBehaviourPun
             creepRange = closestTarget.GetComponent<Collider>().bounds.size.x / 2 + 0.2f;
         }
 
+        // create a path
         NavMeshPath path = new NavMeshPath();
 
         if (health > 0)
@@ -122,7 +128,7 @@ public class CreepBot : MonoBehaviourPun
             {
                 creepAnimator.SetBool("isIdle", false);
 
-                //transform.rotation = Quaternion.LookRotation(agent.velocity.normalized);
+// attack
                 //if close enough to attack, stop moving and attack closest player enemy
                 if (targetDirection.magnitude <= creepRange)
                 {
@@ -130,12 +136,11 @@ public class CreepBot : MonoBehaviourPun
                     this.gameObject.GetComponent<NavMeshAgent>().enabled = false;
                     transform.rotation = Quaternion.LookRotation(targetDirection);
 
+                    // if currently is in attacking animation
                     if (this.creepAnimator.GetCurrentAnimatorStateInfo(0).IsName("Attack1"))
                     {
                         if (creepAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.5f && attack == false)
                         {
-                            Debug.Log(creepRange);
-                            Debug.Log(closestTarget.GetComponent<Collider>().GetType());
                             //closestTarget.GetComponent<CreepBot>().TakeDamage(20);
                             closestTarget.SendMessage("TakeDamage", 20);
                             attack = true;
@@ -146,6 +151,9 @@ public class CreepBot : MonoBehaviourPun
                         attack = false;
                     }
                 }
+
+// chase
+                // chase target instead if target is still in creep field of view
                 else
                 {
                     creepAnimator.SetBool("isAttacking", false);
@@ -174,12 +182,14 @@ public class CreepBot : MonoBehaviourPun
             //if no enemy target nearby, creep will move toward objective's edge
             else
             {
+// idle when objective reached
                 creepAnimator.SetBool("isAttacking", false);
                 if (objDirection.magnitude <= objRadius)
                 {
                     creepAnimator.SetBool("isIdle", true);
-                    //this.gameObject.GetComponent<NavMeshAgent>().enabled = false;
                 }
+
+// walk to objective if not reached yet
                 else
                 {
                     creepAnimator.SetBool("isIdle", false);
@@ -206,6 +216,8 @@ public class CreepBot : MonoBehaviourPun
             }
 
         }
+
+// creep destroyed when health <= 0
         else
         {
             if (PhotonNetwork.IsMasterClient)
@@ -215,6 +227,8 @@ public class CreepBot : MonoBehaviourPun
         }
     }
 
+
+    // function to find closest target
     private GameObject FindClosestTarget(GameObject[] targets)
     {
         float minDistance = (targets[0].transform.position - transform.position).magnitude;
