@@ -18,6 +18,7 @@ public class EventsManager : MonoBehaviourPun, IOnEventCallback {
     enum EventsCode : byte
     {
         RefreshTimer,
+        RefreshPoints,
         DisplayEndGame,
         RebelNotification,
         GovtNotification,
@@ -42,6 +43,9 @@ public class EventsManager : MonoBehaviourPun, IOnEventCallback {
             //fill in for timer
             case EventsCode.RefreshTimer:
                 RefreshTimer_R(o);
+                break;
+            case EventsCode.RefreshPoints:
+                RefreshPoints_R(o);
                 break;
             case EventsCode.DisplayEndGame:
                 DisplayEndGame_R(o);
@@ -84,6 +88,31 @@ public class EventsManager : MonoBehaviourPun, IOnEventCallback {
     {
         director.currentMatchTime = (int)data[0];
         director.RefreshTimerUI();
+    }
+
+    //Send and recieve Events RefreshPoints
+    public void RefreshPoints_S()
+    {
+      if (director is RebelHQ_B) {
+        RebelHQ_B Bdirector = (RebelHQ_B)director;
+        object[] package = new object[] {Bdirector.GetGovtPoints()};
+
+        PhotonNetwork.RaiseEvent(
+          (byte)EventsCode.RefreshPoints,
+          package,
+          new RaiseEventOptions { Receivers = ReceiverGroup.All },
+          new SendOptions { Reliability = true }
+        );
+      }
+
+    }
+
+    public void RefreshPoints_R(object[] data)
+    {
+      if (director is RebelHQ_B) {
+        RebelHQ_B Bdirector = (RebelHQ_B)director;
+        Bdirector.SetGovtPoints((int)data[0]);
+      }
     }
 
     //Send and receive event DisplayEndGame
@@ -133,7 +162,7 @@ public class EventsManager : MonoBehaviourPun, IOnEventCallback {
         float duration = (float)data[1];
         //bool timerState = (bool)data[2];
 
-        director.GetUIText(Texts.notify).SetText(NotifText, duration);
+        director.GetUIText(BaseTexts.notify).SetText(NotifText, duration);
         //director.UITexts[3].SetActiveState(true);
     }
 
@@ -165,7 +194,7 @@ public class EventsManager : MonoBehaviourPun, IOnEventCallback {
         float duration = (float)data[1];
         //bool timerState = (bool)data[2];
 
-        director.GetUIText(Texts.notify).SetText(NotifText, duration);
+        director.GetUIText(BaseTexts.notify).SetText(NotifText, duration);
         //director.UITexts[3].SetActiveState(true);
     }
 
@@ -196,8 +225,8 @@ public class EventsManager : MonoBehaviourPun, IOnEventCallback {
         else if (purpose == "PlayerDisconnect")
             //do stuff
 
-        director.GetUIText(Texts.notify).SetText(NotifText, duration);
+        director.GetUIText(BaseTexts.notify).SetText(NotifText, duration);
         //director.UITexts[3].SetActiveState(true);
-        director.GetUIText(Texts.disconnect).SetText(NotifText, duration);
+        director.GetUIText(BaseTexts.disconnect).SetText(NotifText, duration);
     }
 }

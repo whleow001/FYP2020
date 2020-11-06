@@ -21,7 +21,7 @@ public class PlayerAnimation : MonoBehaviour
     private bool triggered = false;
 
     private void Start() {
-      ReinitializeAnimator();
+      // ReinitializeAnimator();
       playerController = GetComponent<PlayerController>();
 
       paramList.Add(isIdleParam);
@@ -35,7 +35,7 @@ public class PlayerAnimation : MonoBehaviour
 
     // Update is called once per frame
     private void Update() {
-      if (anim)
+      if (anim) {
         foreach (PlayerController.CharacterState state in Enum.GetValues(typeof(PlayerController.CharacterState)))
           if (state != PlayerController.CharacterState.Dodging)
             anim.SetBool(paramList[(int)state], playerController.characterState == state);
@@ -48,9 +48,17 @@ public class PlayerAnimation : MonoBehaviour
         }
         else
           triggered = false;
+      }
+      else
+        ReinitializeAnimator();
     }
 
     public void ReinitializeAnimator() {
-      anim = GetComponent<PlayerManager>().GetPlayerClone().GetComponent<Animator>();
+      PlayerManager playerManager = GetComponent<PlayerManager>();
+      GameObject playerClone = playerManager.GetPlayerClone();
+
+      if (playerClone)
+        anim = playerClone.GetComponent<Animator>();
+      // anim = GetComponent<PlayerManager>().GetPlayerClone().GetComponent<Animator>();
     }
 }

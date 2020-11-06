@@ -43,6 +43,8 @@ MonoBehaviour:
   - RemovePlayerListing
   - RPC_ChangeReadyState
   - SetParent
+  - ChangeCPState
+  - SetInstantiated
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1

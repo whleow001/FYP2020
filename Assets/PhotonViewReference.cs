@@ -8,6 +8,7 @@ public class PhotonViewReference : MonoBehaviour
 {
     private PhotonView photonView;
 
+
     public void SetPhotonView(PhotonView _photonView) {
       photonView = _photonView;
     }

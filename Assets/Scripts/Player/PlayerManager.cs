@@ -280,7 +280,7 @@ public class PlayerManager : MonoBehaviourPunCallbacks
 
     private void Respawn()
     {
-       
+
        PhotonNetwork.Destroy(playerClone);
        AvatarParent.transform.position = spawnPoint.transform.GetChild(Random.Range(0, 3)).transform.position;
        InitializeCharacter();

@@ -8,40 +8,41 @@ TagManager:
   - Forcefield
   - Creep
   - Projectile
-  - ControlPoint
+  - Gate
+  - GateBlock
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  -
   - Water
   - UI
-  - 
-  - 
+  -
+  -
   - Minimap
   - Government
   - Rebel
   - Objectives
-  - 
+  -
   - Environment
   - Mask
   - SeeThrough
   - IconCover
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
+  - RebelSphere
+  - GateCollider
+  -
+  -
+  -
+  -
+  -
+  -
+  -
+  -
+  -
+  -
+  -
+  -
+  -
   m_SortingLayers:
   - name: Default
     uniqueID: 0

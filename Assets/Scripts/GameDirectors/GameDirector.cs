@@ -134,6 +134,9 @@ public abstract class GameDirector : MonoBehaviourPun {
 
     private void Update()
     {
+      if (PhotonNetwork.IsMasterClient && timerCoroutine == null)
+        timerCoroutine = StartCoroutine(Timer());
+
       if (!maskSet)
       {
           AllocateFOVMask();
@@ -149,15 +152,15 @@ public abstract class GameDirector : MonoBehaviourPun {
         //Debug.Log("Update");
 
         // Update K/D
-        GetUIText(Texts.kd).SetText(PhotonNetwork.LocalPlayer.CustomProperties["Kills"] + "/" + PhotonNetwork.LocalPlayer.CustomProperties["Deaths"]);
+        GetUIText(BaseTexts.kd).SetText(PhotonNetwork.LocalPlayer.CustomProperties["Kills"] + "/" + PhotonNetwork.LocalPlayer.CustomProperties["Deaths"]);
 
       // Update fps
       deltaTime += (Time.deltaTime - deltaTime) * 0.1f;
       float fpsValue = 1.0f/deltaTime;
-      GetUIText(Texts.fps).SetText(Mathf.Ceil(fpsValue).ToString());
+      GetUIText(BaseTexts.fps).SetText(Mathf.Ceil(fpsValue).ToString());
 
       // Update ping
-      GetUIText(Texts.ping).SetText(PhotonNetwork.GetPing().ToString());
+      GetUIText(BaseTexts.ping).SetText(PhotonNetwork.GetPing().ToString());
 
       // Update scene specific texts
       UpdateUITexts();
@@ -229,7 +232,7 @@ public abstract class GameDirector : MonoBehaviourPun {
 
     private void AddMaskAsChild(GameObject _gameObject)
     {
-        GameObject FOVObject = Instantiate(GetPrefab((int)Prefabs.fovMask), new Vector3(_gameObject.transform.position.x, _gameObject.transform.position.y + 0.03f, _gameObject.transform.position.z), Quaternion.identity);
+        GameObject FOVObject = Instantiate(GetPrefab((int)BasePrefabs.fovMask), new Vector3(_gameObject.transform.position.x, _gameObject.transform.position.y + 0.03f, _gameObject.transform.position.z), Quaternion.identity);
         FOVObject.transform.SetParent(_gameObject.transform);
     }
 

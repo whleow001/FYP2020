@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Photon.Pun;
 
-public abstract class Objective : MonoBehaviour
+public abstract class Objective : MonoBehaviourPun
 {
     [SerializeField]
     protected int health = 100;
@@ -25,10 +26,7 @@ public abstract class Objective : MonoBehaviour
     }
 
     // Update is called once per frame
-    protected void Update()
-    {
-        
-    }
+    //protected void Update()
 
     protected void SetHealthbar(int value)
     {

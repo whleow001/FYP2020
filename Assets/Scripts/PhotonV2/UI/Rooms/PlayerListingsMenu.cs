@@ -68,7 +68,7 @@ public class PlayerListingsMenu : MonoBehaviourPunCallbacks, IInRoomCallbacks
 
         for (int i = 0; i < _listingsTwo.Count; i++)
             Destroy(_listingsTwo[i].gameObject);
-        
+
         _listingsOne.Clear();
         _listingsTwo.Clear();
     }
@@ -91,7 +91,7 @@ public class PlayerListingsMenu : MonoBehaviourPunCallbacks, IInRoomCallbacks
             {
                 Debug.Log(newPlayer.NickName + " has joined team 0");
             }
-            
+
         }
         else
         {
@@ -232,8 +232,8 @@ public class PlayerListingsMenu : MonoBehaviourPunCallbacks, IInRoomCallbacks
 
             PhotonNetwork.CurrentRoom.IsOpen = false; // players cannot join after game start
             PhotonNetwork.CurrentRoom.IsVisible = false; // removes room from room listing after game start
-            PhotonNetwork.LoadLevel(1);
-
+            // PhotonNetwork.LoadLevel(1);
+            PhotonNetwork.LoadLevel(2);
         }
     }
 
