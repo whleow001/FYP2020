@@ -17,7 +17,7 @@ public class CreepBot : MonoBehaviourPun
     */
 
     private GameObject obj, gate;
-    private GameObject[] creeps, players, targets;
+    private GameObject[] creeps, players, crypts, targets;
     private float objRadius;
 
     private NavMeshAgent agent;
@@ -59,12 +59,14 @@ public class CreepBot : MonoBehaviourPun
         agent.updateRotation = false;
 
         // range of creep attack based on creep size
-        creepRange = transform.localScale.x + 0.1f;
+        creepRange = transform.localScale.x/2 + 0.1f;
 
         //combining players and creeps as targets
         creeps = GameObject.FindGameObjectsWithTag("Creep");
         players = GameObject.FindGameObjectsWithTag("Player");
+        crypts = GameObject.FindGameObjectsWithTag("Crypt");
         targets = players.Concat(creeps).ToArray();
+        targets = targets.Concat(crypts).ToArray();
     }
 
     // Update is called once per frame
@@ -73,7 +75,9 @@ public class CreepBot : MonoBehaviourPun
         //combining players, creeps and gate as targets
         creeps = GameObject.FindGameObjectsWithTag("Creep");
         players = GameObject.FindGameObjectsWithTag("Player");
+        crypts = GameObject.FindGameObjectsWithTag("Crypt");
         targets = players.Concat(creeps).ToArray();
+        targets = targets.Concat(crypts).ToArray();
         if (gate != null)
         {
             Array.Resize(ref targets, targets.Length + 1);
@@ -99,6 +103,14 @@ public class CreepBot : MonoBehaviourPun
         GameObject closestTarget = FindClosestTarget(targets);
         //Debug.Log(closestTarget);
         Vector3 targetDirection = closestTarget.transform.position - transform.position;
+        if (closestTarget.tag == "Player" || closestTarget.tag == "Creep")
+        {
+            creepRange = transform.localScale.x / 2 + 0.5f;
+        }
+        else
+        {
+            creepRange = closestTarget.GetComponent<Collider>().bounds.size.x / 2 + 0.2f;
+        }
 
         NavMeshPath path = new NavMeshPath();
 
@@ -122,7 +134,8 @@ public class CreepBot : MonoBehaviourPun
                     {
                         if (creepAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.5f && attack == false)
                         {
-                            Debug.Log(closestTarget);
+                            Debug.Log(creepRange);
+                            Debug.Log(closestTarget.GetComponent<Collider>().GetType());
                             //closestTarget.GetComponent<CreepBot>().TakeDamage(20);
                             closestTarget.SendMessage("TakeDamage", 20);
                             attack = true;
