@@ -8,7 +8,7 @@ using Photon.Realtime;
 
 public class Texts_A : BaseTexts
 {
-
+  public const int objective = 6;
 }
 
 public class Spawns_A : BaseSpawns
@@ -60,6 +60,12 @@ public class RebelHQ_A : GameDirector {
 
   // Initialize scene specific game objects
   protected override void InitializeGameObjects() {
+    print("set text");
+    if (GetTeamIndex() == 0)
+      GetUIText(Texts_A.objective).SetText("Destroy all generators or the forcefield to advance into the Rebel's base!");
+    else
+      GetUIText(Texts_A.objective).SetText("Defend the generators or the forcefield and run down the clock to tire the Government!");
+
     // If client is a master client
     if (PhotonNetwork.IsMasterClient) {
       // Generate random generator spawns
@@ -81,14 +87,14 @@ public class RebelHQ_A : GameDirector {
 
       // Spawn crypt
       for (int i = 0; i < 3; i++)
-        MasterManager.RoomObjectInstantiate(GetPrefab(Prefabs.Crypt), GetSpawn(Spawns.CryptSpawn).transform.GetChild(i).transform.position, GetSpawn(Spawns.CryptSpawn).transform.GetChild(i).transform.rotation);
+        MasterManager.RoomObjectInstantiate(GetPrefab(Prefabs_A.Crypt), GetSpawn(Spawns_A.CryptSpawn).transform.GetChild(i).transform.position, GetSpawn(Spawns_A.CryptSpawn).transform.GetChild(i).transform.rotation);
 
       //forcefield sphere spawn on rebel side
-      MasterManager.RoomObjectInstantiate(GetPrefab(Prefabs.ForcefieldSphere), GetSpawn(Spawns.ForcefieldSphere).transform.position, GetSpawn(Spawns.ForcefieldSphere).transform.rotation);
+      MasterManager.RoomObjectInstantiate(GetPrefab(Prefabs_A.ForcefieldSphere), GetSpawn(Spawns_A.ForcefieldSphere).transform.position, GetSpawn(Spawns_A.ForcefieldSphere).transform.rotation);
       //sphere.transform.localScale = new Vector3(2, 2, 2);
 
       //Gate spawn
-      MasterManager.RoomObjectInstantiate(GetPrefab(Prefabs.Gate), GetSpawn(Spawns.GateSpawn).transform.position, GetSpawn(Spawns.GateSpawn).transform.rotation);
+      MasterManager.RoomObjectInstantiate(GetPrefab(Prefabs_A.Gate), GetSpawn(Spawns_A.GateSpawn).transform.position, GetSpawn(Spawns_A.GateSpawn).transform.rotation);
 
       //// spawn govt creep
       for(int i = 0; i < 3; i++)

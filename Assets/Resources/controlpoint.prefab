@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 2906193050577065264}
   - component: {fileID: 1402991338235622309}
   - component: {fileID: 2865591062748426488}
-  m_Layer: 11
+  m_Layer: 0
   m_Name: controlpoint
   m_TagString: ControlPoint
   m_Icon: {fileID: 0}
