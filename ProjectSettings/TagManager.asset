@@ -8,6 +8,7 @@ TagManager:
   - Forcefield
   - Creep
   - Projectile
+  - ControlPoint
   layers:
   - Default
   - TransparentFX
@@ -20,8 +21,8 @@ TagManager:
   - Minimap
   - Government
   - Rebel
-  - GovtObjectives
-  - RebelObjectives
+  - Objectives
+  - 
   - Environment
   - Mask
   - SeeThrough

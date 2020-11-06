@@ -82,11 +82,15 @@ public class PlayerController : MonoBehaviour {
     void Start() {
       ReinitializeGunpoints();
       playerInput = GetComponent<PlayerInput>();
+
       SetStatsOnRespawn();
     }
 
     private void Update()
     {
+        if (!raycastOrigins)
+          ReinitializeGunpoints();
+
         if (characterState == CharacterState.Dodging)
           return;
 
@@ -108,13 +112,17 @@ public class PlayerController : MonoBehaviour {
     }
 
     public void ReinitializeGunpoints() {
-      raycastOrigins = GetComponent<PlayerManager>().GetPlayerClone().transform.Find("RaycastOrigins").transform;
-      raycastDestination = GetComponent<PlayerManager>().GetPlayerClone().transform.Find("RaycastDestination").transform;
+      GameObject playerClone = GetComponent<PlayerManager>().GetPlayerClone();
+
+      if (playerClone) {
+        raycastOrigins = GetComponent<PlayerManager>().GetPlayerClone().transform.Find("RaycastOrigins").transform;
+        raycastDestination = GetComponent<PlayerManager>().GetPlayerClone().transform.Find("RaycastDestination").transform;
+      }
     }
 
     public void SetStatsOnRespawn()
     {
-        currentStats = stats[GetComponent<PlayerManager>().getSelectedCharacterIndex() - 1];
+        currentStats = stats[GetComponent<PlayerManager>().getSelectedCharacterIndex()];
     }
 
     private void UpdateState() {

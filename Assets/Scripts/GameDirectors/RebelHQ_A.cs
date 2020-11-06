@@ -6,18 +6,18 @@ using UnityEngine.UI;
 using Photon.Pun;
 using Photon.Realtime;
 
-public class Texts : BaseTexts
+public class Texts_A : BaseTexts
 {
 
 }
 
-public class Spawns : BaseSpawns
+public class Spawns_A : BaseSpawns
 {
   public const int Generator = 2;
   public const int Forcefield = 3;
 }
 
-public class Prefabs : BasePrefabs
+public class Prefabs_A : BasePrefabs
 {
   public const int Generator = 4;
   public const int Forcefield = 5;
@@ -67,11 +67,11 @@ public class RebelHQ_A : GameDirector {
 
       // Spawn generators
       for (int i = 0; i < randomIndexes.Count; i++)
-        MasterManager.RoomObjectInstantiate(GetPrefab(Prefabs.Generator), GetSpawn(Spawns.Generator).transform.GetChild(randomIndexes[i]).transform.position, Quaternion.identity);
+        MasterManager.RoomObjectInstantiate(GetPrefab(Prefabs_A.Generator), GetSpawn(Spawns_A.Generator).transform.GetChild(randomIndexes[i]).transform.position, Quaternion.identity);
 
       // Spawn forcefields
       for (int i = 0; i < 2; i++)
-        MasterManager.RoomObjectInstantiate(GetPrefab(Prefabs.Forcefield), GetSpawn(Spawns.Forcefield).transform.GetChild(i).transform.position, GetSpawn(Spawns.Forcefield).transform.GetChild(i).transform.rotation);
+        MasterManager.RoomObjectInstantiate(GetPrefab(Prefabs_A.Forcefield), GetSpawn(Spawns_A.Forcefield).transform.GetChild(i).transform.position, GetSpawn(Spawns_A.Forcefield).transform.GetChild(i).transform.rotation);
 
       //// spawn govt creep
       //for(int i = 0; i < 3; i++)
