@@ -92,7 +92,7 @@ public class RebelHQ_A : GameDirector {
 
       //// spawn govt creep
       for(int i = 0; i < 3; i++)
-        MasterManager.RoomObjectInstantiate(prefabs[6], spawns[0].transform.GetChild(i+3).transform.position, Quaternion.identity);
+       MasterManager.RoomObjectInstantiate(prefabs[6], spawns[0].transform.GetChild(i+3).transform.position, Quaternion.identity);
 
       ////// spawn rebel creep
       for (int i = 0; i < 3; i++)

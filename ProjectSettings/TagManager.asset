@@ -9,6 +9,7 @@ TagManager:
   - Creep
   - Projectile
   - Gate
+  - GateBlock
   layers:
   - Default
   - TransparentFX

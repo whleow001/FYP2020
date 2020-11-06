@@ -94,10 +94,13 @@ public class CreepBot : MonoBehaviourPun
         }
 
         Vector3 objDirection = obj.transform.position - transform.position;
+        Vector3 objEdge = obj.transform.position - (obj.transform.position - this.transform.position).normalized * objRadius;
 
         GameObject closestTarget = FindClosestTarget(targets);
         //Debug.Log(closestTarget);
         Vector3 targetDirection = closestTarget.transform.position - transform.position;
+
+        NavMeshPath path = new NavMeshPath();
 
         if (health > 0)
         {
@@ -136,8 +139,18 @@ public class CreepBot : MonoBehaviourPun
                     this.gameObject.GetComponent<NavMeshAgent>().enabled = true;
                     if (PhotonNetwork.IsMasterClient)
                     {
+                        // calculate path to target
+                        agent.CalculatePath(closestTarget.transform.position, path);
+                        // if no path can be found, go to obj instead
+                        if (path.status == NavMeshPathStatus.PathPartial)
+                        {
+                            agent.SetDestination(objEdge);
+                        }
+                        else
+                        {
+                            agent.SetDestination(closestTarget.transform.position);
+                        }
                         transform.rotation = Quaternion.LookRotation(agent.velocity.normalized);
-                        agent.SetDestination(closestTarget.transform.position);
                     }
                     attack = false;
 
@@ -160,9 +173,19 @@ public class CreepBot : MonoBehaviourPun
                     this.gameObject.GetComponent<NavMeshAgent>().enabled = true;
                     if (PhotonNetwork.IsMasterClient)
                     {
+                        // calculate path to target
+                        agent.CalculatePath(objEdge, path);
+                        Debug.Log(path.status);
+                        // if no path can be found, go to obj instead
+                        if (path.status == NavMeshPathStatus.PathPartial)
+                        {
+                            agent.SetDestination(obj.transform.position);
+                        }
+                        else if(path.status == NavMeshPathStatus.PathComplete)
+                        {
+                            agent.SetDestination(objEdge);
+                        }
                         transform.rotation = Quaternion.LookRotation(agent.velocity.normalized);
-                        agent.SetDestination(obj.transform.position - (obj.transform.position - this.transform.position).normalized * objRadius);
-
                     }
                 }
                 attack = false;
