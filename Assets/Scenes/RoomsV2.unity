@@ -357,7 +357,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -114.59}
+  m_AnchoredPosition: {x: 0, y: -114.59375}
   m_SizeDelta: {x: 0, y: -297.82233}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &118145364
@@ -1165,6 +1165,69 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 162145908}
   m_CullTransparentMesh: 0
+--- !u!1 &168936747
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 168936749}
+  - component: {fileID: 168936748}
+  m_Layer: 0
+  m_Name: MenuVideoJugg
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!328 &168936748
+VideoPlayer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 168936747}
+  m_Enabled: 1
+  m_VideoClip: {fileID: 32900000, guid: c2502810dd5852d4bbb9e2b0c849949f, type: 3}
+  m_TargetCameraAlpha: 1
+  m_TargetCamera3DLayout: 0
+  m_TargetCamera: {fileID: 0}
+  m_TargetTexture: {fileID: 8400000, guid: a265645b33d678a488b9f16d9a592093, type: 2}
+  m_TimeReference: 0
+  m_TargetMaterialRenderer: {fileID: 0}
+  m_TargetMaterialProperty: _MainTex
+  m_RenderMode: 2
+  m_AspectRatio: 1
+  m_DataSource: 0
+  m_PlaybackSpeed: 1
+  m_AudioOutputMode: 2
+  m_TargetAudioSources: []
+  m_DirectAudioVolumes: []
+  m_Url: 
+  m_EnabledAudioTracks: 
+  m_DirectAudioMutes: 
+  m_ControlledAudioTrackCount: 0
+  m_PlayOnAwake: 1
+  m_SkipOnDrop: 1
+  m_Looping: 1
+  m_WaitForFirstFrame: 1
+  m_FrameReadyEventEnabled: 0
+--- !u!4 &168936749
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 168936747}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 255.70424, y: 265.5, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 8
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &175711646
 GameObject:
   m_ObjectHideFlags: 0
@@ -1962,8 +2025,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -131.69998, y: 0.10003662}
-  m_SizeDelta: {x: 552.794, y: 841.42474}
+  m_AnchoredPosition: {x: -131.69998, y: 0.000016689}
+  m_SizeDelta: {x: 552.794, y: 781.9781}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &280440430
 MonoBehaviour:
@@ -2724,7 +2787,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 204, y: -126}
+  m_AnchoredPosition: {x: 204, y: -117}
   m_SizeDelta: {x: 132.84898, y: 36.382843}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &389095044
@@ -2871,7 +2934,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Texture: {fileID: 8400000, guid: 545bd64c802f7f84a9729128305a83db, type: 2}
+  m_Texture: {fileID: 8400000, guid: a265645b33d678a488b9f16d9a592093, type: 2}
   m_UVRect:
     serializedVersion: 2
     x: 0
@@ -3506,6 +3569,69 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 484541062}
   m_CullTransparentMesh: 0
+--- !u!1 &485131863
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 485131865}
+  - component: {fileID: 485131864}
+  m_Layer: 0
+  m_Name: MenuVideoGS
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!328 &485131864
+VideoPlayer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 485131863}
+  m_Enabled: 1
+  m_VideoClip: {fileID: 32900000, guid: b4923ef0fa4c5d54dbd252abdeee923a, type: 3}
+  m_TargetCameraAlpha: 1
+  m_TargetCamera3DLayout: 0
+  m_TargetCamera: {fileID: 0}
+  m_TargetTexture: {fileID: 8400000, guid: 0ed41a8079114634a88a96a0ac5fb610, type: 2}
+  m_TimeReference: 0
+  m_TargetMaterialRenderer: {fileID: 0}
+  m_TargetMaterialProperty: _MainTex
+  m_RenderMode: 2
+  m_AspectRatio: 1
+  m_DataSource: 0
+  m_PlaybackSpeed: 1
+  m_AudioOutputMode: 2
+  m_TargetAudioSources: []
+  m_DirectAudioVolumes: []
+  m_Url: 
+  m_EnabledAudioTracks: 
+  m_DirectAudioMutes: 
+  m_ControlledAudioTrackCount: 0
+  m_PlayOnAwake: 1
+  m_SkipOnDrop: 1
+  m_Looping: 1
+  m_WaitForFirstFrame: 1
+  m_FrameReadyEventEnabled: 0
+--- !u!4 &485131865
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 485131863}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 255.70424, y: 265.5, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 9
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &488176410
 GameObject:
   m_ObjectHideFlags: 0
@@ -4348,7 +4474,7 @@ GameObject:
   - component: {fileID: 715806037}
   - component: {fileID: 715806036}
   m_Layer: 0
-  m_Name: MenuVideo
+  m_Name: MenuVideoSniper
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4362,7 +4488,7 @@ VideoPlayer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 715806035}
   m_Enabled: 1
-  m_VideoClip: {fileID: 32900000, guid: e0b3c184eaa752f44a2cd295a41023dd, type: 3}
+  m_VideoClip: {fileID: 32900000, guid: 4cd9bbffa03174f4e851a038974fca93, type: 3}
   m_TargetCameraAlpha: 1
   m_TargetCamera3DLayout: 0
   m_TargetCamera: {fileID: 0}
@@ -4371,7 +4497,7 @@ VideoPlayer:
   m_TargetMaterialRenderer: {fileID: 0}
   m_TargetMaterialProperty: _MainTex
   m_RenderMode: 2
-  m_AspectRatio: 2
+  m_AspectRatio: 1
   m_DataSource: 0
   m_PlaybackSpeed: 1
   m_AudioOutputMode: 2
@@ -5951,7 +6077,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Texture: {fileID: 8400000, guid: 545bd64c802f7f84a9729128305a83db, type: 2}
+  m_Texture: {fileID: 8400000, guid: a265645b33d678a488b9f16d9a592093, type: 2}
   m_UVRect:
     serializedVersion: 2
     x: 0
@@ -6187,7 +6313,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -0.049987793, y: 0}
+  m_AnchoredPosition: {x: -0.046875, y: 0}
   m_SizeDelta: {x: 0, y: -268.34985}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1036963454
@@ -7731,8 +7857,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: -280, y: -280}
+  m_AnchoredPosition: {x: 0, y: 50.1}
+  m_SizeDelta: {x: -280, y: -380.26212}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1309166225
 MonoBehaviour:
@@ -8702,7 +8828,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Texture: {fileID: 8400000, guid: 545bd64c802f7f84a9729128305a83db, type: 2}
+  m_Texture: {fileID: 8400000, guid: 0ed41a8079114634a88a96a0ac5fb610, type: 2}
   m_UVRect:
     serializedVersion: 2
     x: 0
@@ -9978,7 +10104,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 3.6414, y: -125.2}
+  m_AnchoredPosition: {x: 3.6414, y: -120}
   m_SizeDelta: {x: 481.3299, y: 85.60039}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1729697553
@@ -10018,7 +10144,7 @@ MonoBehaviour:
     These are your controls for the game,
     complete the objectives before they do to win.
 
-    GLHF'
+'
 --- !u!222 &1729697554
 CanvasRenderer:
   m_ObjectHideFlags: 0
