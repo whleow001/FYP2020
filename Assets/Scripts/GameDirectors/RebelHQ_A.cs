@@ -39,7 +39,7 @@ public class RebelHQ_A : GameDirector {
   private int generatorCount;
 
   [SerializeField]
-  private GameObject ObjectivePanel;
+  public GameObject ObjectivePanel;
 
   // Flags
   private bool forcefieldDestroyed = false;

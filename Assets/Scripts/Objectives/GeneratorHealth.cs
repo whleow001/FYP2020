@@ -82,8 +82,6 @@ public class GeneratorHealth : Objective
         health = health - damage;
         photonView.RPC("BroadcastHealth", RpcTarget.All, photonView.ViewID, health);
         //SetHealthbar(health);
-        PanelSlider.value = slider.value;
-        PanelFill.color = gradient.Evaluate(slider.normalizedValue);
         eventsManager.RebelNotification_S("Generator Under Attack!", 2.0f);
     }
 
@@ -113,6 +111,8 @@ public class GeneratorHealth : Objective
     {
         PhotonView PV = PhotonView.Find(viewID);
         PV.gameObject.GetComponent<GeneratorHealth>().SetHealthbar(health);
+        PanelSlider.value = health;
+        PanelFill.color = gradient.Evaluate(PanelSlider.normalizedValue);
         //SetHealthbar(health);
     }
 }

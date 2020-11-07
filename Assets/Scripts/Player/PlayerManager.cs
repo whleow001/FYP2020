@@ -94,14 +94,14 @@ public class PlayerManager : MonoBehaviourPunCallbacks
 
     public void SetHealthBar(int value, Slider mainslider = null, Image mainfill = null)
     {
-        if(director.GetFactionLayer() == 9)
-        {
-            fill.color = Color.red;
-        }
-        else if(director.GetFactionLayer() == 10)
-        {
-            fill.color = Color.blue;
-        }
+        //if(director.GetFactionLayer() == 9)
+        //{
+        //    fill.color = Color.red;
+        //}
+        //else if(director.GetFactionLayer() == 10)
+        //{
+        //    fill.color = Color.blue;
+        //}
 
         if(mainslider != null && mainfill != null)
         {
@@ -118,14 +118,14 @@ public class PlayerManager : MonoBehaviourPunCallbacks
 
     public void SetMaxHealthBar(int value, Slider mainslider = null, Image mainfill = null)
     {
-        if (director.GetFactionLayer() == 9)
-        {
-            fill.color = Color.red;
-        }
-        else if (director.GetFactionLayer() == 10)
-        {
-            fill.color = Color.blue;
-        }
+        //if (director.GetFactionLayer() == 9)
+        //{
+        //    fill.color = Color.red;
+        //}
+        //else if (director.GetFactionLayer() == 10)
+        //{
+        //    fill.color = Color.blue;
+        //}
 
         if (mainslider != null && mainfill != null)
         {
@@ -162,10 +162,8 @@ public class PlayerManager : MonoBehaviourPunCallbacks
         AvatarParent.transform.rotation = Quaternion.identity;
         playerClone = MasterManager.NetworkInstantiate(selectedCharacter, AvatarParent.transform.position, Quaternion.identity);
         Debug.Log(playerClone);
-        //GetComponent<PlayerRPC>().SyncPosition()
 
-        Text NameText = playerClone.transform.Find("Canvas").Find("Text").GetComponent<Text>();
-        NameText.text = (string)PhotonNetwork.LocalPlayer.NickName;
+        //Text NameText = playerClone.transform.Find("Canvas").Find("Text").GetComponent<Text>();
         slider = playerClone.GetComponentInChildren<Slider>();
         fill = playerClone.transform.Find("Canvas").Find("Healthbar").Find("fill").GetComponent<Image>();
 
