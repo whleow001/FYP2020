@@ -43,7 +43,7 @@ public class PlayerRPC : MonoBehaviour
 
     public void ChangeIcons()
     {
-        GetPhotonView().RPC("ChangeIcons", RpcTarget.All, GetPhotonView().ViewID);
+        GetPhotonView().RPC("ChangeIcons", RpcTarget.All, GetComponent<PlayerManager>().GetPlayerClone().GetComponent<PhotonView>().ViewID);
 
     }
 }

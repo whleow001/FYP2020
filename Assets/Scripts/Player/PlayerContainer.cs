@@ -105,8 +105,13 @@ public class PlayerContainer : MonoBehaviourPun
         PhotonView PV = PhotonView.Find(viewID);
         Player player = PV.Owner;
 
+        //broadcast nameplate to all client
+        PV.gameObject.transform.Find("Canvas").Find("Text").GetComponent<Text>().text = player.NickName;
+        Image healthColor = PV.gameObject.transform.Find("Canvas").Find("Healthbar").Find("fill").GetComponent<Image>();
+
         if ((byte)player.CustomProperties["_pt"] == 0)
         {
+            healthColor.color = Color.red;
             for (int i = 0; i < playerManager.GetDirector().GovtPlayers.Length; i++)
             {
                 if (playerManager.GetDirector().GovtPlayers[i] == player)
@@ -117,6 +122,7 @@ public class PlayerContainer : MonoBehaviourPun
         }
         else
         {
+            healthColor.color = Color.blue;
             for (int i = 0; i < playerManager.GetDirector().RebelPlayers.Length; i++)
             {
                 if (playerManager.GetDirector().RebelPlayers[i] == player)
