@@ -13,18 +13,24 @@ public class Texts_A : BaseTexts
 
 public class Spawns_A : BaseSpawns
 {
+  public const int GovtSpawn = 0;
+  public const int RebelSpawn = 1;
   public const int Generator = 2;
   public const int ForcefieldSphere = 3;
   public const int CryptSpawn = 4;
-  public const int GateSpawn = 5;
+  public const int ForcefieldSpawn = 5;
 }
 
 public class Prefabs_A : BasePrefabs
 {
   public const int Generator = 4;
   public const int ForcefieldSphere = 5;
+  public const int GovtCreep = 6;
+  public const int RebelCreep = 7;
   public const int Crypt = 8;
-  public const int Gate = 9;
+  public const int MidForcefield = 9;
+  public const int TopForcefield = 10;
+  public const int BottomForcefield = 11;
 }
 
 public class RebelHQ_A : GameDirector {
@@ -93,17 +99,27 @@ public class RebelHQ_A : GameDirector {
       MasterManager.RoomObjectInstantiate(GetPrefab(Prefabs_A.ForcefieldSphere), GetSpawn(Spawns_A.ForcefieldSphere).transform.position, GetSpawn(Spawns_A.ForcefieldSphere).transform.rotation);
 
       //Gate spawn
-      MasterManager.RoomObjectInstantiate(GetPrefab(Prefabs_A.Gate), GetSpawn(Spawns_A.GateSpawn).transform.position, GetSpawn(Spawns_A.GateSpawn).transform.rotation);
+      //MasterManager.RoomObjectInstantiate(GetPrefab(Prefabs_A.Gate), GetSpawn(Spawns_A.GateSpawn).transform.position, GetSpawn(Spawns_A.GateSpawn).transform.rotation);
+
+      // mid forcefield spawn
+      MasterManager.RoomObjectInstantiate(GetPrefab(Prefabs_A.MidForcefield), GetSpawn(Spawns_A.ForcefieldSpawn).transform.GetChild(0).transform.position, GetSpawn(Spawns_A.ForcefieldSpawn).transform.GetChild(0).transform.rotation);
+
+      // top forcefield spawn
+      MasterManager.RoomObjectInstantiate(GetPrefab(Prefabs_A.TopForcefield), GetSpawn(Spawns_A.ForcefieldSpawn).transform.GetChild(1).transform.position, GetSpawn(Spawns_A.ForcefieldSpawn).transform.GetChild(1).transform.rotation);
+
+      // bottom forcefield spawn
+      MasterManager.RoomObjectInstantiate(GetPrefab(Prefabs_A.BottomForcefield), GetSpawn(Spawns_A.ForcefieldSpawn).transform.GetChild(2).transform.position, GetSpawn(Spawns_A.ForcefieldSpawn).transform.GetChild(2).transform.rotation);
 
       //// spawn govt creep
-      for(int i = 0; i < 3; i++)
-       MasterManager.RoomObjectInstantiate(prefabs[6], spawns[0].transform.GetChild(i+3).transform.position, Quaternion.identity);
+      for (int i = 0; i < 3; i++)
+       MasterManager.RoomObjectInstantiate(GetPrefab(Prefabs_A.GovtCreep), GetSpawn(Spawns_A.GovtSpawn).transform.GetChild(i+3).transform.position, GetSpawn(Spawns_A.GovtSpawn).transform.GetChild(i+3).transform.rotation);
+       //MasterManager.RoomObjectInstantiate(prefabs[6], spawns[0].transform.GetChild(i+3).transform.position, Quaternion.identity);
 
-      //MasterManager.RoomObjectInstantiate(prefabs[6], spawns[0].transform.GetChild(4).transform.position, Quaternion.identity);
+       //MasterManager.RoomObjectInstantiate(prefabs[6], spawns[0].transform.GetChild(4).transform.position, Quaternion.identity);
 
       //// spawn rebel creep
       for (int i = 0; i < 3; i++)
-       MasterManager.RoomObjectInstantiate(prefabs[7], spawns[1].transform.GetChild(i+3).transform.position, Quaternion.identity);
+       MasterManager.RoomObjectInstantiate(GetPrefab(Prefabs_A.RebelCreep), GetSpawn(Spawns_A.RebelSpawn).transform.GetChild(i+3).transform.position, GetSpawn(Spawns_A.RebelSpawn).transform.GetChild(i + 3).transform.rotation);
     }
   }
 
@@ -111,13 +127,13 @@ public class RebelHQ_A : GameDirector {
     {
         // respawn govt creep
         for (int i = 0; i < 3; i++)
-            MasterManager.RoomObjectInstantiate(prefabs[6], spawns[0].transform.GetChild(i + 3).transform.position, Quaternion.identity);
+            MasterManager.RoomObjectInstantiate(GetPrefab(Prefabs_A.GovtCreep), GetSpawn(Spawns_A.GovtSpawn).transform.GetChild(i + 3).transform.position, GetSpawn(Spawns_A.GovtSpawn).transform.GetChild(i + 3).transform.rotation);
 
         // respawn rebel creep
         GameObject[] crypts = GameObject.FindGameObjectsWithTag("Crypt");
         foreach (GameObject crypt in crypts)
         {
-            MasterManager.RoomObjectInstantiate(prefabs[7], crypt.transform.GetChild(1).transform.position, Quaternion.identity);
+            MasterManager.RoomObjectInstantiate(GetPrefab(Prefabs_A.RebelCreep), crypt.transform.GetChild(1).transform.position, crypt.transform.GetChild(1).transform.rotation);
         }
     }
 

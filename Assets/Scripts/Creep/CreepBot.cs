@@ -90,12 +90,12 @@ public class CreepBot : MonoBehaviourPun
             Array.Resize(ref targets, targets.Length + 1);
             targets[targets.Length - 1] = forcefield;
         }
-
-        if (gate != null)
+        
+        /*if (gate != null)
         {
             Array.Resize(ref targets, targets.Length + 1);
             targets[targets.Length - 1] = gate;
-        }
+        }*/
 
         //if can't find objective, creep will become idle
         if (obj == null)
@@ -123,11 +123,6 @@ public class CreepBot : MonoBehaviourPun
         {
             creepRange = transform.localScale.x / 2 + 0.5f;
         }
-       /* else if (closestTarget.tag == "Forcefield")
-        {
-            //creepRange = closestTarget.GetComponent<SphereCollider>().bounds.size.x / 2 + 0.2f;
-            creepRange = objRadius +1;
-        }*/
         else
         {
             creepRange = closestTarget.GetComponent<Collider>().bounds.size.x / 2 + 0.2f;
