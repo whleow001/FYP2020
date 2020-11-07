@@ -14,35 +14,35 @@ TagManager:
   - Default
   - TransparentFX
   - Ignore Raycast
-  -
+  - 
   - Water
   - UI
-  -
-  -
+  - 
+  - 
   - Minimap
   - Government
   - Rebel
-  - Objectives
-  -
+  - GovtObjectives
+  - RebelObjectives
   - Environment
   - Mask
   - SeeThrough
   - IconCover
   - RebelSphere
   - GateCollider
-  -
-  -
-  -
-  -
-  -
-  -
-  -
-  -
-  -
-  -
-  -
-  -
-  -
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
   m_SortingLayers:
   - name: Default
     uniqueID: 0

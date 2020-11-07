@@ -16,7 +16,7 @@ public class CreepBot : MonoBehaviourPun
         targets = array of all creep and player gameobjects
     */
 
-    private GameObject obj, gate;
+    private GameObject obj, gate, forcefield;
     private GameObject[] creeps, players, crypts, targets;
     private float objRadius;
 
@@ -56,6 +56,9 @@ public class CreepBot : MonoBehaviourPun
         //get game object gate
         gate = GameObject.FindGameObjectWithTag("Gate");
 
+        //get game object forcefield
+        forcefield = GameObject.FindGameObjectWithTag("Forcefield");
+
         creepAnimator = GetComponent<Animator>();
         agent = GetComponent<NavMeshAgent>();
         agent.updateRotation = false;
@@ -74,12 +77,18 @@ public class CreepBot : MonoBehaviourPun
     // Update is called once per frame
     void Update()
     {
-        //combining players, creeps, crypts and gate as targets
+        //combining players, creeps, crypts, forcefield and gate as targets
         creeps = GameObject.FindGameObjectsWithTag("Creep");
         players = GameObject.FindGameObjectsWithTag("Player");
         crypts = GameObject.FindGameObjectsWithTag("Crypt");
         targets = players.Concat(creeps).ToArray();
         targets = targets.Concat(crypts).ToArray();
+        if(forcefield!= null && this.gameObject.layer==9 && forcefield.layer==17)
+        {
+            Array.Resize(ref targets, targets.Length + 1);
+            targets[targets.Length - 1] = forcefield;
+        }
+
         if (gate != null)
         {
             Array.Resize(ref targets, targets.Length + 1);
@@ -112,6 +121,11 @@ public class CreepBot : MonoBehaviourPun
         {
             creepRange = transform.localScale.x / 2 + 0.5f;
         }
+       /* else if (closestTarget.tag == "Forcefield")
+        {
+            //creepRange = closestTarget.GetComponent<SphereCollider>().bounds.size.x / 2 + 0.2f;
+            creepRange = objRadius +1;
+        }*/
         else
         {
             creepRange = closestTarget.GetComponent<Collider>().bounds.size.x / 2 + 0.2f;

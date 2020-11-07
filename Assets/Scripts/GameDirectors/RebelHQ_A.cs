@@ -82,8 +82,8 @@ public class RebelHQ_A : GameDirector {
         MasterManager.RoomObjectInstantiate(GetPrefab(Prefabs_A.Generator), GetSpawn(Spawns_A.Generator).transform.GetChild(randomIndexes[i]).transform.position, Quaternion.identity);
 
       // Spawn forcefields
-      for (int i = 0; i < 2; i++)
-        MasterManager.RoomObjectInstantiate(GetPrefab(Prefabs_A.Forcefield), GetSpawn(Spawns_A.Forcefield).transform.GetChild(i).transform.position, GetSpawn(Spawns_A.Forcefield).transform.GetChild(i).transform.rotation);
+     // for (int i = 0; i < 2; i++)
+     //   MasterManager.RoomObjectInstantiate(GetPrefab(Prefabs_A.Forcefield), GetSpawn(Spawns_A.Forcefield).transform.GetChild(i).transform.position, GetSpawn(Spawns_A.Forcefield).transform.GetChild(i).transform.rotation);
 
       // Spawn crypt
       for (int i = 0; i < 3; i++)
