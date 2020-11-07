@@ -16,8 +16,8 @@ public class CreepBot : MonoBehaviourPun
         targets = array of all creep and player gameobjects
     */
 
-    private GameObject obj, gate, forcefield;
-    private GameObject[] creeps, players, crypts, targets;
+    private GameObject obj, gate;
+    private GameObject[] creeps, players, crypts, forcefields, targets;
     private float objRadius;
 
     private NavMeshAgent agent;
@@ -57,7 +57,7 @@ public class CreepBot : MonoBehaviourPun
         gate = GameObject.FindGameObjectWithTag("Gate");
 
         //get game object forcefield
-        forcefield = GameObject.FindGameObjectWithTag("Forcefield");
+        forcefields = GameObject.FindGameObjectsWithTag("Forcefield");
 
         creepAnimator = GetComponent<Animator>();
         agent = GetComponent<NavMeshAgent>();
@@ -85,10 +85,14 @@ public class CreepBot : MonoBehaviourPun
         crypts = GameObject.FindGameObjectsWithTag("Crypt");
         targets = players.Concat(creeps).ToArray();
         targets = targets.Concat(crypts).ToArray();
-        if(forcefield!= null && this.gameObject.layer==9 && forcefield.layer==17)
+        forcefields = GameObject.FindGameObjectsWithTag("Forcefield");
+        foreach (GameObject forcefield in forcefields)
         {
-            Array.Resize(ref targets, targets.Length + 1);
-            targets[targets.Length - 1] = forcefield;
+            if (forcefield != null && this.gameObject.layer == 9 && forcefield.layer == 17)
+            {
+                Array.Resize(ref targets, targets.Length + 1);
+                targets[targets.Length - 1] = forcefield;
+            }
         }
         
         /*if (gate != null)
@@ -125,7 +129,7 @@ public class CreepBot : MonoBehaviourPun
         }
         else
         {
-            creepRange = closestTarget.GetComponent<Collider>().bounds.size.x / 2 + 0.2f;
+            creepRange = closestTarget.GetComponent<Collider>().bounds.size.x / 2 + 0.5f;
         }
 
         // create a path

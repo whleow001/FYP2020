@@ -5,12 +5,14 @@ using Photon.Pun;
 
 public class SphereDetection : Objective
 {
+    string objectName;
     // Start is called before the first frame update
     void Start()
     {
         Physics.IgnoreLayerCollision(10, 17);
         eventsManager = GameObject.Find("EventsManager").GetComponent<EventsManager>();
         SetMaxHealthbar(health);
+        objectName = this.gameObject.name;
     }
 
     // Update is called once per frame
@@ -21,7 +23,7 @@ public class SphereDetection : Objective
             if (health <= 0)
             {
                 DestroyObject();
-                eventsManager.RebelNotification_S("Forcefield Down!", 2.0f);
+                eventsManager.RebelNotification_S(objectName+" Down!", 2.0f);
             }
         }
     }
@@ -42,7 +44,7 @@ public class SphereDetection : Objective
     {
         health = health - damage;
         photonView.RPC("BroadcastHealth", RpcTarget.All, photonView.ViewID, health);
-        eventsManager.RebelNotification_S("ForceField Under Attack!", 2.0f);
+        eventsManager.RebelNotification_S(objectName+" Under Attack!", 2.0f);
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -51,7 +53,7 @@ public class SphereDetection : Objective
         {
             if (collision.gameObject.tag == "Projectile" && collision.gameObject.layer == 9)
             {
-                Debug.Log("forcefield is hit");
+                Debug.Log(objectName+" is hit");
                 TakeDamage(3);
             }
         }

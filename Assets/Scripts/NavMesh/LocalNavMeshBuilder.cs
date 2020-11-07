@@ -49,7 +49,7 @@ public class LocalNavMeshBuilder : MonoBehaviour
         NavMeshSourceTag.Collect(ref m_Sources);
         var defaultBuildSettings = NavMesh.GetSettingsByID(0);
         defaultBuildSettings.agentHeight = 2;
-        defaultBuildSettings.agentRadius = 0.5f;
+        defaultBuildSettings.agentRadius = 0.1f;
         defaultBuildSettings.agentClimb = 0.75f;
         defaultBuildSettings.agentSlope = 45;
 
