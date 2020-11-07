@@ -201,6 +201,8 @@ public class CreepBot : MonoBehaviourPun
                 if (objDirection.magnitude <= objRadius)
                 {
                     creepAnimator.SetBool("isIdle", true);
+                    this.gameObject.GetComponent<NavMeshAgent>().enabled = false;
+                    transform.rotation = Quaternion.LookRotation(objDirection);
                 }
 
 // walk to objective if not reached yet
@@ -280,7 +282,7 @@ public class CreepBot : MonoBehaviourPun
     private void OnCollisionEnter(Collision other)
     {
 
-        if (other.gameObject.tag == "Projectile" && other.gameObject.layer == playerManager.GetDirector().GetOtherFactionLayer())
+        if (other.gameObject.tag == "Projectile" && other.gameObject.layer != this.gameObject.layer)
         {
             TakeDamage(20);
         }
