@@ -107,6 +107,20 @@ public class RebelHQ_A : GameDirector {
     }
   }
 
+    protected override void RespawnCreep()
+    {
+        // respawn govt creep
+        for (int i = 0; i < 3; i++)
+            MasterManager.RoomObjectInstantiate(prefabs[6], spawns[0].transform.GetChild(i + 3).transform.position, Quaternion.identity);
+
+        // respawn rebel creep
+        GameObject[] crypts = GameObject.FindGameObjectsWithTag("Crypt");
+        foreach (GameObject crypt in crypts)
+        {
+            MasterManager.RoomObjectInstantiate(prefabs[7], crypt.transform.GetChild(1).transform.position, Quaternion.identity);
+        }
+    }
+
   private void MarkObjective()
   {
       float fovDistance = prefabs[0].transform.localScale.x / 2 - 2;

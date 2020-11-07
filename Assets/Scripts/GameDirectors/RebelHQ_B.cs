@@ -76,8 +76,13 @@ public class RebelHQ_B : GameDirector {
     }
   }
 
-  // Updates scene specific texts
-  protected override void UpdateUITexts() {
+    protected override void RespawnCreep()
+    {
+        
+    }
+
+    // Updates scene specific texts
+    protected override void UpdateUITexts() {
     if (controlPoints.Any()) {
       for (int i = 0; i < 3; i++) {
         switch (controlPoints[i].GetState()) {

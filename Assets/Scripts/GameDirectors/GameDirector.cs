@@ -78,7 +78,7 @@ public abstract class GameDirector : MonoBehaviourPun {
     [SerializeField]
     private Text timer;
     public int currentMatchTime;
-    protected Coroutine timerCoroutine;
+    protected Coroutine timerCoroutine, creepCoroutine;
 
     private GameObject charPanel;
     private int charIndex;
@@ -137,7 +137,10 @@ public abstract class GameDirector : MonoBehaviourPun {
       if (PhotonNetwork.IsMasterClient && timerCoroutine == null)
         timerCoroutine = StartCoroutine(Timer());
 
-      if (!maskSet)
+      if (PhotonNetwork.IsMasterClient && creepCoroutine == null)
+        creepCoroutine = StartCoroutine(RespawnTimer());
+
+        if (!maskSet)
       {
           AllocateFOVMask();
           maskSet = true;
@@ -188,6 +191,7 @@ public abstract class GameDirector : MonoBehaviourPun {
     protected abstract void InitializeGameObjects();
     protected abstract void UpdateUITexts();
     protected abstract void UpdateObjectives();
+    protected abstract void RespawnCreep();
 
     // Gets own faction layer
     public int GetFactionLayer() {
@@ -244,6 +248,7 @@ public abstract class GameDirector : MonoBehaviourPun {
         if (PhotonNetwork.IsMasterClient)
         {
             timerCoroutine = StartCoroutine(Timer());
+            creepCoroutine = StartCoroutine(RespawnTimer());
         }
     }
 
@@ -273,6 +278,13 @@ public abstract class GameDirector : MonoBehaviourPun {
             eventsManager.RefreshTimer_S();
             timerCoroutine = StartCoroutine(Timer());
         }
+    }
+
+    private IEnumerator RespawnTimer()
+    {
+        yield return new WaitForSeconds(10);
+
+        RespawnCreep();
     }
 
     public EndGameScreen GetEndGameScreen() {
