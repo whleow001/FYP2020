@@ -14,40 +14,53 @@ public class CryptHealth : Objective
     void Start()
     {
         //Adirector = GameObject.Find("Director").GetComponent<RebelHQ_A>();
-        //eventsManager = GameObject.Find("EventsManager").GetComponent<EventsManager>();
+        eventsManager = GameObject.Find("EventsManager").GetComponent<EventsManager>();
         SetMaxHealthbar(health);
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (health <= 0)
+        if (PhotonNetwork.IsMasterClient)
         {
-            DestroyObject();
-            //eventsManager.RebelNotification_S("Generator Destroyed!", 2.0f);
+            if (health <= 0)
+            {
+                DestroyObject();
+                eventsManager.RebelNotification_S("Crypt Destroyed!", 2.0f);
+            }
         }
     }
 
     protected override void DestroyObject()
     {
-        if (PhotonNetwork.IsMasterClient)
-            PhotonNetwork.Destroy(gameObject);
+        PhotonNetwork.Destroy(gameObject);
     }
 
     public void TakeDamage(int damage)
     {
         health = health - damage;
-        SetHealthbar(health);
-        //eventsManager.RebelNotification_S("Generator Under Attack!", 2.0f);
+        photonView.RPC("BroadcastHealth", RpcTarget.All, photonView.ViewID, health);
+        eventsManager.RebelNotification_S("Crypt Under Attack!", 2.0f);
     }
 
     private void OnCollisionEnter(Collision collision)
     {
 
-        if (collision.gameObject.tag == "Projectile" && collision.gameObject.layer == 9)
+        if (PhotonNetwork.IsMasterClient)
         {
-            Debug.Log("crypt is hit");
-            TakeDamage(5);
+            if (collision.gameObject.tag == "Projectile" && collision.gameObject.layer == 9)
+            {
+                Debug.Log("crypt is hit");
+                TakeDamage(5);
+            }
         }
+    }
+
+    //broadcast health to all clients in the server
+    [PunRPC]
+    void BroadcastHealth(int viewID, int health)
+    {
+        PhotonView PV = PhotonView.Find(viewID);
+        PV.gameObject.GetComponent<CryptHealth>().SetHealthbar(health);
     }
 }

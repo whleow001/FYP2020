@@ -14,32 +14,45 @@ public class GateHealth : Objective
     // Update is called once per frame
     void Update()
     {
-        if (health <= 0)
+        if (PhotonNetwork.IsMasterClient)
         {
-            DestroyObject();
-            //eventsManager.RebelNotification_S("Generator Destroyed!", 2.0f);
+            if (health <= 0)
+            {
+                DestroyObject();
+                eventsManager.RebelNotification_S("Gate Destroyed!", 2.0f);
+            }
         }
     }
 
     protected override void DestroyObject()
     {
-        if (PhotonNetwork.IsMasterClient)
-            PhotonNetwork.Destroy(gameObject);
+        PhotonNetwork.Destroy(gameObject);
     }
 
     public void TakeDamage(int damage)
     {
         health = health - damage;
-        SetHealthbar(health);
-        //eventsManager.RebelNotification_S("Generator Under Attack!", 2.0f);
+        photonView.RPC("BroadcastHealth", RpcTarget.All, photonView.ViewID, health);
+        eventsManager.RebelNotification_S("Gate Under Attack!", 2.0f);
     }
 
     private void OnTriggerEnter(Collider collision)
     {
-        if (collision.gameObject.tag == "Projectile" && collision.gameObject.layer == 9)
+        if (PhotonNetwork.IsMasterClient)
         {
-            Debug.Log("Gate is hit");
-            TakeDamage(5);
+            if (collision.gameObject.tag == "Projectile" && collision.gameObject.layer == 9)
+            {
+                Debug.Log("Gate is hit");
+                TakeDamage(5);
+            }
         }
+    }
+
+    //broadcast health to all clients in the server
+    [PunRPC]
+    void BroadcastHealth(int viewID, int health)
+    {
+        PhotonView PV = PhotonView.Find(viewID);
+        PV.gameObject.GetComponent<GateHealth>().SetHealthbar(health);
     }
 }

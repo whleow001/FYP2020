@@ -9,22 +9,26 @@ public class SphereDetection : Objective
     void Start()
     {
         Physics.IgnoreLayerCollision(10, 17);
+        eventsManager = GameObject.Find("EventsManager").GetComponent<EventsManager>();
+        SetMaxHealthbar(health);
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (health <= 0)
+        if (PhotonNetwork.IsMasterClient)
         {
-            DestroyObject();
-            //eventsManager.RebelNotification_S("Generator Destroyed!", 2.0f);
+            if (health <= 0)
+            {
+                DestroyObject();
+                eventsManager.RebelNotification_S("Forcefield Down!", 2.0f);
+            }
         }
     }
 
     protected override void DestroyObject()
     {
-        if (PhotonNetwork.IsMasterClient)
-            PhotonNetwork.Destroy(gameObject);
+        PhotonNetwork.Destroy(gameObject);
     }
 
     //Detect when there is a collision
@@ -37,22 +41,27 @@ public class SphereDetection : Objective
     public void TakeDamage(int damage)
     {
         health = health - damage;
-        SetHealthbar(health);
-        //eventsManager.RebelNotification_S("Generator Under Attack!", 2.0f);
+        photonView.RPC("BroadcastHealth", RpcTarget.All, photonView.ViewID, health);
+        eventsManager.RebelNotification_S("ForceField Under Attack!", 2.0f);
     }
 
     private void OnCollisionEnter(Collision collision)
     {
-        Debug.Log("i am here inside");
-        if (collision.gameObject.tag == "Projectile" && collision.gameObject.layer == 9)
+        if (PhotonNetwork.IsMasterClient)
         {
-            Debug.Log("sphere is hit");
-            TakeDamage(3);
+            if (collision.gameObject.tag == "Projectile" && collision.gameObject.layer == 9)
+            {
+                Debug.Log("forcefield is hit");
+                TakeDamage(3);
+            }
         }
     }
 
-    private void OnTriggerEnter(Collider other)
+    //broadcast health to all clients in the server
+    [PunRPC]
+    void BroadcastHealth(int viewID, int health)
     {
-        Debug.Log("i am here inside");
+        PhotonView PV = PhotonView.Find(viewID);
+        PV.gameObject.GetComponent<SphereDetection>().SetHealthbar(health);
     }
 }

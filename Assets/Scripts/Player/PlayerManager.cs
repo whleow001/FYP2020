@@ -61,8 +61,6 @@ public class PlayerManager : MonoBehaviourPunCallbacks
 
         Reset();
 
-        //scale player minimap icon
-        EditPlayerIcon(playerClone);
     }
 
     // Update is called once per frame
@@ -96,32 +94,50 @@ public class PlayerManager : MonoBehaviourPunCallbacks
 
     public void SetHealthBar(int value, Slider mainslider = null, Image mainfill = null)
     {
+        if(director.GetFactionLayer() == 9)
+        {
+            fill.color = Color.red;
+        }
+        else if(director.GetFactionLayer() == 10)
+        {
+            fill.color = Color.blue;
+        }
+
         if(mainslider != null && mainfill != null)
         {
             mainslider.value = value;
-            mainfill.color = gradient.Evaluate(mainslider.normalizedValue);
+            //mainfill.color = gradient.Evaluate(mainslider.normalizedValue);
         }
         else
         {
             slider.value = value;
-            fill.color = gradient.Evaluate(slider.normalizedValue);
+            //fill.color = gradient.Evaluate(slider.normalizedValue);
         }
 
     }
 
     public void SetMaxHealthBar(int value, Slider mainslider = null, Image mainfill = null)
     {
+        if (director.GetFactionLayer() == 9)
+        {
+            fill.color = Color.red;
+        }
+        else if (director.GetFactionLayer() == 10)
+        {
+            fill.color = Color.blue;
+        }
+
         if (mainslider != null && mainfill != null)
         {
             mainslider.maxValue = 100;
             mainslider.value = 100;
-            mainfill.color = gradient.Evaluate(1f);
+            //mainfill.color = gradient.Evaluate(1f);
         }
         else
         {
             slider.maxValue = 100;
             slider.value = 100;
-            fill.color = gradient.Evaluate(1f);
+            //fill.color = gradient.Evaluate(1f);
         }
 
     }
@@ -148,12 +164,17 @@ public class PlayerManager : MonoBehaviourPunCallbacks
         Debug.Log(playerClone);
         //GetComponent<PlayerRPC>().SyncPosition()
 
+        Text NameText = playerClone.transform.Find("Canvas").Find("Text").GetComponent<Text>();
+        NameText.text = (string)PhotonNetwork.LocalPlayer.NickName;
         slider = playerClone.GetComponentInChildren<Slider>();
         fill = playerClone.transform.Find("Canvas").Find("Healthbar").Find("fill").GetComponent<Image>();
 
         //changing material and layer not working yet
         SetProperties(team);
         GetComponent<PlayerRPC>().ChangeIcons();
+
+        //scale player minimap icon
+        EditPlayerIcon(playerClone);
 
         AvatarParent.GetComponent<PlayerContainer>().SpawnCamera(_mainCamera, playerClone);
         //AvatarParent.GetComponent<PlayerContainer>().SetPlayerManager(this);
@@ -289,7 +310,7 @@ public class PlayerManager : MonoBehaviourPunCallbacks
        GetComponent<PlayerController>().ReinitializeGunpoints();
        GetComponent<PlayerController>().SetStatsOnRespawn();
        GetComponent<PlayerAnimation>().ReinitializeAnimator();
-       //GetComponent<PlayerRPC>().CallRPC("BroadcastHealth", GetComponent<PlayerRPC>().GetPhotonView().Owner);
+       //GetComponent<PlayerRPC>().CallRPC("BroadcastHealth", GetComponent<PlayerRPC>().GetPhotonView().ViewID);
        //playerClone.GetComponent<PhotonView>().RPC("BroadcastHealth", RpcTarget.All, playerClone.GetComponent<PhotonView>().Owner);
     }
 

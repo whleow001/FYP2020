@@ -14,25 +14,26 @@ public class Texts_A : BaseTexts
 public class Spawns_A : BaseSpawns
 {
   public const int Generator = 2;
-  public const int Forcefield = 3;
-  public const int ForcefieldSphere = 4;
-  public const int CryptSpawn = 5;
-  public const int GateSpawn = 6;
+  public const int ForcefieldSphere = 3;
+  public const int CryptSpawn = 4;
+  public const int GateSpawn = 5;
 }
 
 public class Prefabs_A : BasePrefabs
 {
   public const int Generator = 4;
-  public const int Forcefield = 5;
-  public const int ForcefieldSphere = 8;
-  public const int Crypt = 9;
-  public const int Gate = 10;
+  public const int ForcefieldSphere = 5;
+  public const int Crypt = 8;
+  public const int Gate = 9;
 }
 
 public class RebelHQ_A : GameDirector {
   // Win/Loss condition
   [SerializeField]
   private int generatorCount;
+
+  [SerializeField]
+  private GameObject ObjectivePanel;
 
   // Flags
   private bool forcefieldDestroyed = false;
@@ -79,11 +80,10 @@ public class RebelHQ_A : GameDirector {
 
       // Spawn generators
       for (int i = 0; i < randomIndexes.Count; i++)
-        MasterManager.RoomObjectInstantiate(GetPrefab(Prefabs_A.Generator), GetSpawn(Spawns_A.Generator).transform.GetChild(randomIndexes[i]).transform.position, Quaternion.identity);
-
-      // Spawn forcefields
-     // for (int i = 0; i < 2; i++)
-     //   MasterManager.RoomObjectInstantiate(GetPrefab(Prefabs_A.Forcefield), GetSpawn(Spawns_A.Forcefield).transform.GetChild(i).transform.position, GetSpawn(Spawns_A.Forcefield).transform.GetChild(i).transform.rotation);
+            {
+                GameObject gen = MasterManager.RoomObjectInstantiate(GetPrefab(Prefabs_A.Generator), GetSpawn(Spawns_A.Generator).transform.GetChild(randomIndexes[i]).transform.position, Quaternion.identity);
+                gen.GetComponent<GeneratorHealth>().SetHealthPanel(ObjectivePanel.transform.GetChild(i).gameObject);
+            }
 
       // Spawn crypt
       for (int i = 0; i < 3; i++)
@@ -91,7 +91,6 @@ public class RebelHQ_A : GameDirector {
 
       //forcefield sphere spawn on rebel side
       MasterManager.RoomObjectInstantiate(GetPrefab(Prefabs_A.ForcefieldSphere), GetSpawn(Spawns_A.ForcefieldSphere).transform.position, GetSpawn(Spawns_A.ForcefieldSphere).transform.rotation);
-      //sphere.transform.localScale = new Vector3(2, 2, 2);
 
       //Gate spawn
       MasterManager.RoomObjectInstantiate(GetPrefab(Prefabs_A.Gate), GetSpawn(Spawns_A.GateSpawn).transform.position, GetSpawn(Spawns_A.GateSpawn).transform.rotation);
@@ -100,7 +99,7 @@ public class RebelHQ_A : GameDirector {
       for(int i = 0; i < 3; i++)
        MasterManager.RoomObjectInstantiate(prefabs[6], spawns[0].transform.GetChild(i+3).transform.position, Quaternion.identity);
 
-      //      MasterManager.RoomObjectInstantiate(prefabs[6], spawns[0].transform.GetChild(4).transform.position, Quaternion.identity);
+      //MasterManager.RoomObjectInstantiate(prefabs[6], spawns[0].transform.GetChild(4).transform.position, Quaternion.identity);
 
       //// spawn rebel creep
       for (int i = 0; i < 3; i++)

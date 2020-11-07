@@ -63,6 +63,8 @@ public class CreepBot : MonoBehaviourPun
         agent = GetComponent<NavMeshAgent>();
         agent.updateRotation = false;
 
+        SetMaxHealthBar(health);
+
         // range of creep attack based on creep size
         creepRange = transform.localScale.x/2 + 0.1f;
 
@@ -266,16 +268,33 @@ public class CreepBot : MonoBehaviourPun
 
     public void SetHealthBar(int value)
     {
+        if (gameObject.layer == 9)
+        {
+            fill.color = Color.red;
+        }
+        else if (gameObject.layer == 10)
+        {
+            fill.color = Color.blue;
+        }
         slider.value = value;
-        fill.color = gradient.Evaluate(slider.normalizedValue);
+        //fill.color = gradient.Evaluate(slider.normalizedValue);
 
     }
 
     public void SetMaxHealthBar(int value)
     {
+        if (gameObject.layer == 9)
+        {
+            fill.color = Color.red;
+        }
+        else if (gameObject.layer == 10)
+        {
+            fill.color = Color.blue;
+        }
+
         slider.maxValue = 100;
         slider.value = 100;
-        fill.color = gradient.Evaluate(1f);
+        //fill.color = gradient.Evaluate(1f);
 
     }
     

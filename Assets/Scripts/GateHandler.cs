@@ -26,7 +26,7 @@ public class GateHandler : MonoBehaviour
 
     void OnTriggerEnter(Collider col)
     {
-        if (col.gameObject.layer == 10)
+        if (col.gameObject.layer == 10 && col.gameObject.tag != "Projectile")
         {
             gateOpen = true;
             GateAnim.SetTrigger("open");

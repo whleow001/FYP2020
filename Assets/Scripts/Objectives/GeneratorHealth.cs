@@ -14,9 +14,11 @@ public class GeneratorHealth : Objective
     private RebelHQ_A Adirector;
 
     public bool takeDamage = false;
-    //public Slider slider;
-    //public Gradient gradient;
-    //public Image fill;
+
+    public GameObject healthPanel;
+    public Slider PanelSlider;
+    public Image PanelFill;
+    
 
     // Layer references
     private int GOVT_LAYER = 9;
@@ -25,20 +27,26 @@ public class GeneratorHealth : Objective
     //EventsManager reference
     //protected EventsManager eventsManager;
 
-    void Start() {
+    void Start()
+    {
         Adirector = GameObject.Find("Director").GetComponent<RebelHQ_A>();
         eventsManager = GameObject.Find("EventsManager").GetComponent<EventsManager>();
         SetMaxHealthbar(health);
     }
 
     // Update is called once per frame
-    void Update() {
+    void Update()
+    {
 
-        if (health <= 0)
+        if (PhotonNetwork.IsMasterClient)
         {
-            DestroyObject();
-            eventsManager.RebelNotification_S("Generator Destroyed!", 2.0f);
+            if (health <= 0)
+            {
+                DestroyObject();
+                eventsManager.RebelNotification_S("Generator Destroyed!", 2.0f);
+            }
         }
+
 
         /*
         if(takeDamage)
@@ -65,24 +73,46 @@ public class GeneratorHealth : Objective
     protected override void DestroyObject()
     {
         Adirector.DecrementGeneratorCount();
-
-        if (PhotonNetwork.IsMasterClient)
-            PhotonNetwork.Destroy(gameObject);
+        healthPanel.SetActive(false);
+        PhotonNetwork.Destroy(gameObject);
     }
 
-    public void TakeDamage(int damage) {
-      health = health - damage;
-      SetHealthbar(health);
-      eventsManager.RebelNotification_S("Generator Under Attack!", 2.0f);
+    public void TakeDamage(int damage)
+    {
+        health = health - damage;
+        photonView.RPC("BroadcastHealth", RpcTarget.All, photonView.ViewID, health);
+        //SetHealthbar(health);
+        PanelSlider.value = slider.value;
+        PanelFill.color = gradient.Evaluate(slider.normalizedValue);
+        eventsManager.RebelNotification_S("Generator Under Attack!", 2.0f);
     }
 
     private void OnCollisionEnter(Collision collision)
     {
-
-        if (collision.gameObject.tag == "Projectile" && collision.gameObject.layer == 9)
+        if (PhotonNetwork.IsMasterClient)
         {
-            Debug.Log("generator is hit");
-            TakeDamage(20);
+            if (collision.gameObject.tag == "Projectile" && collision.gameObject.layer == 9)
+            {
+                Debug.Log("generator is hit");
+                TakeDamage(20);
+            }
         }
+
+    }
+
+    public void SetHealthPanel(GameObject healthbar)
+    {
+        healthPanel = healthbar;
+        PanelSlider = healthbar.GetComponentInChildren<Slider>();
+        PanelFill = healthbar.transform.Find("fill").GetComponent<Image>();
+    }
+
+    //broadcast health to all clients in the server
+    [PunRPC]
+    void BroadcastHealth(int viewID, int health)
+    {
+        PhotonView PV = PhotonView.Find(viewID);
+        PV.gameObject.GetComponent<GeneratorHealth>().SetHealthbar(health);
+        //SetHealthbar(health);
     }
 }
