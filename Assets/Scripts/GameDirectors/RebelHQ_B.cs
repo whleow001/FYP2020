@@ -48,12 +48,8 @@ public class RebelHQ_B : GameDirector {
     }
 
     // Calculate points
-    if (PhotonNetwork.IsMasterClient) {
-      if (cpCoroutine == null)
-        cpCoroutine = StartCoroutine(IncrementCP());
-    }
-
-    print(totalGovtPoints);
+    if (PhotonNetwork.IsMasterClient && cpCoroutine == null)
+      cpCoroutine = StartCoroutine(IncrementCP());
   }
 
   // Initialize scene specific game objects
@@ -78,7 +74,7 @@ public class RebelHQ_B : GameDirector {
 
     protected override void RespawnCreep()
     {
-        
+
     }
 
     // Updates scene specific texts

@@ -122,11 +122,15 @@ public class PlayerController : MonoBehaviour {
 
     public void SetStatsOnRespawn()
     {
-        currentStats = stats[GetComponent<PlayerManager>().getSelectedCharacterIndex()];
+        print("CIndex: " + GetComponent<PlayerManager>().getSelectedCharacterIndex());
+        print("Stats: " + stats[0].speed);
+        currentStats = stats[GetComponent<PlayerManager>().getSelectedCharacterIndex()-1];
     }
 
     private void UpdateState() {
-      if (!playerInput.IsJoystickMoving() && !playerInput.IsPressed(PlayerInput.Ability.Attack) && !playerInput.IsPressed(PlayerInput.Ability.Dodge))
+      if (GetComponent<PlayerManager>().IsDead())
+        ChangeState(CharacterState.Dead);
+      else if (!playerInput.IsJoystickMoving() && !playerInput.IsPressed(PlayerInput.Ability.Attack) && !playerInput.IsPressed(PlayerInput.Ability.Dodge))
         ChangeState(CharacterState.Idle);
       else if (playerInput.IsPressed(PlayerInput.Ability.Dodge))
         ChangeState(CharacterState.Dodging);
@@ -240,7 +244,7 @@ public class PlayerController : MonoBehaviour {
         {
             bullet.tracer.transform.position = end;
         }
-            
+
     }
 
     private void FireBullet() {

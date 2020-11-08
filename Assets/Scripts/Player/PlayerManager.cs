@@ -49,13 +49,17 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     // Custom player properties
     private ExitGames.Client.Photon.Hashtable properties;
 
+    void Awake() {
+      ChangeCharacter(1);
+    }
+
     // Start is called before the first frame update
     void Start()
     {
         team = director.GetTeamIndex();
         Debug.Log("team number is " + team);
         spawnPoint = director.GetSpawn(team);
-        ChangeCharacter(1);
+        // ChangeCharacter(1);
 
         InitializeCharacter();
 
@@ -66,11 +70,11 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     // Update is called once per frame
     void Update()
     {
-      //if (kill) {
-      //  TakeDamage(100);
+      if (kill) {
+       TakeDamage(100);
 
-      //  kill = false;
-      //}
+       kill = false;
+      }
     }
 
     public GameDirector GetDirector() {
@@ -144,6 +148,7 @@ public class PlayerManager : MonoBehaviourPunCallbacks
 
     public void ChangeCharacter(int index)
     {
+        print("New char: " + index);
         selectedCharacterIndex = index;
         ChangeValue("Class", selectedCharacterIndex);
 
@@ -330,6 +335,10 @@ public class PlayerManager : MonoBehaviourPunCallbacks
 
     public int getSelectedCharacterIndex() {
       return selectedCharacterIndex;
+    }
+
+    public bool IsDead() {
+      return GetProperty("Health") <= 0;
     }
 
     //Player disconnect under game setup script then add button for disconnect under char select
