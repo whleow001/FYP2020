@@ -283,7 +283,7 @@ public abstract class GameDirector : MonoBehaviourPun {
     private IEnumerator RespawnTimer()
     {
         yield return new WaitForSeconds(10);
-
+        creepCoroutine = StartCoroutine(RespawnTimer());
         RespawnCreep();
     }
 

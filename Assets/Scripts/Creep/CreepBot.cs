@@ -16,8 +16,8 @@ public class CreepBot : MonoBehaviourPun
         targets = array of all creep and player gameobjects
     */
 
-    private GameObject obj, gate;
-    private GameObject[] creeps, players, crypts, forcefields, targets;
+    private GameObject obj, waypoint;
+    private GameObject[] creeps, players, crypts, forcefields, targets, waypoints;
     private float objRadius;
 
     private NavMeshAgent agent;
@@ -25,6 +25,9 @@ public class CreepBot : MonoBehaviourPun
 
     // to determine whether creep has dealt damage or not in one attack animation
     private bool attack = false;
+
+    // to determine whether creep has reached waypoint or not
+    private bool waypointReached = false;
 
     // for creep attack range
     private float creepRange;
@@ -54,7 +57,11 @@ public class CreepBot : MonoBehaviourPun
         objRadius = obj.GetComponent<Renderer>().bounds.extents.magnitude / 2;
 
         //get game object gate
-        gate = GameObject.FindGameObjectWithTag("Gate");
+        //gate = GameObject.FindGameObjectWithTag("Gate");
+
+        //get waypoints
+        waypoints = GameObject.FindGameObjectsWithTag("Waypoint");
+        waypoint = FindClosestTarget(waypoints);
 
         //get game object forcefield
         forcefields = GameObject.FindGameObjectsWithTag("Forcefield");
@@ -122,6 +129,8 @@ public class CreepBot : MonoBehaviourPun
         GameObject closestTarget = FindClosestTarget(targets);
         Vector3 targetDirection = closestTarget.transform.position - transform.position;
 
+        Vector3 waypointDirection = waypoint.transform.position - transform.position;
+
         // change range according to target's tag (creep will have longer range against building as centre of the building is the target)
         if (closestTarget.tag == "Player" || closestTarget.tag == "Creep")
         {
@@ -129,7 +138,7 @@ public class CreepBot : MonoBehaviourPun
         }
         else
         {
-            creepRange = closestTarget.GetComponent<Collider>().bounds.size.x / 2 + 0.5f;
+            creepRange = closestTarget.GetComponent<Collider>().bounds.size.x / 2 + 0.9f;
         }
 
         // create a path
@@ -137,6 +146,11 @@ public class CreepBot : MonoBehaviourPun
 
         if (health > 0)
         {
+            //waypoint is reached
+            if(waypointDirection.magnitude<5)
+            {
+                waypointReached = true;
+            }
 
             //if target closeby is not on the same team, move towards them
             if (targetDirection.magnitude <= 13 && closestTarget.layer != this.gameObject.layer)
@@ -199,7 +213,7 @@ public class CreepBot : MonoBehaviourPun
             {
 // idle when objective reached
                 creepAnimator.SetBool("isAttacking", false);
-                if (objDirection.magnitude <= objRadius)
+                if (objDirection.magnitude <= objRadius+0.5f)
                 {
                     creepAnimator.SetBool("isIdle", true);
                     this.gameObject.GetComponent<NavMeshAgent>().enabled = false;
@@ -213,17 +227,27 @@ public class CreepBot : MonoBehaviourPun
                     this.gameObject.GetComponent<NavMeshAgent>().enabled = true;
                     if (PhotonNetwork.IsMasterClient)
                     {
-                        // calculate path to target
-                        agent.CalculatePath(objEdge, path);
-                        Debug.Log(path.status);
-                        // if no path can be found, go to obj instead
-                        if (path.status == NavMeshPathStatus.PathPartial)
+                        
+                        if (waypointReached == false && waypointDirection.magnitude >= 5)
                         {
-                            agent.SetDestination(obj.transform.position);
+                            agent.SetDestination(waypoint.transform.position);
                         }
-                        else if(path.status == NavMeshPathStatus.PathComplete)
+                        else
                         {
-                            agent.SetDestination(objEdge);
+                            waypointReached = true;
+                            // calculate path to target
+                            agent.CalculatePath(objEdge, path);
+                            Debug.Log(path.status);
+                            // if no path can be found, go to obj instead
+                            if (path.status == NavMeshPathStatus.PathPartial)
+                            {
+                                agent.SetDestination(obj.transform.position);
+                            }
+                            else if (path.status == NavMeshPathStatus.PathComplete)
+                            {
+                                agent.SetDestination(objEdge);
+                            }
+
                         }
                         transform.rotation = Quaternion.LookRotation(agent.velocity.normalized);
                     }
