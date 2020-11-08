@@ -39,6 +39,8 @@ public class CreepBot : MonoBehaviourPun
 
     public PlayerManager playerManager;
 
+    [SerializeField]
+    private ParticleSystem hitEffect;
 
     // Start is called before the first frame update
     void Start()
@@ -101,7 +103,7 @@ public class CreepBot : MonoBehaviourPun
                 targets[targets.Length - 1] = forcefield;
             }
         }
-        
+
         /*if (gate != null)
         {
             Array.Resize(ref targets, targets.Length + 1);
@@ -171,7 +173,7 @@ public class CreepBot : MonoBehaviourPun
                         if (creepAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.5f && attack == false)
                         {
                             //closestTarget.GetComponent<CreepBot>().TakeDamage(20);
-                            closestTarget.SendMessage("TakeDamage", 20);
+                            closestTarget.SendMessage("TakeDamage", new Damage(20, transform.position + transform.forward));
                             attack = true;
                         }
                     }
@@ -227,7 +229,7 @@ public class CreepBot : MonoBehaviourPun
                     this.gameObject.GetComponent<NavMeshAgent>().enabled = true;
                     if (PhotonNetwork.IsMasterClient)
                     {
-                        
+
                         if (waypointReached == false && waypointDirection.magnitude >= 5)
                         {
                             agent.SetDestination(waypoint.transform.position);
@@ -321,21 +323,25 @@ public class CreepBot : MonoBehaviourPun
         //fill.color = gradient.Evaluate(1f);
 
     }
-    
+
     private void OnCollisionEnter(Collision other)
     {
 
         if (other.gameObject.tag == "Projectile" && other.gameObject.layer != this.gameObject.layer)
         {
-            TakeDamage(20);
+            TakeDamage(new Damage(20, other.gameObject.transform.position));
         }
     }
 
-    public void TakeDamage(int dmg)
+    public void TakeDamage(Damage dmg)
     {
-        health -= dmg;
+        hitEffect.transform.position = new Vector3(dmg.sourcePosition.x, 0.8f, dmg.sourcePosition.z);
+        hitEffect.transform.forward = (gameObject.transform.position - dmg.sourcePosition).normalized;
+        hitEffect.Emit(1);
+
+        health -= dmg.damage;
         photonView.RPC("BroadcastHealth", RpcTarget.All, photonView.ViewID);
-        
+
     }
 
     //broadcast health to all clients in the server
@@ -346,5 +352,5 @@ public class CreepBot : MonoBehaviourPun
         SetHealthBar(health);
         //GetComponent<PlayerManager>().SetHealthBar((int)victim.CustomProperties["Health"], mainslider, mainfill);
     }
-    
+
 }

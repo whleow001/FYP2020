@@ -36,9 +36,13 @@ public class CryptHealth : Objective
         PhotonNetwork.Destroy(gameObject);
     }
 
-    public void TakeDamage(int damage)
+    public void TakeDamage(Damage dmg)
     {
-        health = health - damage;
+        hitEffect.transform.position = dmg.sourcePosition;
+        hitEffect.transform.forward = -(gameObject.transform.position - dmg.sourcePosition).normalized;
+        hitEffect.Emit(1);
+
+        health = health - dmg.damage;
         photonView.RPC("BroadcastHealth", RpcTarget.All, photonView.ViewID, health);
         eventsManager.RebelNotification_S("Crypt Under Attack!", 2.0f);
     }
@@ -51,7 +55,7 @@ public class CryptHealth : Objective
             if (collision.gameObject.tag == "Projectile" && collision.gameObject.layer == 9)
             {
                 Debug.Log("crypt is hit");
-                TakeDamage(5);
+                TakeDamage(new Damage(5, collision.gameObject.transform.position));
             }
         }
     }

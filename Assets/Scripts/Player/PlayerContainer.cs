@@ -53,13 +53,13 @@ public class PlayerContainer : MonoBehaviourPun
     private void OnCollisionEnter(Collision other) {
 
       if (other.gameObject.tag == "Projectile" && other.gameObject.layer == playerManager.GetDirector().GetOtherFactionLayer()) {
-        playerManager.TakeDamage(20, other.gameObject.GetComponent<PhotonViewReference>().GetPhotonView());
+        playerManager.TakeDamage(new Damage(20, other.gameObject.transform.position), other.gameObject.GetComponent<PhotonViewReference>().GetPhotonView());
       }
     }
 
-    public void TakeDamage(int damage)
+    public void TakeDamage(Damage dmg)
     {
-        playerManager.TakeDamage(damage);
+        playerManager.TakeDamage(dmg);
     }
 
     //broadcast health to all clients in the server

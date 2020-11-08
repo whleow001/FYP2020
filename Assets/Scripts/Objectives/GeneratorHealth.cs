@@ -18,7 +18,6 @@ public class GeneratorHealth : Objective
     public GameObject healthPanel;
     public Slider PanelSlider;
     public Image PanelFill;
-    
 
     // Layer references
     private int GOVT_LAYER = 9;
@@ -77,9 +76,13 @@ public class GeneratorHealth : Objective
         PhotonNetwork.Destroy(gameObject);
     }
 
-    public void TakeDamage(int damage)
+    public void TakeDamage(Damage dmg)
     {
-        health = health - damage;
+        hitEffect.transform.position = dmg.sourcePosition;
+        hitEffect.transform.forward = -((gameObject.transform.position - dmg.sourcePosition).normalized);
+        hitEffect.Emit(1);
+
+        health = health - dmg.damage;
         photonView.RPC("BroadcastHealth", RpcTarget.All, photonView.ViewID, health);
         //SetHealthbar(health);
         eventsManager.RebelNotification_S("Generator Under Attack!", 2.0f);
@@ -92,7 +95,7 @@ public class GeneratorHealth : Objective
             if (collision.gameObject.tag == "Projectile" && collision.gameObject.layer == 9)
             {
                 Debug.Log("generator is hit");
-                TakeDamage(20);
+                TakeDamage(new Damage(20, collision.gameObject.transform.position));
             }
         }
 

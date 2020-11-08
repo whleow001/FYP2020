@@ -9,6 +9,9 @@ public abstract class Objective : MonoBehaviourPun
     [SerializeField]
     protected int health = 100;
 
+    [SerializeField]
+    protected ParticleSystem hitEffect;
+
     //Game director reference
     //private GameDirector director;
 
@@ -22,7 +25,7 @@ public abstract class Objective : MonoBehaviourPun
     // Start is called before the first frame update
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame

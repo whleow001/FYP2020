@@ -29,6 +29,8 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     [SerializeField]
     private GameObject playerContainer;
 
+    private ParticleSystem hitEffect;
+
     //currently using int, can change back to GameObject type if we are using same character models for both teams.
     private GameObject selectedCharacter;
     private int selectedCharacterIndex;
@@ -71,7 +73,7 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     void Update()
     {
       if (kill) {
-       TakeDamage(100);
+       TakeDamage(new Damage(100, Vector3.zero));
 
        kill = false;
       }
@@ -209,6 +211,10 @@ public class PlayerManager : MonoBehaviourPunCallbacks
       return AvatarParent;
     }
 
+    public ParticleSystem GetHitEffect() {
+      return AvatarParent.transform.Find("BloodEffect").GetComponent<ParticleSystem>();
+    }
+
     private void GetProperties()
     {
         properties = PhotonNetwork.LocalPlayer.CustomProperties;
@@ -267,9 +273,15 @@ public class PlayerManager : MonoBehaviourPunCallbacks
         return 0;
     }
 
-    public void TakeDamage(int dmg, PhotonView attacker = null)
+    public void TakeDamage(Damage dmg, PhotonView attacker = null)
     {
-        ChangeValue("Health", (int)(properties["Health"]) - dmg);
+        if (dmg.sourcePosition != Vector3.zero) {
+          GetHitEffect().transform.position = dmg.sourcePosition;
+          GetHitEffect().transform.forward = (new Vector3(gameObject.transform.position.x, dmg.sourcePosition.y, dmg.sourcePosition.z) - dmg.sourcePosition).normalized;
+          GetHitEffect().Emit(1);
+        }
+
+        // ChangeValue("Health", (int)(properties["Health"]) - dmg.damage);
         GetComponent<PlayerRPC>().CallRPC("BroadcastHealth", playerClone.GetComponent<PhotonView>().ViewID);
 
         if (GetProperty("Health") <= 0)

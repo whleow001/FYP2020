@@ -29,9 +29,13 @@ public class GateHealth : Objective
         PhotonNetwork.Destroy(gameObject);
     }
 
-    public void TakeDamage(int damage)
+    public void TakeDamage(Damage dmg)
     {
-        health = health - damage;
+        hitEffect.transform.position = dmg.sourcePosition;
+        hitEffect.transform.forward = (gameObject.transform.position - dmg.sourcePosition).normalized;
+        hitEffect.Emit(1);
+
+        health = health - dmg.damage;
         photonView.RPC("BroadcastHealth", RpcTarget.All, photonView.ViewID, health);
         eventsManager.RebelNotification_S("Gate Under Attack!", 2.0f);
     }
@@ -43,7 +47,7 @@ public class GateHealth : Objective
             if (collision.gameObject.tag == "Projectile" && collision.gameObject.layer == 9)
             {
                 Debug.Log("Gate is hit");
-                TakeDamage(5);
+                TakeDamage(new Damage(5, collision.gameObject.transform.position));
             }
         }
     }
