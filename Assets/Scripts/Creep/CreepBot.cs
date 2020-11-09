@@ -23,6 +23,12 @@ public class CreepBot : MonoBehaviourPun
     private NavMeshAgent agent;
     private Animator creepAnimator;
 
+    // references
+    private RebelHQ_A director;
+
+    // to determine whether game has ended or not
+    public bool gameEnded = false;
+
     // to determine whether creep has dealt damage or not in one attack animation
     private bool attack = false;
 
@@ -58,8 +64,9 @@ public class CreepBot : MonoBehaviourPun
         // get radius of enemy spawn
         objRadius = obj.GetComponent<Renderer>().bounds.extents.magnitude / 2;
 
-        //get game object gate
-        //gate = GameObject.FindGameObjectWithTag("Gate");
+        // find director
+        director = GameObject.Find("Director").GetComponent<RebelHQ_A>();
+        gameEnded = director.GetEndGameScreen().isActiveAndEnabled;
 
         //get waypoints
         waypoints = GameObject.FindGameObjectsWithTag("Waypoint");
@@ -88,6 +95,9 @@ public class CreepBot : MonoBehaviourPun
     // Update is called once per frame
     void Update()
     {
+        //for checking whether endgamescreen is active or not
+        gameEnded = director.GetEndGameScreen().isActiveAndEnabled;
+
         //combining players, creeps, crypts, forcefield and gate as targets
         creeps = GameObject.FindGameObjectsWithTag("Creep");
         players = GameObject.FindGameObjectsWithTag("Player");
@@ -146,7 +156,7 @@ public class CreepBot : MonoBehaviourPun
         // create a path
         NavMeshPath path = new NavMeshPath();
 
-        if (health > 0)
+        if (health > 0 && !gameEnded)
         {
             //waypoint is reached
             if(waypointDirection.magnitude<5)
@@ -259,7 +269,11 @@ public class CreepBot : MonoBehaviourPun
             }
 
         }
-
+        else if(gameEnded)
+        {
+            this.gameObject.GetComponent<NavMeshAgent>().enabled = false;
+            creepAnimator.SetBool("isIdle", true);
+        }
 // creep destroyed when health <= 0
         else
         {
