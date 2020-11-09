@@ -43,6 +43,8 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     public int team;   // team number;
     public int position;  // position in team;
 
+    private Scene currentScene;
+
     public Slider slider;
     public Gradient gradient;
     public Image fill;
@@ -68,6 +70,8 @@ public class PlayerManager : MonoBehaviourPunCallbacks
         Debug.Log("team number is " + team);
         spawnPoint = director.GetSpawn(team);
         // ChangeCharacter(1);
+
+        currentScene = SceneManager.GetActiveScene();
 
         InitializeCharacter();
 
@@ -232,7 +236,7 @@ public class PlayerManager : MonoBehaviourPunCallbacks
 
     public void Reset()
     {
-        if (!instantiated)
+        if (!instantiated && currentScene.name=="Rebel HQ")
         {
             ResetProperty("Deaths");
             ResetProperty("Kills");
