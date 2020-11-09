@@ -234,6 +234,7 @@ public class PlayerListingsMenu : MonoBehaviourPunCallbacks, IInRoomCallbacks
             PhotonNetwork.CurrentRoom.IsVisible = false; // removes room from room listing after game start
             PhotonNetwork.LoadLevel(1);
             // PhotonNetwork.LoadLevel(2);
+
         }
     }
 

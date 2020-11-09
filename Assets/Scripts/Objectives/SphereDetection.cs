@@ -33,6 +33,11 @@ public class SphereDetection : Objective
         PhotonNetwork.Destroy(gameObject);
     }
 
+    public int GetHealth()
+    {
+        return health;
+    }
+
     //Detect when there is a collision
     void OnCollisionStay(Collision collide)
     {

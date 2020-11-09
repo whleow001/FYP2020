@@ -65,10 +65,13 @@ public abstract class GameDirector : MonoBehaviourPun {
     protected PlayerManager playerManager;
     [SerializeField]
     protected EventsManager eventsManager;
+    
 
     [Header("Overlays")]
     [SerializeField]
     protected EndGameScreen _endGameScreen;
+    [SerializeField]
+    protected GameObject UICanvas;
 
     // flags
     private bool maskSet = false;
@@ -99,6 +102,8 @@ public abstract class GameDirector : MonoBehaviourPun {
     public Player[] GovtPlayers;
     public Player[] RebelPlayers;
     //public List<HashSet<Player>> RebelPlayers = new List<HashSet<Player>>();
+
+    public GameObject TimelineObject;
 
 
     private void Awake() {
@@ -285,6 +290,22 @@ public abstract class GameDirector : MonoBehaviourPun {
         yield return new WaitForSeconds(10);
         creepCoroutine = StartCoroutine(RespawnTimer());
         RespawnCreep();
+    }
+
+    public IEnumerator CutsceneTime()
+    {
+        StartCutscene();
+
+        yield return new WaitForSeconds(4f);
+
+        PhotonNetwork.LoadLevel(2);
+    }
+
+    public void StartCutscene()
+    {
+        UICanvas.SetActive(false);
+        TimelineObject.SetActive(true);
+        playerManager.GetPlayerAvatar().GetComponent<PlayerContainer>().GetCamera().SetActive(false);
     }
 
     public EndGameScreen GetEndGameScreen() {

@@ -41,25 +41,31 @@ public class RebelHQ_A : GameDirector {
   [SerializeField]
   public GameObject ObjectivePanel;
 
+  //temp storage array for gen gameobject
+  private GameObject[] temp;
+
+  private GameObject forcefieldTemp;
+
   // Flags
   private bool forcefieldDestroyed = false;
 
   // Update scene specific objectives
   protected override void UpdateObjectives() {
-    if (generatorCount == 0 && !forcefieldDestroyed && PhotonNetwork.IsMasterClient)
+    if (PhotonNetwork.IsMasterClient && !forcefieldDestroyed)
     {
-        GameObject[] forcefields = GameObject.FindGameObjectsWithTag("Forcefield");
-        foreach (GameObject gameObject in forcefields)
-            PhotonNetwork.Destroy(gameObject);
+        if(generatorCount == 0 || forcefieldTemp.GetComponent<SphereDetection>().GetHealth() <= 0)
+            {
+                PhotonNetwork.Destroy(forcefieldTemp);
+                forcefieldDestroyed = true;
+                //eventsManager.DisplayEndGame_S("Government Team Wins");
+                eventsManager.StartCutscene_S(true);
+                //PhotonNetwork.LoadLevel(2);
 
-        forcefieldDestroyed = true;
-        //Debug.Log(photonView);
-        //playerManager.GetComponent<PhotonView>().RPC("DisplayEndScreenRPC", RpcTarget.AllViaServer, "Government Team Win!!");
-        eventsManager.DisplayEndGame_S("Government Team Wins");
-        //if game ends before timer runs out
-        if (timerCoroutine != null) StopCoroutine(timerCoroutine);
-        currentMatchTime = 0;
-        RefreshTimerUI();
+                //if game ends before timer runs out
+                if (timerCoroutine != null) StopCoroutine(timerCoroutine);
+                currentMatchTime = 0;
+                RefreshTimerUI();
+            }
     }
 
     MarkObjective();
@@ -87,8 +93,7 @@ public class RebelHQ_A : GameDirector {
       // Spawn generators
       for (int i = 0; i < randomIndexes.Count; i++)
             {
-                GameObject gen = MasterManager.RoomObjectInstantiate(GetPrefab(Prefabs_A.Generator), GetSpawn(Spawns_A.Generator).transform.GetChild(randomIndexes[i]).transform.position, Quaternion.identity);
-                gen.GetComponent<GeneratorHealth>().SetHealthPanel(ObjectivePanel.transform.GetChild(i).gameObject);
+                MasterManager.RoomObjectInstantiate(GetPrefab(Prefabs_A.Generator), GetSpawn(Spawns_A.Generator).transform.GetChild(randomIndexes[i]).transform.position, Quaternion.identity);
             }
 
       // Spawn crypt
@@ -96,7 +101,7 @@ public class RebelHQ_A : GameDirector {
         MasterManager.RoomObjectInstantiate(GetPrefab(Prefabs_A.Crypt), GetSpawn(Spawns_A.CryptSpawn).transform.GetChild(i).transform.position, GetSpawn(Spawns_A.CryptSpawn).transform.GetChild(i).transform.rotation);
 
       //forcefield sphere spawn on rebel side
-      MasterManager.RoomObjectInstantiate(GetPrefab(Prefabs_A.ForcefieldSphere), GetSpawn(Spawns_A.ForcefieldSphere).transform.position, GetSpawn(Spawns_A.ForcefieldSphere).transform.rotation);
+      forcefieldTemp = MasterManager.RoomObjectInstantiate(GetPrefab(Prefabs_A.ForcefieldSphere), GetSpawn(Spawns_A.ForcefieldSphere).transform.position, GetSpawn(Spawns_A.ForcefieldSphere).transform.rotation);
 
       //Gate spawn
       //MasterManager.RoomObjectInstantiate(GetPrefab(Prefabs_A.Gate), GetSpawn(Spawns_A.GateSpawn).transform.position, GetSpawn(Spawns_A.GateSpawn).transform.rotation);
@@ -121,6 +126,12 @@ public class RebelHQ_A : GameDirector {
       for (int i = 0; i < 3; i++)
        MasterManager.RoomObjectInstantiate(GetPrefab(Prefabs_A.RebelCreep), GetSpawn(Spawns_A.RebelSpawn).transform.GetChild(i+3).transform.position, GetSpawn(Spawns_A.RebelSpawn).transform.GetChild(i + 3).transform.rotation);
     }
+
+    temp = GameObject.FindGameObjectsWithTag("Generator");
+    for (int i = 0; i < temp.Length; i++)
+        {
+            temp[i].GetComponent<GeneratorHealth>().SetHealthPanel(ObjectivePanel.transform.GetChild(i).gameObject);
+        }
   }
 
     protected override void RespawnCreep()

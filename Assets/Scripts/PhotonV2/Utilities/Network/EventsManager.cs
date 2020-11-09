@@ -22,7 +22,8 @@ public class EventsManager : MonoBehaviourPun, IOnEventCallback {
         DisplayEndGame,
         RebelNotification,
         GovtNotification,
-        GeneralNotification
+        GeneralNotification,
+        ShowCutscene
     }
 
     //reference to game director & Player controller
@@ -58,6 +59,9 @@ public class EventsManager : MonoBehaviourPun, IOnEventCallback {
                 break;
             case EventsCode.GeneralNotification:
                 GeneralNotification_R(o);
+                break;
+            case EventsCode.ShowCutscene:
+                StartCutscene_R(o);
                 break;
 
         }
@@ -132,6 +136,29 @@ public class EventsManager : MonoBehaviourPun, IOnEventCallback {
     {
         string WinText = data[0].ToString();
         director.GetEndGameScreen().Show(WinText);
+    }
+
+    //Send and receive event DisplayEndGame
+    public void StartCutscene_S(bool win)
+    {
+        object[] package = new object[] { win };
+
+        PhotonNetwork.RaiseEvent(
+            (byte)EventsCode.ShowCutscene,
+            package,
+            new RaiseEventOptions { Receivers = ReceiverGroup.All },
+            new SendOptions { Reliability = false }
+            );
+    }
+
+    public void StartCutscene_R(object[] data)
+    {
+        bool GovtWin = (bool)data[0];
+        if(GovtWin)
+        {
+            StartCoroutine(director.CutsceneTime());
+        }
+        //director.GetEndGameScreen().Show(WinText);
     }
 
     public void RebelNotification_S(string message, float durationSeconds)

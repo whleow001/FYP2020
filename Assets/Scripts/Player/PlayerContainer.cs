@@ -50,6 +50,11 @@ public class PlayerContainer : MonoBehaviourPun
       return playerManager;
     }
 
+    public GameObject GetCamera()
+    {
+        return _mainCamera;
+    }
+
     private void OnCollisionEnter(Collision other) {
 
       if (other.gameObject.tag == "Projectile" && other.gameObject.layer == playerManager.GetDirector().GetOtherFactionLayer()) {

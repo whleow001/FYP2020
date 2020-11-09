@@ -104,7 +104,7 @@ public class GeneratorHealth : Objective
     public void SetHealthPanel(GameObject healthbar)
     {
         healthPanel = healthbar;
-        PanelSlider = healthbar.GetComponentInChildren<Slider>();
+        PanelSlider = healthbar.GetComponent<Slider>();
         PanelFill = healthbar.transform.Find("fill").GetComponent<Image>();
     }
 
@@ -114,6 +114,7 @@ public class GeneratorHealth : Objective
     {
         PhotonView PV = PhotonView.Find(viewID);
         PV.gameObject.GetComponent<GeneratorHealth>().SetHealthbar(health);
+        Debug.Log(PanelSlider);
         PanelSlider.value = health;
         PanelFill.color = gradient.Evaluate(PanelSlider.normalizedValue);
         //SetHealthbar(health);
