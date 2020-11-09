@@ -122,9 +122,8 @@ public class PlayerController : MonoBehaviour {
 
     public void SetStatsOnRespawn()
     {
-        print("CIndex: " + GetComponent<PlayerManager>().getSelectedCharacterIndex());
-        print("Stats: " + stats[0].speed);
         currentStats = stats[GetComponent<PlayerManager>().getSelectedCharacterIndex()-1];
+        ChangeState(CharacterState.Idle);
     }
 
     private void UpdateState() {

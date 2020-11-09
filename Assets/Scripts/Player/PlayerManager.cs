@@ -50,6 +50,7 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     private int respawnTime = 3;
     public int respawnTimer;
     private Coroutine respawnCoroutine;
+    private bool reinitializing = false;
 
     public bool kill = false;
 
@@ -307,6 +308,7 @@ public class PlayerManager : MonoBehaviourPunCallbacks
             }
 
             respawnTimer = respawnTime;
+            reinitializing = true;
 
             //respawn timer overlay
             // director.GetUIText(4).SetText("", 3.0f, true);
@@ -322,12 +324,14 @@ public class PlayerManager : MonoBehaviourPunCallbacks
       if (respawnTimer < 0) {
         PhotonNetwork.Destroy(playerClone);
         AvatarParent.transform.position = spawnPoint.transform.GetChild(Random.Range(0, 3)).transform.position;
-        InitializeCharacter();
         Reset();
+        InitializeCharacter();
 
         GetComponent<PlayerController>().ReinitializeGunpoints();
         GetComponent<PlayerController>().SetStatsOnRespawn();
         GetComponent<PlayerAnimation>().ReinitializeAnimator();
+
+        reinitializing = false;
 
         respawnCoroutine = null;
       }
@@ -394,6 +398,10 @@ public class PlayerManager : MonoBehaviourPunCallbacks
 
     public bool IsDead() {
       return GetProperty("Health") <= 0;
+    }
+
+    public bool IsReinitializing() {
+      return reinitializing;
     }
 
     //Player disconnect under game setup script then add button for disconnect under char select
