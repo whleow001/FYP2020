@@ -59,6 +59,5 @@ public class PlayerAnimation : MonoBehaviour
 
       if (playerClone)
         anim = playerClone.GetComponent<Animator>();
-      // anim = GetComponent<PlayerManager>().GetPlayerClone().GetComponent<Animator>();
     }
 }

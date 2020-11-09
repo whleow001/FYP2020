@@ -73,7 +73,6 @@ public class RebelHQ_A : GameDirector {
 
   // Initialize scene specific game objects
   protected override void InitializeGameObjects() {
-    print("set text");
     if (GetTeamIndex() == 0)
       GetUIText(Texts_A.objective).SetText("Destroy all generators or the forcefield to advance into the Rebel's base!");
     else

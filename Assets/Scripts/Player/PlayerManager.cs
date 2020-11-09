@@ -40,11 +40,17 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     private bool instantiated = false;
     private GameObject playerClone;
     private GameObject AvatarParent;
-    private int team;   // team number;
+    public int team;   // team number;
+    public int position;  // position in team;
 
     public Slider slider;
     public Gradient gradient;
     public Image fill;
+
+    private int respawnTime = 3;
+    public int respawnTimer;
+    private Coroutine respawnCoroutine;
+    private bool reinitializing = false;
 
     public bool kill = false;
 
@@ -96,6 +102,10 @@ public class PlayerManager : MonoBehaviourPunCallbacks
         int ParentViewID = AvatarParent.GetComponent<PhotonView>().ViewID;
         int selectedLayer = director.GetFactionLayer();
         GetComponent<PlayerRPC>().ChangeMaterial(ParentViewID, ModelViewID, selectedMaterial, selectedLayer);
+    }
+
+    public void SetPosition(int _position) {
+      position = _position;
     }
 
     public void SetHealthBar(int value, Slider mainslider = null, Image mainfill = null)
@@ -281,7 +291,7 @@ public class PlayerManager : MonoBehaviourPunCallbacks
           GetHitEffect().Emit(1);
         }
 
-        // ChangeValue("Health", (int)(properties["Health"]) - dmg.damage);
+        ChangeValue("Health", (int)(properties["Health"]) - dmg.damage);
         GetComponent<PlayerRPC>().CallRPC("BroadcastHealth", playerClone.GetComponent<PhotonView>().ViewID);
 
         if (GetProperty("Health") <= 0)
@@ -297,11 +307,48 @@ public class PlayerManager : MonoBehaviourPunCallbacks
                 //eventsManager.GeneralNotification_S(killer.NickName + " has killed " + PhotonNetwork.LocalPlayer.NickName, 2.0f, "CombatLog");
             }
 
+            respawnTimer = respawnTime;
+            reinitializing = true;
+
             //respawn timer overlay
-            director.GetUIText(4).SetText("", 3.0f, true);
-            Respawn();
+            // director.GetUIText(4).SetText("", 3.0f, true);
+            // Respawn();
             //director.AddToCombatLog(photonView, attacker);
+            respawnCoroutine = StartCoroutine(RespawnTimer());
         }
+    }
+
+    private IEnumerator RespawnTimer() {
+      eventsManager.DeathTimer_S();
+
+      if (respawnTimer < 0) {
+        PhotonNetwork.Destroy(playerClone);
+        AvatarParent.transform.position = spawnPoint.transform.GetChild(Random.Range(0, 3)).transform.position;
+        Reset();
+        InitializeCharacter();
+
+        GetComponent<PlayerController>().ReinitializeGunpoints();
+        GetComponent<PlayerController>().SetStatsOnRespawn();
+        GetComponent<PlayerAnimation>().ReinitializeAnimator();
+
+        reinitializing = false;
+
+        respawnCoroutine = null;
+      }
+
+      else {
+        director.GetUIText(4).SetText(GetTimerText(respawnTimer), 1.0f);
+
+        yield return new WaitForSeconds(1.0f);
+        respawnTimer--;
+        respawnCoroutine = StartCoroutine(RespawnTimer());
+      }
+    }
+
+    private string GetTimerText(int _seconds) {
+      string minutes = (_seconds / 60).ToString("00");
+      string seconds = (_seconds % 60).ToString("00");
+      return $"{minutes}:{seconds}";
     }
 
     // Credit kill
@@ -314,20 +361,20 @@ public class PlayerManager : MonoBehaviourPunCallbacks
         killer.SetCustomProperties(properties);
     }
 
-    private void Respawn()
-    {
-
-       PhotonNetwork.Destroy(playerClone);
-       AvatarParent.transform.position = spawnPoint.transform.GetChild(Random.Range(0, 3)).transform.position;
-       InitializeCharacter();
-       Reset();
-
-       GetComponent<PlayerController>().ReinitializeGunpoints();
-       GetComponent<PlayerController>().SetStatsOnRespawn();
-       GetComponent<PlayerAnimation>().ReinitializeAnimator();
-       //GetComponent<PlayerRPC>().CallRPC("BroadcastHealth", GetComponent<PlayerRPC>().GetPhotonView().ViewID);
-       //playerClone.GetComponent<PhotonView>().RPC("BroadcastHealth", RpcTarget.All, playerClone.GetComponent<PhotonView>().Owner);
-    }
+    // private void Respawn()
+    // {
+    //
+    //    // PhotonNetwork.Destroy(playerClone);
+    //    // AvatarParent.transform.position = spawnPoint.transform.GetChild(Random.Range(0, 3)).transform.position;
+    //    // InitializeCharacter();
+    //    // Reset();
+    //
+    //    GetComponent<PlayerController>().ReinitializeGunpoints();
+    //    GetComponent<PlayerController>().SetStatsOnRespawn();
+    //    GetComponent<PlayerAnimation>().ReinitializeAnimator();
+    //    //GetComponent<PlayerRPC>().CallRPC("BroadcastHealth", GetComponent<PlayerRPC>().GetPhotonView().ViewID);
+    //    //playerClone.GetComponent<PhotonView>().RPC("BroadcastHealth", RpcTarget.All, playerClone.GetComponent<PhotonView>().Owner);
+    // }
 
    //Player Disconnect PHOTON Room script
    public override void OnPlayerLeftRoom (Player otherPlayer)
@@ -351,6 +398,10 @@ public class PlayerManager : MonoBehaviourPunCallbacks
 
     public bool IsDead() {
       return GetProperty("Health") <= 0;
+    }
+
+    public bool IsReinitializing() {
+      return reinitializing;
     }
 
     //Player disconnect under game setup script then add button for disconnect under char select

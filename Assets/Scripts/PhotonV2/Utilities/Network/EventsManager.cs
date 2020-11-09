@@ -18,6 +18,7 @@ public class EventsManager : MonoBehaviourPun, IOnEventCallback {
     enum EventsCode : byte
     {
         RefreshTimer,
+        DeathTimer,
         RefreshPoints,
         DisplayEndGame,
         RebelNotification,
@@ -44,6 +45,9 @@ public class EventsManager : MonoBehaviourPun, IOnEventCallback {
             //fill in for timer
             case EventsCode.RefreshTimer:
                 RefreshTimer_R(o);
+                break;
+            case EventsCode.DeathTimer:
+                DeathTimer_R(o);
                 break;
             case EventsCode.RefreshPoints:
                 RefreshPoints_R(o);
@@ -92,6 +96,26 @@ public class EventsManager : MonoBehaviourPun, IOnEventCallback {
     {
         director.currentMatchTime = (int)data[0];
         director.RefreshTimerUI();
+    }
+
+    public void DeathTimer_S()
+    {
+      object[] package = new object[] {director.GetPlayerManager().team,
+                                       director.GetPlayerManager().position,
+                                       director.GetPlayerManager().respawnTimer};
+
+      PhotonNetwork.RaiseEvent(
+        (byte)EventsCode.DeathTimer,
+        package,
+        new RaiseEventOptions { Receivers = ReceiverGroup.All },
+        new SendOptions { Reliability = true }
+      );
+    }
+
+    public void DeathTimer_R(object[] data)
+    {
+      director.deathTimers[(int)data[0]][(int)data[1]] = (int)data[2];
+      director.UpdateDeathTimers();
     }
 
     //Send and recieve Events RefreshPoints

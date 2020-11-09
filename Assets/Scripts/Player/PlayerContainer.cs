@@ -121,7 +121,7 @@ public class PlayerContainer : MonoBehaviourPun
             {
                 if (playerManager.GetDirector().GovtPlayers[i] == player)
                 {
-                    playerManager.GovtIcons.transform.GetChild(i).GetComponent<Image>().sprite = Resources.Load<Sprite>("UISprites/number" + (int)player.CustomProperties["Class"]);
+                    playerManager.GovtIcons.transform.GetChild(i).GetChild(0).GetComponent<Image>().sprite = Resources.Load<Sprite>("UISprites/number" + (int)player.CustomProperties["Class"]);
                 }
             }
         }
@@ -132,7 +132,7 @@ public class PlayerContainer : MonoBehaviourPun
             {
                 if (playerManager.GetDirector().RebelPlayers[i] == player)
                 {
-                    playerManager.RebelIcons.transform.GetChild(i).GetComponent<Image>().sprite = Resources.Load<Sprite>("UISprites/number" + (int)player.CustomProperties["Class"]);
+                    playerManager.RebelIcons.transform.GetChild(i).GetChild(0).GetComponent<Image>().sprite = Resources.Load<Sprite>("UISprites/number" + (int)player.CustomProperties["Class"]);
                 }
             }
         }
