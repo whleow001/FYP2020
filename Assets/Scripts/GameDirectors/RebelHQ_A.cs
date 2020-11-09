@@ -62,7 +62,11 @@ public class RebelHQ_A : GameDirector {
                 //PhotonNetwork.LoadLevel(2);
 
                 //if game ends before timer runs out
-                if (timerCoroutine != null) StopCoroutine(timerCoroutine);
+                if (timerCoroutine != null)
+                {
+                    StopCoroutine(timerCoroutine);
+                    StopCoroutine(creepCoroutine);
+                }
                 currentMatchTime = 0;
                 RefreshTimerUI();
             }

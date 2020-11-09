@@ -233,7 +233,7 @@ public class PlayerListingsMenu : MonoBehaviourPunCallbacks, IInRoomCallbacks
             PhotonNetwork.CurrentRoom.IsOpen = false; // players cannot join after game start
             PhotonNetwork.CurrentRoom.IsVisible = false; // removes room from room listing after game start
             PhotonNetwork.LoadLevel(1);
-            // PhotonNetwork.LoadLevel(2);
+            //PhotonNetwork.LoadLevel(2);
 
         }
     }

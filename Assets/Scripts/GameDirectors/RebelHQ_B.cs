@@ -110,12 +110,26 @@ public class RebelHQ_B : GameDirector {
     yield return new WaitForSeconds(1.0f);
 
     totalGovtPoints += pointsPerCpPerSecond * controlPoints.Count(cp => cp.GetState() == ControlPoint.State.Government);
+    if (totalGovtPoints>=500)
+        {
+            eventsManager.DisplayEndGame_S("Government Team Win");
+            if (timerCoroutine != null)
+            {
+                StopCoroutine(timerCoroutine);
+                StopCoroutine(creepCoroutine);
+                StopCoroutine(cpCoroutine);
+            }
+            currentMatchTime = 0;
+            RefreshTimerUI();
+        }
     if (currentMatchTime <= 0)
       cpCoroutine = null;
     else {
       eventsManager.RefreshPoints_S();
       cpCoroutine = StartCoroutine(IncrementCP());
     }
+
+    
   }
 
   public void ChangePCState(ControlPoint.State state, int index) {
