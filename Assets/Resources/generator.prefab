@@ -608,6 +608,7 @@ MonoBehaviour:
   fill: {fileID: 7528652746278987057}
   takeDamage: 0
   healthPanel: {fileID: 0}
+  tempIndex: 0
   PanelSlider: {fileID: 0}
   PanelFill: {fileID: 0}
 --- !u!114 &2866887822377670264

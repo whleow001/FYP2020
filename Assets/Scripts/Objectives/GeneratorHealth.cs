@@ -16,6 +16,7 @@ public class GeneratorHealth : Objective
     public bool takeDamage = false;
 
     public GameObject healthPanel;
+    public int tempIndex;
     public Slider PanelSlider;
     public Image PanelFill;
 
@@ -83,7 +84,7 @@ public class GeneratorHealth : Objective
         hitEffect.Emit(1);
 
         health = health - dmg.damage;
-        photonView.RPC("BroadcastHealth", RpcTarget.All, photonView.ViewID, health);
+        photonView.RPC("BroadcastHealth", RpcTarget.All, photonView.ViewID, health, tempIndex);
         //SetHealthbar(health);
         eventsManager.RebelNotification_S("Generator Under Attack!", 2.0f);
     }
@@ -101,20 +102,22 @@ public class GeneratorHealth : Objective
 
     }
 
-    public void SetHealthPanel(GameObject healthbar)
+    public void SetHealthPanel(GameObject healthbar, int index)
     {
+        tempIndex = index;
         healthPanel = healthbar;
-        PanelSlider = healthbar.GetComponent<Slider>();
-        PanelFill = healthbar.transform.Find("fill").GetComponent<Image>();
+        //PanelSlider = healthbar.GetComponent<Slider>();
+        //PanelFill = healthbar.transform.Find("fill").GetComponent<Image>();
     }
 
     //broadcast health to all clients in the server
     [PunRPC]
-    void BroadcastHealth(int viewID, int health)
+    void BroadcastHealth(int viewID, int health, int index)
     {
         PhotonView PV = PhotonView.Find(viewID);
         PV.gameObject.GetComponent<GeneratorHealth>().SetHealthbar(health);
-        Debug.Log(PanelSlider);
+        PanelSlider = Adirector.ObjectivePanel.transform.GetChild(index).gameObject.GetComponent<Slider>();
+        PanelFill = Adirector.ObjectivePanel.transform.GetChild(index).gameObject.transform.Find("fill").GetComponent<Image>();
         PanelSlider.value = health;
         PanelFill.color = gradient.Evaluate(PanelSlider.normalizedValue);
         //SetHealthbar(health);

@@ -42,7 +42,7 @@ public class RebelHQ_A : GameDirector {
   public GameObject ObjectivePanel;
 
   //temp storage array for gen gameobject
-  private GameObject[] temp;
+  public GameObject[] temp;
 
   private GameObject forcefieldTemp;
 
@@ -133,7 +133,7 @@ public class RebelHQ_A : GameDirector {
     temp = GameObject.FindGameObjectsWithTag("Generator");
     for (int i = 0; i < temp.Length; i++)
         {
-            temp[i].GetComponent<GeneratorHealth>().SetHealthPanel(ObjectivePanel.transform.GetChild(i).gameObject);
+            temp[i].GetComponent<GeneratorHealth>().SetHealthPanel(ObjectivePanel.transform.GetChild(i).gameObject, i);
         }
   }
 
