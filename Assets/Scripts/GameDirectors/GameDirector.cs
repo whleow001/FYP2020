@@ -65,7 +65,7 @@ public abstract class GameDirector : MonoBehaviourPun {
     protected PlayerManager playerManager;
     [SerializeField]
     protected EventsManager eventsManager;
-    
+
 
     [Header("Overlays")]
     [SerializeField]

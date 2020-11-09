@@ -180,6 +180,7 @@ public class EventsManager : MonoBehaviourPun, IOnEventCallback {
         bool GovtWin = (bool)data[0];
         if(GovtWin)
         {
+            director.GetPlayerManager().GetComponent<PlayerController>().SetGovtWin();
             StartCoroutine(director.CutsceneTime());
         }
         //director.GetEndGameScreen().Show(WinText);

@@ -19,17 +19,12 @@ public class PlayerController : MonoBehaviour {
 
     [SerializeField]
     private TrailRenderer tracerEffect;
-    /*[SerializeField]
-    private ParticleSystem muzzleFlash;
-    [SerializeField]
-    private ParticleSystem hitMetalEffect;
-    [SerializeField]
-    private ParticleSystem hitFleshEffect;*/
     private Transform raycastDestination;
     private Transform raycastOrigins;
     private bool isFiring = false;
     private float bulletSpeed = 70.0f;
     private float bulletDrop = 0.0f;
+    private bool readyForFiring = false;
 
     Ray ray;
     RaycastHit hitInfo;
@@ -42,6 +37,7 @@ public class PlayerController : MonoBehaviour {
     // Movement variables
     private float angle;
     private bool readyForDoding = false;
+    private bool gameOver = false;
 
     public enum CharacterState {
       Idle = 0,
@@ -66,9 +62,9 @@ public class PlayerController : MonoBehaviour {
     }
 
     private Stats[] stats = {
-      new Stats(10, 7, 1),       // Gunslinger
-      new Stats(8, 5, 1),        // Sniper
-      new Stats(5, 3, 1)         // Juggernaut
+      new Stats(10, 10, 1),       // Gunslinger
+      new Stats(8, 10, 1),        // Sniper
+      new Stats(5, 7, 1)         // Juggernaut
     };
 
     private Stats currentStats;
@@ -94,9 +90,16 @@ public class PlayerController : MonoBehaviour {
         if (characterState == CharacterState.Dodging)
           return;
 
-        UpdateState();
+        if (!gameOver)
+          UpdateState();
         UpdateBullets(Time.deltaTime);
         Rotate();
+
+        // if (readyForFiring && !isFiring) {
+        //   accumulatedTime = 0.0f;
+        //   isFiring = true;
+        //   FireBullet();
+        // }
     }
 
     void FixedUpdate() {
@@ -196,20 +199,27 @@ public class PlayerController : MonoBehaviour {
     }
 
     private void Attack(float deltaTime) {
-      if (!isFiring)
-        StartFiring();
-      else
-        UpdateFiring(deltaTime);
+      // if (!isFiring)
+      //   StartFiring();
+      // else
+      //   UpdateFiring(deltaTime);
+      if (readyForFiring)
+        FireBullet();
+      //UpdateFiring(deltaTime);
     }
 
     private void StartFiring() {
-      isFiring = true;
-      accumulatedTime = 0.0f;
-      FireBullet();
+      StartCoroutine(WaitForFiring());
+    }
+
+    private IEnumerator WaitForFiring() {
+      yield return new WaitForSeconds(0.6f);
+      readyForFiring = true;
     }
 
     private void StopFiring() {
       isFiring = false;
+      readyForFiring = false;
     }
 
     private void UpdateBullets(float deltaTime) {
@@ -292,6 +302,19 @@ public class PlayerController : MonoBehaviour {
         ChangeState(CharacterState.Idle);
         readyForDoding = false;
       }
+    }
+
+    public void SetGovtWin() {
+      gameOver = true;
+      if (GetComponent<PlayerManager>().team == 0)
+        ChangeState(CharacterState.Victory);
+      else
+        ChangeState(CharacterState.Defeat);
+    }
+
+    public void ReadyForFiring(bool ready) {
+      print(ready);
+      readyForFiring = ready;
     }
 
     // Auto targeting
