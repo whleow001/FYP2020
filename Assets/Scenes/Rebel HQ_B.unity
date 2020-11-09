@@ -4853,7 +4853,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 1388698568}
         m_MethodName: char1ButtonPress
         m_Mode: 1
         m_Arguments:
@@ -7700,7 +7700,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 1388698568}
         m_MethodName: char3ButtonPress
         m_Mode: 1
         m_Arguments:
@@ -7860,7 +7860,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 1388698568}
         m_MethodName: char2ButtonPress
         m_Mode: 1
         m_Arguments:
