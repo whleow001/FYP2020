@@ -100,6 +100,9 @@ public abstract class GameDirector : MonoBehaviourPun {
     public Player[] RebelPlayers;
     //public List<HashSet<Player>> RebelPlayers = new List<HashSet<Player>>();
 
+    public List<List<int>> deathTimers = new List<List<int>> { new List<int> { -1, -1, -1 },
+                                                               new List<int> { -1, -1, -1 }};
+
 
     private void Awake() {
       teamIndex = (byte)PhotonNetwork.LocalPlayer.CustomProperties["_pt"];
@@ -172,6 +175,29 @@ public abstract class GameDirector : MonoBehaviourPun {
       UpdateObjectives();
     }
 
+    public void UpdateDeathTimers() {
+      for (int i = 0; i < deathTimers.Count; i++) {
+        for (int j = 0; j < deathTimers[i].Count; j++) {
+          if (deathTimers[i][j] >= 0) {
+            if (i == 0) {
+              playerManager.GovtIcons.transform.GetChild(j).GetChild(0).GetChild(0).gameObject.SetActive(true);
+              playerManager.GovtIcons.transform.GetChild(j).GetChild(0).GetChild(0).GetChild(0).GetComponent<Text>().text = deathTimers[i][j].ToString();
+            }
+            else {
+              playerManager.RebelIcons.transform.GetChild(j).GetChild(0).GetChild(0).gameObject.SetActive(true);
+              playerManager.RebelIcons.transform.GetChild(j).GetChild(0).GetChild(0).GetChild(0).GetComponent<Text>().text = deathTimers[i][j].ToString();
+            }
+          }
+          else {
+            if (i == 0)
+              playerManager.GovtIcons.transform.GetChild(j).GetChild(0).GetChild(0).gameObject.SetActive(false);
+            else
+              playerManager.RebelIcons.transform.GetChild(j).GetChild(0).GetChild(0).gameObject.SetActive(false);
+          }
+        }
+      }
+    }
+
     public UIText GetUIText(int index)
     {
       return UITexts[index];
@@ -185,6 +211,10 @@ public abstract class GameDirector : MonoBehaviourPun {
     public GameObject GetPrefab(int index)
     {
       return prefabs[index];
+    }
+
+    public PlayerManager GetPlayerManager() {
+      return playerManager;
     }
 
     // Abstract functions to be overridden
@@ -314,6 +344,9 @@ public abstract class GameDirector : MonoBehaviourPun {
         foreach (var player in allPlayers)
         {
             GovtPlayers[i] = player;
+            if (player == PhotonNetwork.LocalPlayer)
+              playerManager.SetPosition(i);
+
             i++;
         }
     }
@@ -328,6 +361,9 @@ public abstract class GameDirector : MonoBehaviourPun {
         foreach (var player in allPlayers)
         {
             RebelPlayers[i] = player;
+            if (player == PhotonNetwork.LocalPlayer)
+              playerManager.SetPosition(i);
+
             i++;
         }
     }
