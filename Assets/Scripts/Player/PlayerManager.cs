@@ -273,36 +273,40 @@ public class PlayerManager : MonoBehaviourPunCallbacks
 
     public void TakeDamage(Damage dmg, PhotonView attacker = null)
     {
-        if (dmg.sourcePosition != Vector3.zero) {
-          GetHitEffect().transform.position = dmg.sourcePosition;
-          GetHitEffect().transform.forward = (new Vector3(gameObject.transform.position.x, dmg.sourcePosition.y, dmg.sourcePosition.z) - dmg.sourcePosition).normalized;
-          GetHitEffect().Emit(1);
-        }
-
-        ChangeValue("Health", (int)(properties["Health"]) - dmg.damage);
-        GetComponent<PlayerRPC>().CallRPC("BroadcastHealth", playerClone.GetComponent<PhotonView>().ViewID);
-
-        if (GetProperty("Health") <= 0)
+        if (GetProperty("Health") > 0)
         {
-            Increment("Deaths");
-
-            if (attacker)
+            if (dmg.sourcePosition != Vector3.zero)
             {
-                Player killer = attacker.Owner;
-                CreditKiller(killer);
-
-                //Notification for "player" killed "player"
-                //eventsManager.GeneralNotification_S(killer.NickName + " has killed " + PhotonNetwork.LocalPlayer.NickName, 2.0f, "CombatLog");
+                GetHitEffect().transform.position = dmg.sourcePosition;
+                GetHitEffect().transform.forward = (new Vector3(gameObject.transform.position.x, dmg.sourcePosition.y, dmg.sourcePosition.z) - dmg.sourcePosition).normalized;
+                GetHitEffect().Emit(1);
             }
 
-            respawnTimer = respawnTime;
-            reinitializing = true;
+            ChangeValue("Health", (int)(properties["Health"]) - dmg.damage);
+            GetComponent<PlayerRPC>().CallRPC("BroadcastHealth", playerClone.GetComponent<PhotonView>().ViewID);
 
-            //respawn timer overlay
-            // director.GetUIText(4).SetText("", 3.0f, true);
-            // Respawn();
-            //director.AddToCombatLog(photonView, attacker);
-            respawnCoroutine = StartCoroutine(RespawnTimer());
+            if (GetProperty("Health") <= 0)
+            {
+                Increment("Deaths");
+
+                if (attacker)
+                {
+                    Player killer = attacker.Owner;
+                    CreditKiller(killer);
+
+                    //Notification for "player" killed "player"
+                    //eventsManager.GeneralNotification_S(killer.NickName + " has killed " + PhotonNetwork.LocalPlayer.NickName, 2.0f, "CombatLog");
+                }
+
+                respawnTimer = respawnTime;
+                reinitializing = true;
+
+                //respawn timer overlay
+                // director.GetUIText(4).SetText("", 3.0f, true);
+                // Respawn();
+                //director.AddToCombatLog(photonView, attacker);
+                respawnCoroutine = StartCoroutine(RespawnTimer());
+            }
         }
     }
 
