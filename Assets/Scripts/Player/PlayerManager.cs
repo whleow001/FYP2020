@@ -114,14 +114,6 @@ public class PlayerManager : MonoBehaviourPunCallbacks
 
     public void SetHealthBar(int value, Slider mainslider = null, Image mainfill = null)
     {
-        //if(director.GetFactionLayer() == 9)
-        //{
-        //    fill.color = Color.red;
-        //}
-        //else if(director.GetFactionLayer() == 10)
-        //{
-        //    fill.color = Color.blue;
-        //}
 
         if(mainslider != null && mainfill != null)
         {
@@ -138,14 +130,6 @@ public class PlayerManager : MonoBehaviourPunCallbacks
 
     public void SetMaxHealthBar(int value, Slider mainslider = null, Image mainfill = null)
     {
-        //if (director.GetFactionLayer() == 9)
-        //{
-        //    fill.color = Color.red;
-        //}
-        //else if (director.GetFactionLayer() == 10)
-        //{
-        //    fill.color = Color.blue;
-        //}
 
         if (mainslider != null && mainfill != null)
         {
@@ -359,10 +343,10 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     public void CreditKiller(Player killer)
     {
         //if (!photonView.IsMine) return;
-
-        properties = killer.CustomProperties;
-        properties["Kills"] = (int)(properties["Kills"]) + 1;
-        killer.SetCustomProperties(properties);
+        ExitGames.Client.Photon.Hashtable killerProperties;
+        killerProperties = killer.CustomProperties;
+        killerProperties["Kills"] = (int)(killerProperties["Kills"]) + 1;
+        killer.SetCustomProperties(killerProperties);
     }
 
     // private void Respawn()

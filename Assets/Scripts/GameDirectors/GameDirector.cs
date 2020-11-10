@@ -83,6 +83,7 @@ public abstract class GameDirector : MonoBehaviourPun {
     public int currentMatchTime;
     protected Coroutine timerCoroutine, creepCoroutine;
 
+    // change char overlay
     private GameObject charPanel;
     private int charIndex;
 
@@ -96,6 +97,9 @@ public abstract class GameDirector : MonoBehaviourPun {
 
     private string selectedText = "Selected";
     private string unselectedText = "Select";
+
+    //Quit to lobby overlay
+    private GameObject leavePanel;
 
     private PhotonTeamsManager photonTeamManager;
 
@@ -129,6 +133,9 @@ public abstract class GameDirector : MonoBehaviourPun {
       char2text = char2Button.GetComponentInChildren<Text>();
       char3text = char3Button.GetComponentInChildren<Text>();
       charPanel.SetActive(false);
+
+      leavePanel = GameObject.Find("LeaveGameOverlay");
+      leavePanel.SetActive(false);
 
       // Initialize scene specific objects
       InitializeGameObjects();
@@ -430,5 +437,15 @@ public abstract class GameDirector : MonoBehaviourPun {
         char2Button.interactable = true;
         char3Button.interactable = false;
         charPanel.SetActive(false);
+    }
+
+    public void LeaveGame()
+    {
+        leavePanel.SetActive(true);
+    }
+
+    public void CancelLeave()
+    {
+        leavePanel.SetActive(false);
     }
 }

@@ -73,14 +73,18 @@ public class EndGameScreen : MonoBehaviourPunCallbacks
         }
         else
         {
-            TeamOneListing listingOne = Instantiate(_teamOneListing, _contentTeamOne);
-            if (listingOne != null)
+            if(_teamOneListing != null)
             {
-                listingOne.SetTeamOnePlayerInfo(player);
-                _listingsOne.Add(listingOne);
-                listingOne.SetPlayerText(player);
-                //Debug.Log(player.NickName);
+                TeamOneListing listingOne = Instantiate(_teamOneListing, _contentTeamOne);
+                if (listingOne != null)
+                {
+                    listingOne.SetTeamOnePlayerInfo(player);
+                    _listingsOne.Add(listingOne);
+                    listingOne.SetPlayerText(player);
+                    //Debug.Log(player.NickName);
+                }
             }
+            
         }
     }
 
@@ -93,14 +97,18 @@ public class EndGameScreen : MonoBehaviourPunCallbacks
         }
         else
         {
-            TeamTwoListing listingTwo = Instantiate(_teamTwoListing, _contentTeamTwo);
-            if (listingTwo != null)
+            if(_teamTwoListing != null)
             {
-                listingTwo.SetTeamTwoPlayerInfo(player);
-                _listingsTwo.Add(listingTwo);
-                listingTwo.SetPlayerText(player);
-                //Debug.Log(player.NickName);
+                TeamTwoListing listingTwo = Instantiate(_teamTwoListing, _contentTeamTwo);
+                if (listingTwo != null)
+                {
+                    listingTwo.SetTeamTwoPlayerInfo(player);
+                    _listingsTwo.Add(listingTwo);
+                    listingTwo.SetPlayerText(player);
+                    //Debug.Log(player.NickName);
+                }
             }
+            
         }
     }
 
