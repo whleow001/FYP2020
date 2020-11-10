@@ -35,6 +35,9 @@ public class CreepBot : MonoBehaviourPun
     // to determine whether creep has reached waypoint or not
     private bool waypointReached = false;
 
+    // to temporarily store closest player status
+    private bool deadPlayer = false;
+
     // for creep attack range
     private float creepRange;
 
@@ -100,6 +103,7 @@ public class CreepBot : MonoBehaviourPun
 
         //combining players, creeps, crypts, forcefield and gate as targets
         creeps = GameObject.FindGameObjectsWithTag("Creep");
+
         players = GameObject.FindGameObjectsWithTag("Player");
         crypts = GameObject.FindGameObjectsWithTag("Crypt");
         targets = players.Concat(creeps).ToArray();
@@ -156,6 +160,9 @@ public class CreepBot : MonoBehaviourPun
         // create a path
         NavMeshPath path = new NavMeshPath();
 
+        // default
+        deadPlayer = false;
+
         if (health > 0 && !gameEnded)
         {
             //waypoint is reached
@@ -164,8 +171,14 @@ public class CreepBot : MonoBehaviourPun
                 waypointReached = true;
             }
 
+            // change to status of nearest player
+            if(closestTarget.tag=="Player")
+            {
+                deadPlayer = closestTarget.gameObject.GetComponent<PlayerContainer>().IsDead();
+            }
+
             //if target closeby is not on the same team, move towards them
-            if (targetDirection.magnitude <= 13 && closestTarget.layer != this.gameObject.layer)
+            if (targetDirection.magnitude <= 13 && closestTarget.layer != this.gameObject.layer && !deadPlayer)
             {
                 creepAnimator.SetBool("isIdle", false);
 

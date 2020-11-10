@@ -67,6 +67,18 @@ public class PlayerContainer : MonoBehaviourPun
         playerManager.TakeDamage(dmg);
     }
 
+    public bool IsDead()
+    {
+        if (playerManager.GetProperty("Health") <= 0)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
     //broadcast health to all clients in the server
     [PunRPC]
     void BroadcastHealth(int victimID)
