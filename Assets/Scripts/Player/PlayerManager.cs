@@ -235,7 +235,15 @@ public class PlayerManager : MonoBehaviourPunCallbacks
 
     private void ChangeValue(string key, int value)
     {
+        //PhotonNetwork.LocalPlayer.CustomProperties[key] = value;
+        //PhotonNetwork.LocalPlayer.SetCustomProperties(properties);
+
+
+
         GetProperties();
+
+        if (!GetComponent<PlayerRPC>().IsPhotonViewMine()) { return; }
+
         properties[key] = value;
         PhotonNetwork.SetPlayerCustomProperties(properties);
         if(key == "Health")
@@ -295,7 +303,7 @@ public class PlayerManager : MonoBehaviourPunCallbacks
                     CreditKiller(killer);
 
                     //Notification for "player" killed "player"
-                    //eventsManager.GeneralNotification_S(killer.NickName + " has killed " + PhotonNetwork.LocalPlayer.NickName, 2.0f, "CombatLog");
+                    eventsManager.GeneralNotification_S(killer.NickName + " has killed " + PhotonNetwork.LocalPlayer.NickName, 2.0f, "CombatLog");
                 }
 
                 respawnTimer = respawnTime;
