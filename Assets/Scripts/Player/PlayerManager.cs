@@ -235,14 +235,7 @@ public class PlayerManager : MonoBehaviourPunCallbacks
 
     private void ChangeValue(string key, int value)
     {
-        //PhotonNetwork.LocalPlayer.CustomProperties[key] = value;
-        //PhotonNetwork.LocalPlayer.SetCustomProperties(properties);
-
-
-
         GetProperties();
-
-        if (!GetComponent<PlayerRPC>().IsPhotonViewMine()) { return; }
 
         properties[key] = value;
         PhotonNetwork.SetPlayerCustomProperties(properties);
