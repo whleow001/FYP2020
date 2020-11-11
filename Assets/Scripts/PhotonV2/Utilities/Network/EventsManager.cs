@@ -272,13 +272,13 @@ public class EventsManager : MonoBehaviourPun, IOnEventCallback {
         float duration = (float)data[1];
         //bool timerState = (bool)data[2];
         string purpose = data[2].ToString();
-        if (purpose == "CombatLog");
-            //do stuff
+        if (purpose == "CombatLog")
+        {
+            director.GetUIText(BaseTexts.notify).SetText(NotifText, duration);
+        }
         else if (purpose == "PlayerDisconnect")
-            //do stuff
-
-        director.GetUIText(BaseTexts.notify).SetText(NotifText, duration);
-        //director.UITexts[3].SetActiveState(true);
-        director.GetUIText(BaseTexts.disconnect).SetText(NotifText, duration);
+        {
+            director.GetUIText(BaseTexts.disconnect).SetText(NotifText, duration);
+        }
     }
 }
