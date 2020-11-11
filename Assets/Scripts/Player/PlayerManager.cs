@@ -290,7 +290,7 @@ public class PlayerManager : MonoBehaviourPunCallbacks
             {
                 Increment("Deaths");
 
-                if (attacker)
+                if (attacker != null)
                 {
                     Player killer = attacker.Owner;
                     CreditKiller(killer);
