@@ -16,8 +16,8 @@ public class PlayerContainer : MonoBehaviourPun
     void Awake()
     {
         playerManager = GameObject.Find("PlayerManager").GetComponent<PlayerManager>();
-        Debug.Log("my own layer: " + playerManager.GetDirector().GetFactionLayer());
-        Debug.Log("opposite team layer: " + playerManager.GetDirector().GetOtherFactionLayer()); 
+        //Debug.Log("my own layer: " + playerManager.GetDirector().GetFactionLayer());
+        //Debug.Log("opposite team layer: " + playerManager.GetDirector().GetOtherFactionLayer()); 
     }
 
     // Update is called once per frame
@@ -63,9 +63,9 @@ public class PlayerContainer : MonoBehaviourPun
         {
             if (other.gameObject.tag == "Projectile" && other.gameObject.layer == playerManager.GetDirector().GetOtherFactionLayer())
             {
-                Debug.Log(other.gameObject.layer);
-                Debug.Log(other.gameObject.GetComponent<PhotonViewReference>().GetPhotonView());
-                playerManager.TakeDamage(new Damage(20, other.gameObject.transform.position), other.gameObject.GetComponent<PhotonViewReference>().GetPhotonView());
+                //Debug.Log(other.gameObject.layer);
+                //Debug.Log(other.gameObject.GetComponent<PhotonViewReference>().GetPhotonView());
+                playerManager.TakeDamage(new Damage(20, other.gameObject.transform.position), other.gameObject.GetComponent<PhotonViewReference>().GetPhotonView().ViewID);
             }
         }
     }

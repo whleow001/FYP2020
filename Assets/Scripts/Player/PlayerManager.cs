@@ -82,11 +82,11 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     // Update is called once per frame
     void Update()
     {
-      if (kill) {
-       TakeDamage(new Damage(100, Vector3.zero));
+      //if (kill) {
+      // TakeDamage(new Damage(100, Vector3.zero));
 
-       kill = false;
-      }
+      // kill = false;
+      //}
     }
 
     public GameDirector GetDirector() {
@@ -272,8 +272,9 @@ public class PlayerManager : MonoBehaviourPunCallbacks
         return 0;
     }
 
-    public void TakeDamage(Damage dmg, PhotonView attacker = null)
+    public void TakeDamage(Damage dmg, int attackerViewID)
     {
+        Debug.Log("viewID of attacker: " + attackerViewID);
         if (GetProperty("Health") > 0)
         {
             if (dmg.sourcePosition != Vector3.zero)
@@ -289,10 +290,14 @@ public class PlayerManager : MonoBehaviourPunCallbacks
             if (GetProperty("Health") <= 0)
             {
                 Increment("Deaths");
+                PhotonView attacker = PhotonView.Find(attackerViewID);
+                Debug.Log("PV of attacker: " + attacker);
 
                 if (attacker != null)
                 {
                     Player killer = attacker.Owner;
+                    Debug.Log(killer);
+                    Debug.Log("Player: " + killer.NickName);
                     CreditKiller(killer);
 
                     //Notification for "player" killed "player"
@@ -348,6 +353,7 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     public void CreditKiller(Player killer)
     {
         //if (!photonView.IsMine) return;
+        Debug.Log(killer);
         ExitGames.Client.Photon.Hashtable killerProperties;
         killerProperties = killer.CustomProperties;
         killerProperties["Kills"] = (int)(killerProperties["Kills"]) + 1;
