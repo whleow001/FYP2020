@@ -271,7 +271,7 @@ public class PlayerManager : MonoBehaviourPunCallbacks
         return 0;
     }
 
-    public void TakeDamage(Damage dmg, PhotonView attacker = null)
+    public void TakeDamage(Damage dmg, PhotonView attacker = null, int AIIndex = -1)
     {
         if (GetProperty("Health") > 0)
         {
@@ -374,6 +374,10 @@ public class PlayerManager : MonoBehaviourPunCallbacks
         base.OnPlayerLeftRoom(otherPlayer);
         Debug.Log(otherPlayer.NickName + " Has Left the game");
         eventsManager.GeneralNotification_S(otherPlayer.NickName + " Has Left the game", 2.0f, "PlayerDisconnect");
+
+        if (GetComponent<PlayerRPC>().IsMasterClient()) {
+          StartCoroutine(director.SpawnAI(otherPlayer));
+        }
     }
 
     //Master client leave room

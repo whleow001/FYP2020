@@ -51,6 +51,9 @@ public class RebelHQ_A : GameDirector {
 
   // Update scene specific objectives
   protected override void UpdateObjectives() {
+    if (PhotonNetwork.IsMasterClient && !forcefieldTemp)
+      forcefieldTemp = GameObject.Find("Sphere(Clone)");
+
     if (PhotonNetwork.IsMasterClient && !forcefieldDestroyed)
     {
         if(generatorCount == 0 || forcefieldTemp.GetComponent<SphereDetection>().GetHealth() <= 0)
