@@ -272,7 +272,7 @@ public class PlayerManager : MonoBehaviourPunCallbacks
         return 0;
     }
 
-    public void TakeDamage(Damage dmg, int attackerViewID)
+    public void TakeDamage(Damage dmg, int attackerViewID = -1)
     {
         Debug.Log("viewID of attacker: " + attackerViewID);
         if (GetProperty("Health") > 0)

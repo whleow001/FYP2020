@@ -118,16 +118,16 @@ public class RebelHQ_A : GameDirector {
       // bottom forcefield spawn
       MasterManager.RoomObjectInstantiate(GetPrefab(Prefabs_A.BottomForcefield), GetSpawn(Spawns_A.ForcefieldSpawn).transform.GetChild(2).transform.position, GetSpawn(Spawns_A.ForcefieldSpawn).transform.GetChild(2).transform.rotation);
 
-      //// spawn govt creep
-      //for (int i = 0; i < 3; i++)
-      // MasterManager.RoomObjectInstantiate(GetPrefab(Prefabs_A.GovtCreep), GetSpawn(Spawns_A.GovtSpawn).transform.GetChild(i+3).transform.position, GetSpawn(Spawns_A.GovtSpawn).transform.GetChild(i+3).transform.rotation);
+      // spawn govt creep
+      for (int i = 0; i < 3; i++)
+       MasterManager.RoomObjectInstantiate(GetPrefab(Prefabs_A.GovtCreep), GetSpawn(Spawns_A.GovtSpawn).transform.GetChild(i+3).transform.position, GetSpawn(Spawns_A.GovtSpawn).transform.GetChild(i+3).transform.rotation);
 
-    // for testing creep
-    //   MasterManager.RoomObjectInstantiate(prefabs[6], spawns[0].transform.GetChild(4).transform.position, Quaternion.identity);
+      //for testing creep
+       //MasterManager.RoomObjectInstantiate(prefabs[6], spawns[0].transform.GetChild(4).transform.position, Quaternion.identity);
 
-      //// spawn rebel creep
-      //for (int i = 0; i < 3; i++)
-      // MasterManager.RoomObjectInstantiate(GetPrefab(Prefabs_A.RebelCreep), GetSpawn(Spawns_A.RebelSpawn).transform.GetChild(i+3).transform.position, GetSpawn(Spawns_A.RebelSpawn).transform.GetChild(i + 3).transform.rotation);
+      // spawn rebel creep
+      for (int i = 0; i < 3; i++)
+       MasterManager.RoomObjectInstantiate(GetPrefab(Prefabs_A.RebelCreep), GetSpawn(Spawns_A.RebelSpawn).transform.GetChild(i+3).transform.position, GetSpawn(Spawns_A.RebelSpawn).transform.GetChild(i + 3).transform.rotation);
     }
 
     temp = GameObject.FindGameObjectsWithTag("Generator");
@@ -139,16 +139,16 @@ public class RebelHQ_A : GameDirector {
 
     protected override void RespawnCreep()
     {
-        //// respawn govt creep
-        //for (int i = 0; i < 3; i++)
-        //    MasterManager.RoomObjectInstantiate(GetPrefab(Prefabs_A.GovtCreep), GetSpawn(Spawns_A.GovtSpawn).transform.GetChild(i + 3).transform.position, GetSpawn(Spawns_A.GovtSpawn).transform.GetChild(i + 3).transform.rotation);
+        // respawn govt creep
+        for (int i = 0; i < 3; i++)
+            MasterManager.RoomObjectInstantiate(GetPrefab(Prefabs_A.GovtCreep), GetSpawn(Spawns_A.GovtSpawn).transform.GetChild(i + 3).transform.position, GetSpawn(Spawns_A.GovtSpawn).transform.GetChild(i + 3).transform.rotation);
 
-        //// respawn rebel creep
-        //GameObject[] crypts = GameObject.FindGameObjectsWithTag("Crypt");
-        //foreach (GameObject crypt in crypts)
-        //{
-        //    MasterManager.RoomObjectInstantiate(GetPrefab(Prefabs_A.RebelCreep), crypt.transform.GetChild(1).transform.position, crypt.transform.GetChild(1).transform.rotation);
-        //}
+        // respawn rebel creep
+        GameObject[] crypts = GameObject.FindGameObjectsWithTag("Crypt");
+        foreach (GameObject crypt in crypts)
+        {
+            MasterManager.RoomObjectInstantiate(GetPrefab(Prefabs_A.RebelCreep), crypt.transform.GetChild(1).transform.position, crypt.transform.GetChild(1).transform.rotation);
+        }
     }
 
   private void MarkObjective()

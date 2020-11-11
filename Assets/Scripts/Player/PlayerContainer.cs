@@ -70,10 +70,14 @@ public class PlayerContainer : MonoBehaviourPun
         }
     }
 
-    //public void TakeDamage(Damage dmg)
-    //{
-    //    playerManager.TakeDamage(dmg);
-    //}
+    public void TakeDamage(Damage dmg)
+    {
+        if(photonView.IsMine)
+        {
+            playerManager.TakeDamage(dmg);
+        }
+        
+    }
 
     public bool IsDead()
     {
