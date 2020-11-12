@@ -27,6 +27,7 @@ public class AIController : MonoBehaviour
     private float bulletSpeed = 70.0f;
 
     private Vector3 objectiveOfInterest;
+    private int objectivesIndex = 0;
     private GameObject enemyOfInterest;
     private List<Vector3> objectivesLocation = new List<Vector3>();
 
@@ -39,32 +40,28 @@ public class AIController : MonoBehaviour
       objectivesLocation.Add(objective);
     }
 
-    public void RemoveObjective(Vector3 objective) {
-      if (objectivesLocation.Contains(objective))
-        objectivesLocation.Remove(objective);
-
-      if (objectiveOfInterest == objective)
-        SearchClosestObjective();
-    }
-
     public void ClearObjectives() {
       objectivesLocation = new List<Vector3>();
     }
 
-    public void SetObjectiveOfInterest(Vector3 objective) {
-      if (objectivesLocation.Contains(objective))
-        objectiveOfInterest = objective;
-    }
+    private void NextObjective() {
+      if (objectiveOfInterest == Vector3.zero)
+        objectiveOfInterest = objectivesLocation[0];
+      else {
+        objectivesIndex++;
 
-    // Start is called before the first frame update
-    void Start() {
-      agent = GetComponent<UnityEngine.AI.NavMeshAgent>();
+        if (objectivesIndex == objectivesLocation.Count)
+          objectivesIndex = 0;
+        objectiveOfInterest = objectivesLocation[objectivesIndex];
+      }
+
+      print("Next Objective: " + objectiveOfInterest);
     }
 
     // Update is called once per frame
     void Update() {
       if (objectiveOfInterest == Vector3.zero)
-        SearchClosestObjective();
+        NextObjective();
 
       if (aiState == AIState.Objective) {
         ChangeCharacterState(PlayerController.CharacterState.Running);
@@ -73,17 +70,21 @@ public class AIController : MonoBehaviour
           Collider[] collidersInSightRange = Physics.OverlapSphere(transform.position, sightRange);
           foreach (Collider colliderInSightRange in collidersInSightRange) {
             if (colliderInSightRange.gameObject.layer == ((aiDirector.GetTeam() == 0) ? REBEL_LAYER : GOVT_LAYER)) {
-              enemyOfInterest = colliderInSightRange.gameObject;
+              if (!Physics.Linecast(transform.position, colliderInSightRange.gameObject.transform.position)) {
+                enemyOfInterest = colliderInSightRange.gameObject;
 
-              print("AI: Moving towards enemy: " + enemyOfInterest);
-              ChangeAIState(AIState.Engage);
+                ChangeAIState(AIState.Engage);
+              }
             }
           }
         }
-        else {
-          print("AI: Moving towards objective");
 
+        if (aiState == AIState.Objective) {
+          print("Distance to objective " + objectiveOfInterest + ": " + (objectiveOfInterest - transform.position).magnitude);
           agent.SetDestination(objectiveOfInterest);
+
+          if ((objectiveOfInterest - transform.position).magnitude <= 5.0f)
+            NextObjective();
         }
       }
       else if (aiState == AIState.Engage) {
@@ -108,9 +109,14 @@ public class AIController : MonoBehaviour
 
             agent.isStopped = true;
             agent.ResetPath();
-            transform.LookAt(enemyOfInterest.transform, Vector3.up);
+            agent.velocity = Vector3.zero;
+            agent.Stop();
 
             ChangeCharacterState(PlayerController.CharacterState.Attacking);
+            transform.LookAt(enemyOfInterest.transform, Vector3.up);
+
+            if (enemyOfInterest == null)
+              ChangeAIState(AIState.Objective);
           }
         }
       }
@@ -128,19 +134,6 @@ public class AIController : MonoBehaviour
       }
     }
 
-    private void SearchClosestObjective() {
-      float closestDistance = Mathf.Infinity;
-
-      foreach (Vector3 objectiveLocation in objectivesLocation) {
-        float distance = Vector3.Distance(objectiveLocation, transform.position);
-
-        if (distance < closestDistance) {
-          objectiveOfInterest = objectiveLocation;
-          closestDistance = distance;
-        }
-      }
-    }
-
     private void ChangeAIState(AIState _aiState) {
       if (aiState == _aiState)
         return;
@@ -155,8 +148,30 @@ public class AIController : MonoBehaviour
       characterState = _characterState;
     }
 
+    public void SetAgent(UnityEngine.AI.NavMeshAgent _agent) {
+      agent = _agent;
+
+      agent.acceleration = 1;
+      agent.stoppingDistance = 1;
+    }
+
     public void SetAIDirector(AIDirector _aiDirector) {
       aiDirector = _aiDirector;
+
+      int classIndex = aiDirector.GetClassIndex();
+      switch (classIndex) {
+        case 1:
+          agent.speed = 10;
+          break;
+        case 2:
+          agent.speed = 8;
+          break;
+        case 3:
+          agent.speed = 5;
+          break;
+        default:
+          break;
+      }
     }
 
     public AIDirector GetAIDirector() {
