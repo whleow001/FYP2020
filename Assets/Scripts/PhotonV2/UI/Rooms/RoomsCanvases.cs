@@ -34,7 +34,7 @@ public class RoomsCanvases : MonoBehaviour
         MainMenuCanvas.FirstInitialize(this);
         CreateOrJoinRoomCanvas.FirstInitialize(this);
         CurrentRoomCanvas.FirstInitialize(this);
-       InstructionCanvas.FirstInitialize(this);
+        InstructionCanvas.FirstInitialize(this);
         //LoginAndRegCanvas.FirstInitialize(this);
     }
 }
