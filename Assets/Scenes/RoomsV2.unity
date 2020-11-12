@@ -2019,6 +2019,71 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 227673632}
   m_CullTransparentMesh: 0
+--- !u!1 &246392087
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 246392089}
+  - component: {fileID: 246392088}
+  m_Layer: 0
+  m_Name: MenuVideoAlley
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!328 &246392088
+VideoPlayer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 246392087}
+  m_Enabled: 1
+  m_VideoClip: {fileID: 32900000, guid: 6f605749e2b902a4aa1636f8bce8f551, type: 3}
+  m_TargetCameraAlpha: 1
+  m_TargetCamera3DLayout: 0
+  m_TargetCamera: {fileID: 0}
+  m_TargetTexture: {fileID: 8400000, guid: 8c961035d1880f449b28b0100e1b5a72, type: 2}
+  m_TimeReference: 0
+  m_TargetMaterialRenderer: {fileID: 0}
+  m_TargetMaterialProperty: _MainTex
+  m_RenderMode: 2
+  m_AspectRatio: 1
+  m_DataSource: 0
+  m_PlaybackSpeed: 1
+  m_AudioOutputMode: 2
+  m_TargetAudioSources:
+  - {fileID: 0}
+  m_DirectAudioVolumes:
+  - 1
+  m_Url: 
+  m_EnabledAudioTracks: 01
+  m_DirectAudioMutes: 00
+  m_ControlledAudioTrackCount: 1
+  m_PlayOnAwake: 1
+  m_SkipOnDrop: 1
+  m_Looping: 1
+  m_WaitForFirstFrame: 1
+  m_FrameReadyEventEnabled: 0
+--- !u!4 &246392089
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 246392087}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 245.97655, y: 143.1077, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 9
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &251570548
 GameObject:
   m_ObjectHideFlags: 0
@@ -3168,7 +3233,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Texture: {fileID: 8400000, guid: a265645b33d678a488b9f16d9a592093, type: 2}
+  m_Texture: {fileID: 8400000, guid: 8c961035d1880f449b28b0100e1b5a72, type: 2}
   m_UVRect:
     serializedVersion: 2
     x: 0
@@ -5309,7 +5374,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Texture: {fileID: 8400000, guid: 545bd64c802f7f84a9729128305a83db, type: 2}
+  m_Texture: {fileID: 8400000, guid: 8c961035d1880f449b28b0100e1b5a72, type: 2}
   m_UVRect:
     serializedVersion: 2
     x: 0
@@ -6427,7 +6492,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Texture: {fileID: 8400000, guid: a265645b33d678a488b9f16d9a592093, type: 2}
+  m_Texture: {fileID: 8400000, guid: 8c961035d1880f449b28b0100e1b5a72, type: 2}
   m_UVRect:
     serializedVersion: 2
     x: 0
@@ -9219,7 +9284,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Texture: {fileID: 8400000, guid: 0ed41a8079114634a88a96a0ac5fb610, type: 2}
+  m_Texture: {fileID: 8400000, guid: 8c961035d1880f449b28b0100e1b5a72, type: 2}
   m_UVRect:
     serializedVersion: 2
     x: 0
@@ -10860,7 +10925,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Texture: {fileID: 8400000, guid: 545bd64c802f7f84a9729128305a83db, type: 2}
+  m_Texture: {fileID: 8400000, guid: 8c961035d1880f449b28b0100e1b5a72, type: 2}
   m_UVRect:
     serializedVersion: 2
     x: 0
