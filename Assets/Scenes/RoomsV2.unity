@@ -2273,6 +2273,71 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 227673632}
   m_CullTransparentMesh: 0
+--- !u!1 &246392087
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 246392089}
+  - component: {fileID: 246392088}
+  m_Layer: 0
+  m_Name: MenuVideoAlley
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!328 &246392088
+VideoPlayer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 246392087}
+  m_Enabled: 1
+  m_VideoClip: {fileID: 32900000, guid: 6f605749e2b902a4aa1636f8bce8f551, type: 3}
+  m_TargetCameraAlpha: 1
+  m_TargetCamera3DLayout: 0
+  m_TargetCamera: {fileID: 0}
+  m_TargetTexture: {fileID: 8400000, guid: 8c961035d1880f449b28b0100e1b5a72, type: 2}
+  m_TimeReference: 0
+  m_TargetMaterialRenderer: {fileID: 0}
+  m_TargetMaterialProperty: _MainTex
+  m_RenderMode: 2
+  m_AspectRatio: 1
+  m_DataSource: 0
+  m_PlaybackSpeed: 1
+  m_AudioOutputMode: 2
+  m_TargetAudioSources:
+  - {fileID: 0}
+  m_DirectAudioVolumes:
+  - 1
+  m_Url: 
+  m_EnabledAudioTracks: 01
+  m_DirectAudioMutes: 00
+  m_ControlledAudioTrackCount: 1
+  m_PlayOnAwake: 1
+  m_SkipOnDrop: 1
+  m_Looping: 1
+  m_WaitForFirstFrame: 1
+  m_FrameReadyEventEnabled: 0
+--- !u!4 &246392089
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 246392087}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 245.97655, y: 143.1077, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 9
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &251570548
 GameObject:
   m_ObjectHideFlags: 0
@@ -3271,8 +3336,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 397562712}
-  - component: {fileID: 397562714}
   - component: {fileID: 397562713}
+  - component: {fileID: 397562715}
   m_Layer: 0
   m_Name: Background
   m_TagString: Untagged
@@ -3331,6 +3396,14 @@ CanvasRenderer:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 403203399}
+  m_CullTransparentMesh: 0
+--- !u!222 &397562715
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 397562711}
   m_CullTransparentMesh: 0
 --- !u!1 &403203399
@@ -3345,6 +3418,7 @@ GameObject:
   - component: {fileID: 403203403}
   - component: {fileID: 403203402}
   - component: {fileID: 403203401}
+  - component: {fileID: 397562714}
   m_Layer: 0
   m_Name: Scroll View (1)
   m_TagString: Untagged
@@ -4190,6 +4264,7 @@ GameObject:
   - component: {fileID: 547201617}
   - component: {fileID: 547201616}
   - component: {fileID: 547201615}
+  - component: {fileID: 547201620}
   m_Layer: 0
   m_Name: CurrentRoomCanvas
   m_TagString: Untagged
@@ -4300,6 +4375,14 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!222 &547201620
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 547201614}
+  m_CullTransparentMesh: 0
 --- !u!1 &560310027
 GameObject:
   m_ObjectHideFlags: 0
@@ -5003,6 +5086,7 @@ GameObject:
   - component: {fileID: 721169012}
   - component: {fileID: 721169011}
   - component: {fileID: 721169014}
+  - component: {fileID: 721169015}
   m_Layer: 0
   m_Name: CreateOrJoinRoomCanvas
   m_TagString: Untagged
@@ -5109,6 +5193,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _createRoomMenu: {fileID: 613674083}
   _roomListingsMenu: {fileID: 1079751321}
+--- !u!222 &721169015
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 721169009}
+  m_CullTransparentMesh: 0
 --- !u!1 &730674525
 GameObject:
   m_ObjectHideFlags: 0
@@ -6039,7 +6131,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Texture: {fileID: 8400000, guid: 545bd64c802f7f84a9729128305a83db, type: 2}
+  m_Texture: {fileID: 8400000, guid: 8c961035d1880f449b28b0100e1b5a72, type: 2}
   m_UVRect:
     serializedVersion: 2
     x: 0
@@ -8635,6 +8727,7 @@ GameObject:
   - component: {fileID: 1112663136}
   - component: {fileID: 1112663135}
   - component: {fileID: 1112663138}
+  - component: {fileID: 1112663139}
   m_Layer: 0
   m_Name: InstructionCanvas
   m_TagString: Untagged
@@ -8741,6 +8834,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _instructionMenu: {fileID: 66552389}
+--- !u!222 &1112663139
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1112663133}
+  m_CullTransparentMesh: 0
 --- !u!1 &1159021281
 GameObject:
   m_ObjectHideFlags: 0
@@ -13379,8 +13480,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1779911401}
-  - component: {fileID: 1779911403}
   - component: {fileID: 1779911402}
+  - component: {fileID: 1779911404}
   m_Layer: 0
   m_Name: Background
   m_TagString: Untagged
@@ -13434,6 +13535,14 @@ MonoBehaviour:
     width: 1
     height: 1
 --- !u!222 &1779911403
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1807517643}
+  m_CullTransparentMesh: 0
+--- !u!222 &1779911404
 CanvasRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -13849,6 +13958,7 @@ GameObject:
   - component: {fileID: 1807517647}
   - component: {fileID: 1807517646}
   - component: {fileID: 1807517645}
+  - component: {fileID: 1779911403}
   m_Layer: 0
   m_Name: TeamGovtText
   m_TagString: Untagged
