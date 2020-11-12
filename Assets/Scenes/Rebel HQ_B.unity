@@ -1799,6 +1799,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tracerEffect: {fileID: 6543365495401987922, guid: 4c244db0b4c55ca43a545a6aa7a96e75,
     type: 3}
+  lightningTrail: {fileID: 2488625339213973707, guid: 17dcc647bddd6a340a75ab464f1cd5a9,
+    type: 3}
+  SkillActive: 0
   characterState: 0
 --- !u!114 &214671833
 MonoBehaviour:
@@ -11917,6 +11920,8 @@ MonoBehaviour:
   eventsManager: {fileID: 274814525}
   _endGameScreen: {fileID: 435091694}
   UICanvas: {fileID: 1017183736}
+  AIDirector: {fileID: 4559260691351625259, guid: dd172550b9501dc45a3f59f468a8163f,
+    type: 3}
   matchLength: 999
   timer: {fileID: 1625352458}
   currentMatchTime: 120

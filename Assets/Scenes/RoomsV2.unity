@@ -648,8 +648,8 @@ MonoBehaviour:
   _playerListing: {fileID: 8090833630313269112, guid: b0534563681b8ee42b5980e98b523834,
     type: 3}
   _readyUpText: {fileID: 2114869688}
-  StartButton: {fileID: 794354211}
-  ReadyUpButton: {fileID: 0}
+  StartButton: {fileID: 1278943213}
+  ReadyUpButton: {fileID: 794354211}
 --- !u!114 &129686942
 MonoBehaviour:
   m_ObjectHideFlags: 0

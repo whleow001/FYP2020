@@ -19,6 +19,8 @@ public class PlayerController : MonoBehaviour {
 
     [SerializeField]
     private TrailRenderer tracerEffect;
+    [SerializeField]
+    private TrailRenderer lightningTrail;
     private Transform raycastDestination;
     private Transform raycastOrigins;
     private bool isFiring = false;
@@ -97,7 +99,15 @@ public class PlayerController : MonoBehaviour {
 
         if (playerInput.IsPressed(PlayerInput.Ability.Skill1) && !SkillActive && characterState!=CharacterState.Dead)
         {
-            GetComponent<PlayerRPC>().ShowSkillEffect(GetComponent<PlayerManager>().GetPlayerAvatar().GetPhotonView().ViewID, (int)GetComponent<PlayerManager>().GetProperty("Class"));
+            if((int)GetComponent<PlayerManager>().GetProperty("Class") == 2)
+            {
+                FireBullet(2);
+            }
+            else
+            {
+                GetComponent<PlayerRPC>().ShowSkillEffect(GetComponent<PlayerManager>().GetPlayerAvatar().GetPhotonView().ViewID, (int)GetComponent<PlayerManager>().GetProperty("Class"));
+            }
+            
             //classSkill();
         }
 
@@ -138,6 +148,19 @@ public class PlayerController : MonoBehaviour {
     {
         currentStats = stats[GetComponent<PlayerManager>().getSelectedCharacterIndex()-1];
         ChangeState(CharacterState.Idle);
+    }
+
+    public void MoveSpdUp()
+    {
+        if(SkillActive == true)
+        {
+            currentStats = new Stats(20, 10, 1);
+        }
+        else
+        {
+            currentStats = stats[GetComponent<PlayerManager>().getSelectedCharacterIndex() - 1];
+        }
+        
     }
 
     private void UpdateState() {
@@ -211,7 +234,7 @@ public class PlayerController : MonoBehaviour {
 
     private void Attack(float deltaTime) {
       if (readyForFiring)
-        FireBullet();
+        FireBullet(0);
     }
 
     private void StopFiring() {
@@ -253,30 +276,37 @@ public class PlayerController : MonoBehaviour {
 
     }
 
-    private void FireBullet() {
+    private void FireBullet(int skill) {
       foreach (Transform raycastOrigin in raycastOrigins) {
         Vector3 velocity = (raycastDestination.position - raycastOrigin.position).normalized * bulletSpeed;
         raycastOrigin.GetChild(0).GetComponent<ParticleSystem>().Emit(1);
-        GetComponent<PlayerRPC>().InstantiateBullet(raycastOrigin.position, velocity, GetComponent<PlayerManager>().GetDirector().GetFactionLayer());
+        GetComponent<PlayerRPC>().InstantiateBullet(raycastOrigin.position, velocity, GetComponent<PlayerManager>().GetDirector().GetFactionLayer(), skill);
       }
     }
 
-    Bullet CreateBullet(Vector3 position, Vector3 velocity, int layer, PhotonView source) {
+    Bullet CreateBullet(Vector3 position, Vector3 velocity, int layer, int skill, PhotonView source) {
       Bullet bullet = new Bullet();
       bullet.initialPosition = position;
       bullet.initialVelocity = velocity;
       bullet.time = 0;
-      bullet.tracer = Instantiate(tracerEffect, position, Quaternion.identity);
+      if(skill == 2)
+        {
+            bullet.tracer = Instantiate(lightningTrail, position, Quaternion.identity);
+        }
+      else
+        {
+            bullet.tracer = Instantiate(tracerEffect, position, Quaternion.identity);
+        }
       bullet.tracer.gameObject.layer = layer;
       bullet.tracer.GetComponent<PhotonViewReference>().SetPhotonView(source);
       return bullet;
     }
 
-    public void InstantiateBullet(Vector3 position, Vector3 velocity, int layer, PhotonView source) {
+    public void InstantiateBullet(Vector3 position, Vector3 velocity, int layer, int skill, PhotonView source) {
       if (!GetComponent<PlayerRPC>().IsPhotonViewMine())
         return;
 
-      bullets.Add(CreateBullet(position, velocity, layer, source));
+      bullets.Add(CreateBullet(position, velocity, layer, skill, source));
     }
 
     Vector3 GetPosition(Bullet bullet) {

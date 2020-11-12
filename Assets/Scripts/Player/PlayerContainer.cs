@@ -100,6 +100,7 @@ public class PlayerContainer : MonoBehaviourPun
     {
         yield return new WaitForSeconds(3);
         playerManager.GetComponent<PlayerController>().SkillActive = false;
+        playerManager.GetComponent<PlayerController>().MoveSpdUp();
         gameObject.transform.Find("FireBall").gameObject.SetActive(false);
         gameObject.transform.Find("Shield").gameObject.SetActive(false);
     }
@@ -136,9 +137,10 @@ public class PlayerContainer : MonoBehaviourPun
     }
 
     [PunRPC]
-    void InstantiateBullet(Vector3 position, Vector3 velocity, int layer, PhotonMessageInfo info)
+    void InstantiateBullet(Vector3 position, Vector3 velocity, int layer, int skill, PhotonMessageInfo info)
     {
-        playerManager.GetComponent<PlayerController>().InstantiateBullet(position, velocity, layer, info.photonView);
+        playerManager.GetComponent<PlayerController>().InstantiateBullet(position, velocity, layer, skill, info.photonView);
+        
     }
 
     [PunRPC]
@@ -184,14 +186,14 @@ public class PlayerContainer : MonoBehaviourPun
         if(gameObject.GetPhotonView().ViewID == viewID)
         {
             //gunslinger
-            if (currentClass == 0)
+            if (currentClass == 1)
             {
                 gameObject.transform.Find("FireBall").gameObject.SetActive(true);
-                //currentStats = new Stats (15, 10, 10);
+                playerManager.GetComponent<PlayerController>().MoveSpdUp();
 
             }
             //sniper
-            else if (currentClass == 1)
+            else if (currentClass == 2)
             {
 
             }

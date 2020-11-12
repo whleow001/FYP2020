@@ -60,7 +60,7 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     private ExitGames.Client.Photon.Hashtable properties;
 
     void Awake() {
-      ChangeCharacter(3);
+      ChangeCharacter(1);
     }
 
     // Start is called before the first frame update
