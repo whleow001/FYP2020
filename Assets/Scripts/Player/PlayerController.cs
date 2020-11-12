@@ -199,22 +199,8 @@ public class PlayerController : MonoBehaviour {
     }
 
     private void Attack(float deltaTime) {
-      // if (!isFiring)
-      //   StartFiring();
-      // else
-      //   UpdateFiring(deltaTime);
       if (readyForFiring)
         FireBullet();
-      //UpdateFiring(deltaTime);
-    }
-
-    private void StartFiring() {
-      StartCoroutine(WaitForFiring());
-    }
-
-    private IEnumerator WaitForFiring() {
-      yield return new WaitForSeconds(0.6f);
-      readyForFiring = true;
     }
 
     private void StopFiring() {
@@ -264,15 +250,6 @@ public class PlayerController : MonoBehaviour {
       }
     }
 
-    private void UpdateFiring(float deltaTime) {
-      accumulatedTime += deltaTime;
-      float fireInterval = 1.0f / currentStats.fireRate;
-      while (accumulatedTime >= 0.0f) {
-        FireBullet();
-        accumulatedTime -= fireInterval;
-      }
-    }
-
     Bullet CreateBullet(Vector3 position, Vector3 velocity, int layer, PhotonView source) {
       Bullet bullet = new Bullet();
       bullet.initialPosition = position;
@@ -313,7 +290,6 @@ public class PlayerController : MonoBehaviour {
     }
 
     public void ReadyForFiring(bool ready) {
-      print(ready);
       readyForFiring = ready;
     }
 

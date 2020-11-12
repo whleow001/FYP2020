@@ -174,7 +174,10 @@ public class CreepBot : MonoBehaviourPun
             // change to status of nearest player
             if(closestTarget.tag=="Player")
             {
-                deadPlayer = closestTarget.gameObject.GetComponent<PlayerContainer>().IsDead();
+                if (closestTarget.GetComponent<PlayerContainer>())
+                  deadPlayer = closestTarget.GetComponent<PlayerContainer>().IsDead();
+                else if (closestTarget.GetComponent<AIController>())
+                  deadPlayer = closestTarget.GetComponent<AIController>().IsDead();
             }
 
             //if target closeby is not on the same team, move towards them
@@ -353,7 +356,6 @@ public class CreepBot : MonoBehaviourPun
 
     private void OnCollisionEnter(Collision other)
     {
-
         if (other.gameObject.tag == "Projectile" && other.gameObject.layer != this.gameObject.layer)
         {
             TakeDamage(new Damage(20, other.gameObject.transform.position));
@@ -368,7 +370,6 @@ public class CreepBot : MonoBehaviourPun
 
         health -= dmg.damage;
         photonView.RPC("BroadcastHealth", RpcTarget.All, photonView.ViewID);
-
     }
 
     //broadcast health to all clients in the server
@@ -379,5 +380,4 @@ public class CreepBot : MonoBehaviourPun
         SetHealthBar(health);
         //GetComponent<PlayerManager>().SetHealthBar((int)victim.CustomProperties["Health"], mainslider, mainfill);
     }
-
 }

@@ -73,9 +73,15 @@ public abstract class GameDirector : MonoBehaviourPun {
     [SerializeField]
     protected GameObject UICanvas;
 
+    [Header("AI")]
+    [SerializeField]
+    protected GameObject AIDirector;
+    private List<AIDirector> AIDirectors = new List<AIDirector>();
+
     // flags
     private bool maskSet = false;
 
+    [Header("MISC")]
     //ported from old game director regarding codes with event manager
     public int matchLength = 60;
     [SerializeField]
@@ -393,6 +399,17 @@ public abstract class GameDirector : MonoBehaviourPun {
 
             i++;
         }
+    }
+
+    public IEnumerator SpawnAI(Player player) {
+      yield return new WaitForSeconds(2.0f);
+
+      AIDirector _aiDirector = Instantiate(AIDirector, Vector3.zero, Quaternion.identity).GetComponent<AIDirector>();
+      _aiDirector.SetPlayer(player);
+      _aiDirector.SetDirector(this);
+
+      AIDirectors.Add(_aiDirector.GetComponent<AIDirector>());
+      eventsManager.GeneralNotification_S(player.NickName + " (AI) Has Joined the game", 2.0f, "");
     }
 
     public void ChangeCharacter()

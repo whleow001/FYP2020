@@ -166,7 +166,6 @@ public class PlayerManager : MonoBehaviourPunCallbacks
         //selectedCharacter = (int)(properties["Class"]);
         AvatarParent.transform.rotation = Quaternion.identity;
         playerClone = MasterManager.NetworkInstantiate(selectedCharacter, AvatarParent.transform.position, Quaternion.identity);
-        Debug.Log(playerClone);
 
         //Text NameText = playerClone.transform.Find("Canvas").Find("Text").GetComponent<Text>();
         slider = playerClone.GetComponentInChildren<Slider>();
@@ -274,6 +273,7 @@ public class PlayerManager : MonoBehaviourPunCallbacks
 
     public void TakeDamage(Damage dmg, int attackerViewID = -1)
     {
+        print("AI Under attack, but im getting attacked too");
         Debug.Log("viewID of attacker: " + attackerViewID);
         if (GetProperty("Health") > 0)
         {
@@ -317,7 +317,7 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     }
 
     private IEnumerator RespawnTimer() {
-      eventsManager.DeathTimer_S();
+      eventsManager.DeathTimer_S(team, position, respawnTimer);
 
       if (respawnTimer < 0) {
         PhotonNetwork.Destroy(playerClone);

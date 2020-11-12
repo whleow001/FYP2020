@@ -17,7 +17,7 @@ public class PlayerContainer : MonoBehaviourPun
     {
         playerManager = GameObject.Find("PlayerManager").GetComponent<PlayerManager>();
         //Debug.Log("my own layer: " + playerManager.GetDirector().GetFactionLayer());
-        //Debug.Log("opposite team layer: " + playerManager.GetDirector().GetOtherFactionLayer()); 
+        //Debug.Log("opposite team layer: " + playerManager.GetDirector().GetOtherFactionLayer());
     }
 
     // Update is called once per frame
@@ -58,7 +58,7 @@ public class PlayerContainer : MonoBehaviourPun
     }
 
     private void OnCollisionEnter(Collision other) {
-      
+
       if(photonView.IsMine)
         {
             if (other.gameObject.tag == "Projectile" && other.gameObject.layer == playerManager.GetDirector().GetOtherFactionLayer())
@@ -76,7 +76,7 @@ public class PlayerContainer : MonoBehaviourPun
         {
             playerManager.TakeDamage(dmg);
         }
-        
+
     }
 
     public bool IsDead()

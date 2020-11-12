@@ -129,7 +129,7 @@ public class RebelHQ_B : GameDirector {
       cpCoroutine = StartCoroutine(IncrementCP());
     }
 
-    
+
   }
 
   public void ChangePCState(ControlPoint.State state, int index) {

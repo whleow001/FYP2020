@@ -98,11 +98,9 @@ public class EventsManager : MonoBehaviourPun, IOnEventCallback {
         director.RefreshTimerUI();
     }
 
-    public void DeathTimer_S()
+    public void DeathTimer_S(int team, int position, int respawnTimer)
     {
-      object[] package = new object[] {director.GetPlayerManager().team,
-                                       director.GetPlayerManager().position,
-                                       director.GetPlayerManager().respawnTimer};
+      object[] package = new object[] { team, position, respawnTimer };
 
       PhotonNetwork.RaiseEvent(
         (byte)EventsCode.DeathTimer,

@@ -15,11 +15,19 @@ public class FiringScript : StateMachineBehaviour
       float normalizedTime = stateInfo.normalizedTime - Mathf.Floor(stateInfo.normalizedTime);
 
       if (normalizedTime >= fireTiming && normalizedTime < fireTiming + 0.1f && !fired) {
-        animator.gameObject.GetComponentInParent<PlayerContainer>().GetPlayerManager().GetComponent<PlayerController>().ReadyForFiring(true);
+        if (animator.gameObject.GetComponentInParent<PlayerContainer>())
+          animator.gameObject.GetComponentInParent<PlayerContainer>().GetPlayerManager().GetComponent<PlayerController>().ReadyForFiring(true);
+        else if (animator.gameObject.GetComponentInParent<AIController>())
+          animator.gameObject.GetComponentInParent<AIController>().ReadyForFiring(true);
+
         fired = true;
       }
       else {
-        animator.gameObject.GetComponentInParent<PlayerContainer>().GetPlayerManager().GetComponent<PlayerController>().ReadyForFiring(false);
+        if (animator.gameObject.GetComponentInParent<PlayerContainer>())
+          animator.gameObject.GetComponentInParent<PlayerContainer>().GetPlayerManager().GetComponent<PlayerController>().ReadyForFiring(false);
+        else if (animator.gameObject.GetComponentInParent<AIController>())
+          animator.gameObject.GetComponentInParent<AIController>().ReadyForFiring(false);
+
         fired = false;
       }
     }
