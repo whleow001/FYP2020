@@ -32,8 +32,10 @@ public class PlayerListingsMenu : MonoBehaviourPunCallbacks, IInRoomCallbacks
     private List<PlayerListing> _listingsOne = new List<PlayerListing>();
     private List<PlayerListing> _listingsTwo = new List<PlayerListing>();
 
-    GameObject StartButton;
-    GameObject ReadyUpButton;
+    [SerializeField]
+    public GameObject StartButton;
+    [SerializeField]
+    public GameObject ReadyUpButton;
 
     //==============================================================================================
 
@@ -42,8 +44,8 @@ public class PlayerListingsMenu : MonoBehaviourPunCallbacks, IInRoomCallbacks
     public override void OnEnable()
     {
         base.OnEnable();
-        StartButton = GameObject.Find("StartGame");
-        ReadyUpButton = GameObject.Find("ReadyUp");
+        //StartButton = GameObject.Find("StartGame");
+        //ReadyUpButton = GameObject.Find("ReadyUp");
 
         _teamManager = GameObject.Find("TeamManager").GetComponent<PhotonTeamsManager>();
         if (PhotonNetwork.IsMasterClient)
