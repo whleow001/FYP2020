@@ -51,6 +51,9 @@ public class RebelHQ_A : GameDirector {
 
   // Update scene specific objectives
   protected override void UpdateObjectives() {
+    if (PhotonNetwork.IsMasterClient && !forcefieldTemp)
+      forcefieldTemp = GameObject.Find("Sphere(Clone)");
+
     if (PhotonNetwork.IsMasterClient && !forcefieldDestroyed)
     {
         if(generatorCount == 0 || forcefieldTemp.GetComponent<SphereDetection>().GetHealth() <= 0)
@@ -118,16 +121,16 @@ public class RebelHQ_A : GameDirector {
       // bottom forcefield spawn
       MasterManager.RoomObjectInstantiate(GetPrefab(Prefabs_A.BottomForcefield), GetSpawn(Spawns_A.ForcefieldSpawn).transform.GetChild(2).transform.position, GetSpawn(Spawns_A.ForcefieldSpawn).transform.GetChild(2).transform.rotation);
 
-      //// spawn govt creep
-      //for (int i = 0; i < 3; i++)
-      // MasterManager.RoomObjectInstantiate(GetPrefab(Prefabs_A.GovtCreep), GetSpawn(Spawns_A.GovtSpawn).transform.GetChild(i+3).transform.position, GetSpawn(Spawns_A.GovtSpawn).transform.GetChild(i+3).transform.rotation);
+      // spawn govt creep
+      for (int i = 0; i < 3; i++)
+       MasterManager.RoomObjectInstantiate(GetPrefab(Prefabs_A.GovtCreep), GetSpawn(Spawns_A.GovtSpawn).transform.GetChild(i+3).transform.position, GetSpawn(Spawns_A.GovtSpawn).transform.GetChild(i+3).transform.rotation);
 
-    // for testing creep
-    //   MasterManager.RoomObjectInstantiate(prefabs[6], spawns[0].transform.GetChild(4).transform.position, Quaternion.identity);
+      //for testing creep
+       //MasterManager.RoomObjectInstantiate(prefabs[6], spawns[0].transform.GetChild(4).transform.position, Quaternion.identity);
 
-      //// spawn rebel creep
-      //for (int i = 0; i < 3; i++)
-      // MasterManager.RoomObjectInstantiate(GetPrefab(Prefabs_A.RebelCreep), GetSpawn(Spawns_A.RebelSpawn).transform.GetChild(i+3).transform.position, GetSpawn(Spawns_A.RebelSpawn).transform.GetChild(i + 3).transform.rotation);
+      // spawn rebel creep
+      for (int i = 0; i < 3; i++)
+       MasterManager.RoomObjectInstantiate(GetPrefab(Prefabs_A.RebelCreep), GetSpawn(Spawns_A.RebelSpawn).transform.GetChild(i+3).transform.position, GetSpawn(Spawns_A.RebelSpawn).transform.GetChild(i + 3).transform.rotation);
     }
 
     temp = GameObject.FindGameObjectsWithTag("Generator");

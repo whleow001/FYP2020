@@ -16,6 +16,8 @@ public class PlayerContainer : MonoBehaviourPun
     void Awake()
     {
         playerManager = GameObject.Find("PlayerManager").GetComponent<PlayerManager>();
+        //Debug.Log("my own layer: " + playerManager.GetDirector().GetFactionLayer());
+        //Debug.Log("opposite team layer: " + playerManager.GetDirector().GetOtherFactionLayer()); 
     }
 
     // Update is called once per frame
@@ -56,15 +58,25 @@ public class PlayerContainer : MonoBehaviourPun
     }
 
     private void OnCollisionEnter(Collision other) {
-
-      if (other.gameObject.tag == "Projectile" && other.gameObject.layer == playerManager.GetDirector().GetOtherFactionLayer()) {
-        playerManager.TakeDamage(new Damage(20, other.gameObject.transform.position), other.gameObject.GetComponent<PhotonViewReference>().GetPhotonView());
-      }
+      
+      if(photonView.IsMine)
+        {
+            if (other.gameObject.tag == "Projectile" && other.gameObject.layer == playerManager.GetDirector().GetOtherFactionLayer())
+            {
+                //Debug.Log(other.gameObject.layer);
+                //Debug.Log(other.gameObject.GetComponent<PhotonViewReference>().GetPhotonView());
+                playerManager.TakeDamage(new Damage(20, other.gameObject.transform.position), other.gameObject.GetComponent<PhotonViewReference>().GetPhotonView().ViewID);
+            }
+        }
     }
 
     public void TakeDamage(Damage dmg)
     {
-        playerManager.TakeDamage(dmg);
+        if(photonView.IsMine)
+        {
+            playerManager.TakeDamage(dmg);
+        }
+        
     }
 
     public bool IsDead()
