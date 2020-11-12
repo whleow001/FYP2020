@@ -10,6 +10,10 @@ public class PlayerListing : MonoBehaviourPunCallbacks
 {
     [SerializeField]
     private Text _text;
+    [SerializeField]
+    private GameObject _readyCheck;
+    [SerializeField]
+    private GameObject _notReadyCheck;
 
     public Player Player { get; private set; }
     public bool Ready = false;
@@ -35,5 +39,25 @@ public class PlayerListing : MonoBehaviourPunCallbacks
     public void SetPlayerText(Player player)
     {
         _text.text = player.NickName;
+    }
+
+    public void SetReadyActive()
+    {
+        _readyCheck.SetActive(true);
+    }
+
+    public void SetReadyInactive()
+    {
+        _readyCheck.SetActive(false);
+    }
+
+    public void SetNotReadyActive()
+    {
+        _notReadyCheck.SetActive(true);
+    }
+
+    public void SetNotReadyInactive()
+    {
+        _notReadyCheck.SetActive(false);
     }
 }

@@ -8,8 +8,8 @@ using Photon.Realtime;
 
 public class CreateRoomMenu : MonoBehaviourPunCallbacks
 {
-    [SerializeField]
-    private Text _roomName;
+    //[SerializeField]
+    //private Text _roomName;
 
     private RoomsCanvases _roomsCanvases;
 
@@ -27,7 +27,7 @@ public class CreateRoomMenu : MonoBehaviourPunCallbacks
         options.BroadcastPropsChangeToAll = true;
         options.MaxPlayers = 6;
         options.CustomRoomProperties = new ExitGames.Client.Photon.Hashtable();
-        PhotonNetwork.JoinOrCreateRoom(_roomName.text, options, TypedLobby.Default);
+        PhotonNetwork.JoinOrCreateRoom(PhotonNetwork.LocalPlayer.NickName, options, TypedLobby.Default);
     }
 
     public override void OnCreatedRoom()

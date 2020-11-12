@@ -1,0 +1,23 @@
+fileFormatVersion: 2
+guid: 0fbffba2998488543a9b409351c43a2a
+TrueTypeFontImporter:
+  externalObjects: {}
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: Minstrel Poster NF
+  fontNames:
+  - Minstrel Poster NF
+  fallbackFontReferences:
+  - {fileID: 12800000, guid: 6bbca238998a4cf459b688f65ebba9a2, type: 3}
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  useLegacyBoundsCalculation: 0
+  shouldRoundAdvanceValue: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

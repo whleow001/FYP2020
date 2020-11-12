@@ -42,9 +42,21 @@ public class PlayerListingsMenu : MonoBehaviourPunCallbacks, IInRoomCallbacks
     public override void OnEnable()
     {
         base.OnEnable();
-        _teamManager = GameObject.Find("TeamManager").GetComponent<PhotonTeamsManager>();
         StartButton = GameObject.Find("StartGame");
         ReadyUpButton = GameObject.Find("ReadyUp");
+
+        _teamManager = GameObject.Find("TeamManager").GetComponent<PhotonTeamsManager>();
+        if (PhotonNetwork.IsMasterClient)
+        {
+            StartButton.SetActive(true);
+            ReadyUpButton.SetActive(false);
+        }
+        else if (!PhotonNetwork.IsMasterClient)
+        {
+            StartButton.SetActive(false);
+            ReadyUpButton.SetActive(true);
+        }
+        
         SetReadyUp(false);
         GetCurrentRoomPlayers();
 
@@ -184,24 +196,58 @@ public class PlayerListingsMenu : MonoBehaviourPunCallbacks, IInRoomCallbacks
         if (!PhotonNetwork.IsMasterClient)
         {
             SetReadyUp(!_ready);
-            base.photonView.RPC("RPC_ChangeReadyState", RpcTarget.MasterClient, PhotonNetwork.LocalPlayer, _ready);
+            base.photonView.RPC("RPC_ChangeReadyState", RpcTarget.All, PhotonNetwork.LocalPlayer, _ready);
         }
     }
 
     [PunRPC]
     private void RPC_ChangeReadyState(Player player, bool ready)
     {
-        if ((byte)player.CustomProperties["_pt"] == 0)
+        if (ready)
         {
-            int index = _listingsOne.FindIndex(x => x.Player == player);
-            if (index != -1)
-                _listingsOne[index].Ready = ready;
+            if ((byte)player.CustomProperties["_pt"] == 0)
+            {
+                int index = _listingsOne.FindIndex(x => x.Player == player);
+                if (index != -1)
+                {
+                    _listingsOne[index].Ready = ready;
+                    _listingsOne[index].SetNotReadyInactive();
+                    _listingsOne[index].SetReadyActive();
+                }
+            }
+            else
+            {
+                int index = _listingsTwo.FindIndex(x => x.Player == player);
+                if (index != -1)
+                {
+                    _listingsTwo[index].Ready = ready;
+                    _listingsTwo[index].SetNotReadyInactive();
+                    _listingsTwo[index].SetReadyActive();
+                }
+            }
         }
-        else
+        else if (!ready)
         {
-            int index = _listingsTwo.FindIndex(x => x.Player == player);
-            if (index != -1)
-                _listingsTwo[index].Ready = ready;
+            if ((byte)player.CustomProperties["_pt"] == 0)
+            {
+                int index = _listingsOne.FindIndex(x => x.Player == player);
+                if (index != -1)
+                {
+                    _listingsOne[index].Ready = ready;
+                    _listingsOne[index].SetNotReadyActive();
+                    _listingsOne[index].SetReadyInactive();
+                }
+            }
+            else
+            {
+                int index = _listingsTwo.FindIndex(x => x.Player == player);
+                if (index != -1)
+                {
+                    _listingsTwo[index].Ready = ready;
+                    _listingsTwo[index].SetNotReadyActive();
+                    _listingsTwo[index].SetReadyInactive();
+                }
+            }
         }
     }
 
@@ -272,6 +318,11 @@ public class PlayerListingsMenu : MonoBehaviourPunCallbacks, IInRoomCallbacks
         if (index != -1)
         {
             _listingsOne[index].SetPlayerInfo(player);
+            if(player.IsMasterClient)
+            {
+                _listingsOne[index].SetReadyActive();
+                _listingsOne[index].SetNotReadyInactive();
+            }
         }
         else
         {
@@ -282,6 +333,12 @@ public class PlayerListingsMenu : MonoBehaviourPunCallbacks, IInRoomCallbacks
                 _listingsOne.Add(listing);
                 listing.SetPlayerText(player);
                 Debug.Log(player.NickName);
+
+                if(player.IsMasterClient)
+                {
+                    listing.SetReadyActive();
+                    listing.SetNotReadyInactive();
+                }
             }
         }
     }
