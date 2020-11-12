@@ -37,6 +37,7 @@ public class AIDirector : MonoBehaviour
   private int kills;
   private int deaths;
   private int health;
+  private int classIndex;
   private string name;
 
   // Respawn
@@ -54,6 +55,7 @@ public class AIDirector : MonoBehaviour
       team = (byte)player.CustomProperties["_pt"];
       kills = (int)player.CustomProperties["Kills"];
       deaths = (int)player.CustomProperties["Deaths"];
+      classIndex = (int)player.CustomProperties["Class"];
       name = player.NickName + " (AI)";
 
       HashSet<Player> teamPlayers;
@@ -81,14 +83,15 @@ public class AIDirector : MonoBehaviour
 
   private void InitializeCharacter() {
     if (!AvatarParent) {
-      // AvatarParent = MasterManager.NetworkInstantiate(playerContainer, spawnPoint.transform.GetChild(Random.Range(0, 3)).transform.position, Quaternion.identity);
-      AvatarParent = MasterManager.NetworkInstantiate(aiContainer, Vector3.zero, Quaternion.identity);
+      AvatarParent = MasterManager.NetworkInstantiate(aiContainer, spawnPoint.transform.GetChild(UnityEngine.Random.Range(0, 3)).transform.position, Quaternion.identity);
+      // AvatarParent = MasterManager.NetworkInstantiate(aiContainer, Vector3.zero, Quaternion.identity);
       Destroy(AvatarParent.GetComponent<PlayerContainer>());
-      AvatarParent.AddComponent<UnityEngine.AI.NavMeshAgent>();
+      UnityEngine.AI.NavMeshAgent agent = AvatarParent.AddComponent<UnityEngine.AI.NavMeshAgent>();
 
       aiAnimation = AvatarParent.AddComponent<AIAnimation>();
 
       aiController = AvatarParent.AddComponent<AIController>();
+      aiController.SetAgent(agent);
       aiController.SetAIDirector(this);
 
       AvatarParent.layer = team == 0 ? GOVT_LAYER : REBEL_LAYER;
@@ -102,19 +105,24 @@ public class AIDirector : MonoBehaviour
     aiController.ReinitializeGunpoints(aiClone);
 
     if (director is RebelHQ_A) {
-      Transform generatorSpawn = director.GetSpawn(Spawns_A.Generator).transform;
+      Transform generatorSpawns = director.GetSpawn(Spawns_A.Generator).transform;
 
-      foreach (Transform generator in generatorSpawn) {
+      foreach (Transform generator in generatorSpawns)
         aiController.AddObjective(generator.position);
-      }
+
+      Transform forcefieldSpawns = director.GetSpawn(Spawns_A.ForcefieldSpawn).transform;
+
+      foreach (Transform forcefield in forcefieldSpawns)
+        aiController.AddObjective(forcefield.position);
+
+      aiController.AddObjective(director.GetSpawn(Spawns_A.ForcefieldSphere).transform.position);
     }
 
     else if (director is RebelHQ_B) {
       Transform cpSpawn = director.GetSpawn(Spawns_B.ControlPoint).transform;
 
-      foreach (Transform cp in cpSpawn) {
+      foreach (Transform cp in cpSpawn)
         aiController.AddObjective(cp.position);
-      }
     }
 
     health = 100;
@@ -169,7 +177,7 @@ public class AIDirector : MonoBehaviour
 
     if (respawnTimer < 0) {
       PhotonNetwork.Destroy(aiClone);
-      // AvatarParent.transform.position = spawnPoint.transform.GetChild(Random.Range(0, 3)).transform.position;
+      AvatarParent.transform.position = spawnPoint.transform.GetChild(UnityEngine.Random.Range(0, 3)).transform.position;
       health = 100;
       InitializeCharacter();
 
@@ -200,6 +208,10 @@ public class AIDirector : MonoBehaviour
 
   public int GetTeam() {
     return team;
+  }
+
+  public int GetClassIndex() {
+    return classIndex;
   }
 
   public GameObject GetAIClone() {
