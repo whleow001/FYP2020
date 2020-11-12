@@ -360,6 +360,12 @@ public class PlayerListingsMenu : MonoBehaviourPunCallbacks, IInRoomCallbacks
                 listing.SetPlayerText(player);
                 Debug.Log(player.NickName);
             }
+
+            if (player.IsMasterClient)
+            {
+                listing.SetReadyActive();
+                listing.SetNotReadyInactive();
+            }
         }
     }
 
