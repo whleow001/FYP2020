@@ -39,6 +39,11 @@ public class PlayerController : MonoBehaviour {
     private bool readyForDoding = false;
     private bool gameOver = false;
 
+    // skill variables
+    private bool skillActive = false;
+    private Coroutine usedSkillCoroutine;
+    private bool readyForSkill = true;
+
     public enum CharacterState {
       Idle = 0,
       Running = 1,
@@ -90,6 +95,11 @@ public class PlayerController : MonoBehaviour {
         if (characterState == CharacterState.Dodging)
           return;
 
+        if (playerInput.IsPressed(PlayerInput.Ability.Skill1) && !skillActive && characterState!=CharacterState.Dead)
+        {
+            classSkill();
+        }
+
         if (!gameOver)
           UpdateState();
         UpdateBullets(Time.deltaTime);
@@ -130,16 +140,16 @@ public class PlayerController : MonoBehaviour {
     }
 
     private void UpdateState() {
-      if (GetComponent<PlayerManager>().IsDead())
-        ChangeState(CharacterState.Dead);
-      else if (!playerInput.IsJoystickMoving() && !playerInput.IsPressed(PlayerInput.Ability.Attack) && !playerInput.IsPressed(PlayerInput.Ability.Dodge))
-        ChangeState(CharacterState.Idle);
-      else if (playerInput.IsPressed(PlayerInput.Ability.Dodge))
-        ChangeState(CharacterState.Dodging);
-      else if (playerInput.IsPressed(PlayerInput.Ability.Attack))
-        ChangeState(CharacterState.Attacking);
-      else if (playerInput.IsJoystickMoving())
-        ChangeState(CharacterState.Running);
+        if (GetComponent<PlayerManager>().IsDead())
+            ChangeState(CharacterState.Dead);
+        else if (!playerInput.IsJoystickMoving() && !playerInput.IsPressed(PlayerInput.Ability.Attack) && !playerInput.IsPressed(PlayerInput.Ability.Dodge))
+            ChangeState(CharacterState.Idle);
+        else if (playerInput.IsPressed(PlayerInput.Ability.Dodge))
+            ChangeState(CharacterState.Dodging);
+        else if (playerInput.IsPressed(PlayerInput.Ability.Attack))
+            ChangeState(CharacterState.Attacking);
+        else if (playerInput.IsJoystickMoving())
+            ChangeState(CharacterState.Running);
 
       if (!playerInput.IsPressed(PlayerInput.Ability.Attack))
         StopFiring();
@@ -163,6 +173,30 @@ public class PlayerController : MonoBehaviour {
           default:
             break;
         }
+    }
+
+    public void classSkill()
+    {
+        
+        int currentClass = GetComponent<PlayerManager>().getSelectedCharacterIndex() - 1;
+        Debug.Log(currentClass);
+        skillActive = true;
+        //gunslinger
+        if (currentClass==0)
+        {
+            GetComponent<PlayerManager>().GetGunslingerEffect().gameObject.SetActive(true);
+        }
+        //sniper
+        else if(currentClass==1)
+        {
+
+        }
+        //juggernaut
+        else
+        {
+            GetComponent<PlayerManager>().GetJuggernautEffect().gameObject.SetActive(true);
+        }
+        usedSkillCoroutine = StartCoroutine(skillDuration());
     }
 
     private Rigidbody GetRigidbody() {
@@ -196,6 +230,14 @@ public class PlayerController : MonoBehaviour {
     private IEnumerator Dodge() {
       yield return new WaitForSeconds(.3f);
       readyForDoding = true;
+    }
+
+    private IEnumerator skillDuration()
+    {
+        yield return new WaitForSeconds(3);
+        skillActive = false;
+        GetComponent<PlayerManager>().GetGunslingerEffect().gameObject.SetActive(false);
+        GetComponent<PlayerManager>().GetJuggernautEffect().gameObject.SetActive(false);
     }
 
     private void Attack(float deltaTime) {
