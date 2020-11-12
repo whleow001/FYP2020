@@ -752,7 +752,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1c559c9ddbd66f44daa00512fc0463e7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tracerEffect: {fileID: 2488625339213973707, guid: 17dcc647bddd6a340a75ab464f1cd5a9,
+  tracerEffect: {fileID: 6543365495401987922, guid: 4c244db0b4c55ca43a545a6aa7a96e75,
     type: 3}
   characterState: 0
 --- !u!114 &76049907

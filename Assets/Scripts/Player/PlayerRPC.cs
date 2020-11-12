@@ -46,4 +46,9 @@ public class PlayerRPC : MonoBehaviour
         GetPhotonView().RPC("ChangeIcons", RpcTarget.All, GetComponent<PlayerManager>().GetPlayerClone().GetComponent<PhotonView>().ViewID);
 
     }
+
+    public void ShowSkillEffect(int viewID, int classIndex)
+    {
+        GetPhotonView().RPC("ShowSkillEffect", RpcTarget.All, viewID, classIndex);
+    }
 }

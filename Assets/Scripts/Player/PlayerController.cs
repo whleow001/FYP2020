@@ -40,9 +40,9 @@ public class PlayerController : MonoBehaviour {
     private bool gameOver = false;
 
     // skill variables
-    private bool skillActive = false;
-    private Coroutine usedSkillCoroutine;
-    private bool readyForSkill = true;
+    public bool SkillActive = false;
+    //private Coroutine usedSkillCoroutine;
+    //private bool readyForSkill = true;
 
     public enum CharacterState {
       Idle = 0,
@@ -95,9 +95,10 @@ public class PlayerController : MonoBehaviour {
         if (characterState == CharacterState.Dodging)
           return;
 
-        if (playerInput.IsPressed(PlayerInput.Ability.Skill1) && !skillActive && characterState!=CharacterState.Dead)
+        if (playerInput.IsPressed(PlayerInput.Ability.Skill1) && !SkillActive && characterState!=CharacterState.Dead)
         {
-            classSkill();
+            GetComponent<PlayerRPC>().ShowSkillEffect(GetComponent<PlayerManager>().GetPlayerAvatar().GetPhotonView().ViewID, (int)GetComponent<PlayerManager>().GetProperty("Class"));
+            //classSkill();
         }
 
         if (!gameOver)
@@ -175,30 +176,6 @@ public class PlayerController : MonoBehaviour {
         }
     }
 
-    public void classSkill()
-    {
-        
-        int currentClass = GetComponent<PlayerManager>().getSelectedCharacterIndex() - 1;
-        Debug.Log(currentClass);
-        skillActive = true;
-        //gunslinger
-        if (currentClass==0)
-        {
-            GetComponent<PlayerManager>().GetGunslingerEffect().gameObject.SetActive(true);
-        }
-        //sniper
-        else if(currentClass==1)
-        {
-
-        }
-        //juggernaut
-        else
-        {
-            GetComponent<PlayerManager>().GetJuggernautEffect().gameObject.SetActive(true);
-        }
-        usedSkillCoroutine = StartCoroutine(skillDuration());
-    }
-
     private Rigidbody GetRigidbody() {
       return GetComponent<PlayerManager>().GetPlayerAvatar().GetComponent<Rigidbody>();
     }
@@ -230,14 +207,6 @@ public class PlayerController : MonoBehaviour {
     private IEnumerator Dodge() {
       yield return new WaitForSeconds(.3f);
       readyForDoding = true;
-    }
-
-    private IEnumerator skillDuration()
-    {
-        yield return new WaitForSeconds(3);
-        skillActive = false;
-        GetComponent<PlayerManager>().GetGunslingerEffect().gameObject.SetActive(false);
-        GetComponent<PlayerManager>().GetJuggernautEffect().gameObject.SetActive(false);
     }
 
     private void Attack(float deltaTime) {
