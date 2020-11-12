@@ -184,7 +184,7 @@ public class PlayerContainer : MonoBehaviourPun
         if(gameObject.GetPhotonView().ViewID == viewID)
         {
             //gunslinger
-            if (currentClass == 0)
+            if (currentClass == 1)
             {
                 gameObject.transform.Find("FireBall").gameObject.SetActive(true);
                 //currentStats = new Stats (15, 10, 10);
