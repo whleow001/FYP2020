@@ -12,6 +12,11 @@ public class PlayerContainer : MonoBehaviourPun
 
     private bool fovInstantiated = false;
 
+    // skill variables
+    //private bool skillActive = false;
+    private Coroutine usedSkillCoroutine;
+    private bool readyForSkill = true;
+
     // Start is called before the first frame update
     void Awake()
     {
@@ -39,17 +44,17 @@ public class PlayerContainer : MonoBehaviourPun
         if (!photonView.IsMine) return;
 
         if (_mainCamera == null)
-          _mainCamera = Instantiate(camera, Vector3.zero, Quaternion.Euler(30, 45, 0));
+            _mainCamera = Instantiate(camera, Vector3.zero, Quaternion.Euler(30, 45, 0));
 
         _mainCamera.GetComponent<CameraMotor>().SetPlayer(player);
     }
 
     public void SetPlayerManager(PlayerManager _playerManager) {
-      playerManager = _playerManager;
+        playerManager = _playerManager;
     }
 
     public PlayerManager GetPlayerManager() {
-      return playerManager;
+        return playerManager;
     }
 
     public GameObject GetCamera()
@@ -59,7 +64,7 @@ public class PlayerContainer : MonoBehaviourPun
 
     private void OnCollisionEnter(Collision other) {
 
-      if(photonView.IsMine)
+        if (photonView.IsMine)
         {
             if (other.gameObject.tag == "Projectile" && other.gameObject.layer == playerManager.GetDirector().GetOtherFactionLayer())
             {
@@ -72,7 +77,7 @@ public class PlayerContainer : MonoBehaviourPun
 
     public void TakeDamage(Damage dmg)
     {
-        if(photonView.IsMine)
+        if (photonView.IsMine)
         {
             playerManager.TakeDamage(dmg);
         }
@@ -91,6 +96,15 @@ public class PlayerContainer : MonoBehaviourPun
         }
     }
 
+    private IEnumerator skillDuration()
+    {
+        yield return new WaitForSeconds(3);
+        playerManager.GetComponent<PlayerController>().SkillActive = false;
+        playerManager.GetComponent<PlayerController>().MoveSpdUp();
+        gameObject.transform.Find("FireBall").gameObject.SetActive(false);
+        gameObject.transform.Find("Shield").gameObject.SetActive(false);
+    }
+
     //broadcast health to all clients in the server
     [PunRPC]
     void BroadcastHealth(int victimID)
@@ -102,7 +116,7 @@ public class PlayerContainer : MonoBehaviourPun
         Image mainfill = PV.gameObject.transform.Find("Canvas").Find("Healthbar").Find("fill").GetComponent<Image>();
         playerManager.SetHealthBar((int)victim.CustomProperties["Health"], mainslider, mainfill);
         //GetComponent<PlayerManager>().SetHealthBar((int)victim.CustomProperties["Health"], mainslider, mainfill);
-      }
+    }
 
     [PunRPC]
     void AllocateFOV()
@@ -123,9 +137,10 @@ public class PlayerContainer : MonoBehaviourPun
     }
 
     [PunRPC]
-    void InstantiateBullet(Vector3 position, Vector3 velocity, int layer, PhotonMessageInfo info)
+    void InstantiateBullet(Vector3 position, Vector3 velocity, int layer, int skill, PhotonMessageInfo info)
     {
-        playerManager.GetComponent<PlayerController>().InstantiateBullet(position, velocity, layer, info.photonView);
+        playerManager.GetComponent<PlayerController>().InstantiateBullet(position, velocity, layer, skill, info.photonView);
+        
     }
 
     [PunRPC]
@@ -160,5 +175,35 @@ public class PlayerContainer : MonoBehaviourPun
                 }
             }
         }
+    }
+
+    [PunRPC]
+    void ShowSkillEffect(int viewID, int classIndex)
+    {
+        int currentClass = classIndex;
+        Debug.Log(currentClass);
+        playerManager.GetComponent<PlayerController>().SkillActive = true;
+        if(gameObject.GetPhotonView().ViewID == viewID)
+        {
+            //gunslinger
+            if (currentClass == 1)
+            {
+                gameObject.transform.Find("FireBall").gameObject.SetActive(true);
+                playerManager.GetComponent<PlayerController>().MoveSpdUp();
+
+            }
+            //sniper
+            else if (currentClass == 2)
+            {
+
+            }
+            //juggernaut
+            else
+            {
+                gameObject.transform.Find("Shield").gameObject.SetActive(true);
+            }
+            usedSkillCoroutine = StartCoroutine(skillDuration());
+        }
+        
     }
 }

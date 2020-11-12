@@ -36,14 +36,20 @@ public class PlayerRPC : MonoBehaviour
     }
 
 
-    public void InstantiateBullet(Vector3 position, Vector3 velocity, int layer)
+    public void InstantiateBullet(Vector3 position, Vector3 velocity, int layer, int skill)
     {
-        GetPhotonView().RPC("InstantiateBullet", RpcTarget.All, position, velocity, layer);
+        GetPhotonView().RPC("InstantiateBullet", RpcTarget.All, position, velocity, layer, skill);
+        
     }
 
     public void ChangeIcons()
     {
         GetPhotonView().RPC("ChangeIcons", RpcTarget.All, GetComponent<PlayerManager>().GetPlayerClone().GetComponent<PhotonView>().ViewID);
 
+    }
+
+    public void ShowSkillEffect(int viewID, int classIndex)
+    {
+        GetPhotonView().RPC("ShowSkillEffect", RpcTarget.All, viewID, classIndex);
     }
 }

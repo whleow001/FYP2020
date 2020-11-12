@@ -130,7 +130,7 @@ public class AIController : MonoBehaviour
       foreach (Transform raycastOrigin in raycastOrigins) {
         Vector3 velocity = (raycastDestination.position - raycastOrigin.position).normalized * bulletSpeed;
         raycastOrigin.GetChild(0).GetComponent<ParticleSystem>().Emit(1);
-        aiDirector.GetDirector().GetPlayerManager().GetComponent<PlayerRPC>().InstantiateBullet(raycastOrigin.position, velocity, aiDirector.GetTeam() == 0 ? GOVT_LAYER : REBEL_LAYER);
+        aiDirector.GetDirector().GetPlayerManager().GetComponent<PlayerRPC>().InstantiateBullet(raycastOrigin.position, velocity, aiDirector.GetTeam() == 0 ? GOVT_LAYER : REBEL_LAYER, 0);
       }
     }
 

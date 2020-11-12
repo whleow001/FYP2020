@@ -212,6 +212,16 @@ public class PlayerManager : MonoBehaviourPunCallbacks
       return AvatarParent.transform.Find("BloodEffect").GetComponent<ParticleSystem>();
     }
 
+    public Transform GetGunslingerEffect()
+    {
+        return AvatarParent.transform.Find("FireBall");
+    }
+
+    public Transform GetJuggernautEffect()
+    {
+        return AvatarParent.transform.Find("Shield");
+    }
+
     private void GetProperties()
     {
         properties = PhotonNetwork.LocalPlayer.CustomProperties;

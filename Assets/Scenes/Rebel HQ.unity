@@ -754,6 +754,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tracerEffect: {fileID: 6543365495401987922, guid: 4c244db0b4c55ca43a545a6aa7a96e75,
     type: 3}
+  lightningTrail: {fileID: 2488625339213973707, guid: 17dcc647bddd6a340a75ab464f1cd5a9,
+    type: 3}
+  SkillActive: 0
   characterState: 0
 --- !u!114 &76049907
 MonoBehaviour:
@@ -14325,7 +14328,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1323363248}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.06, y: 5.11, z: -14.6}
+  m_LocalPosition: {x: -9.1, y: 5.11, z: -14.6}
   m_LocalScale: {x: 200, y: 0, z: 200}
   m_Children: []
   m_Father: {fileID: 0}
