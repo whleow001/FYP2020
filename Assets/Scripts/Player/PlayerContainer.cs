@@ -103,6 +103,7 @@ public class PlayerContainer : MonoBehaviourPun
         gameObject.transform.Find("FireBall").gameObject.SetActive(false);
         gameObject.transform.Find("Shield").gameObject.SetActive(false);
         Physics.IgnoreLayerCollision(17, 9, false);
+        Physics.IgnoreLayerCollision(17, 17, false);
         if (photonView.IsMine)
         {
             playerManager.setAnimatorSpeed(1);
