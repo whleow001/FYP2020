@@ -8,7 +8,7 @@ public class ShieldDetection : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        gameObject.layer = gameObject.transform.parent.gameObject.layer;
-        Physics.IgnoreLayerCollision(17, gameObject.layer);
+        //gameObject.layer = gameObject.transform.parent.gameObject.layer;
+        Physics.IgnoreLayerCollision(17, gameObject.transform.parent.gameObject.layer);
     }
 }
