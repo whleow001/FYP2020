@@ -1007,6 +1007,9 @@ MonoBehaviour:
   - Type: 9
     SynchronizeType: 1
     Name: dodge
+  - Type: 1
+    SynchronizeType: 0
+    Name: animSpeed
   m_SynchronizeLayers:
   - SynchronizeType: 0
     LayerIndex: 0
