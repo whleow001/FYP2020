@@ -158,7 +158,7 @@ public class PlayerController : MonoBehaviour {
         }
         else
         {
-            currentStats = stats[GetComponent<PlayerManager>().getSelectedCharacterIndex() - 1];
+            currentStats = stats[GetComponent<PlayerManager>().GetProperty("Class")-1];
         }
         
     }

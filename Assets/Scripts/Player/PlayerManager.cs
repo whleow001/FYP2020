@@ -33,7 +33,8 @@ public class PlayerManager : MonoBehaviourPunCallbacks
 
     //currently using int, can change back to GameObject type if we are using same character models for both teams.
     private GameObject selectedCharacter;
-    private int selectedCharacterIndex;
+    private int currentCharIndex;
+    private int nextCharIndex;
 
     private GameObject spawnPoint;
 
@@ -149,12 +150,14 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     public void ChangeCharacter(int index)
     {
         print("New char: " + index);
-        selectedCharacterIndex = index;
-        ChangeValue("Class", selectedCharacterIndex);
+        nextCharIndex = index;
 
-        selectedCharacter = director.GetPrefab(selectedCharacterIndex);
+        //Debug.Log(properties["Class"]);
+    }
 
-        Debug.Log(properties["Class"]);
+    public int getSelectedCharacterIndex()
+    {
+        return nextCharIndex;
     }
 
     private void InitializeCharacter()
@@ -164,6 +167,9 @@ public class PlayerManager : MonoBehaviourPunCallbacks
             AvatarParent = MasterManager.NetworkInstantiate(playerContainer, spawnPoint.transform.GetChild(Random.Range(0, 3)).transform.position, Quaternion.identity);
         }
         //selectedCharacter = (int)(properties["Class"]);
+        ChangeValue("Class", nextCharIndex);
+
+        selectedCharacter = director.GetPrefab(nextCharIndex);
         AvatarParent.transform.rotation = Quaternion.identity;
         playerClone = MasterManager.NetworkInstantiate(selectedCharacter, AvatarParent.transform.position, Quaternion.identity);
 
@@ -408,10 +414,6 @@ public class PlayerManager : MonoBehaviourPunCallbacks
         base.OnLeftRoom();
         Debug.Log(PhotonNetwork.LocalPlayer.NickName + " Has Disconnected");
         eventsManager.GeneralNotification_S(PhotonNetwork.LocalPlayer.NickName + " Has Disconnected", 2.0f, "PlayerDisconnect");
-    }
-
-    public int getSelectedCharacterIndex() {
-      return selectedCharacterIndex;
     }
 
     public bool IsDead() {
