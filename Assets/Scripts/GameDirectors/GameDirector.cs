@@ -44,6 +44,9 @@ public abstract class GameDirector : MonoBehaviourPun {
     // NavMeshBuilder for creep
     private LocalNavMeshBuilder nvb;
 
+    // aiDirectors holder
+    private AIDirectorsHolder aiDirectorsHolder;
+
     // UI References
     // had to change protection level for eventsmanager access
     [Header("UI Texts")]
@@ -142,6 +145,9 @@ public abstract class GameDirector : MonoBehaviourPun {
 
       leavePanel = GameObject.Find("LeaveGameOverlay");
       leavePanel.SetActive(false);
+
+      aiDirectorsHolder = GameObject.Find("AIDirectorsHolder").GetComponent<AIDirectorsHolder>();
+      aiDirectorsHolder.SetDirector(this);
 
       // Initialize scene specific objects
       InitializeGameObjects();
@@ -408,13 +414,21 @@ public abstract class GameDirector : MonoBehaviourPun {
       _aiDirector.SetPlayer(player);
       _aiDirector.SetDirector(this);
 
-      AIDirectors.Add(_aiDirector.GetComponent<AIDirector>());
+      aiDirectorsHolder.AddAIDirector(_aiDirector.GetComponent<AIDirector>());
       eventsManager.GeneralNotification_S(player.NickName + " (AI) Has Joined the game", 2.0f, "");
+    }
+
+    public void CreditBotKill(int botPosition) {
+      aiDirectorsHolder.CreditBotKill(botPosition);
     }
 
     public void ChangeCharacter()
     {
         charPanel.SetActive(true);
+    }
+
+    public List<AIDirector> GetAIDirectorList() {
+      return aiDirectorsHolder.GetAIDirectorList();
     }
 
     public void char1ButtonPress()

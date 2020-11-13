@@ -107,7 +107,7 @@ public class PlayerController : MonoBehaviour {
             {
                 GetComponent<PlayerRPC>().ShowSkillEffect(GetComponent<PlayerManager>().GetPlayerAvatar().GetPhotonView().ViewID, (int)GetComponent<PlayerManager>().GetProperty("Class"));
             }
-            
+
             //classSkill();
         }
 
@@ -160,7 +160,7 @@ public class PlayerController : MonoBehaviour {
         {
             currentStats = stats[GetComponent<PlayerManager>().getSelectedCharacterIndex() - 1];
         }
-        
+
     }
 
     private void UpdateState() {
@@ -284,7 +284,7 @@ public class PlayerController : MonoBehaviour {
       }
     }
 
-    Bullet CreateBullet(Vector3 position, Vector3 velocity, int layer, int skill, PhotonView source) {
+    Bullet CreateBullet(Vector3 position, Vector3 velocity, int layer, int skill, int botPosition, string botName, PhotonView source) {
       Bullet bullet = new Bullet();
       bullet.initialPosition = position;
       bullet.initialVelocity = velocity;
@@ -299,14 +299,15 @@ public class PlayerController : MonoBehaviour {
         }
       bullet.tracer.gameObject.layer = layer;
       bullet.tracer.GetComponent<PhotonViewReference>().SetPhotonView(source);
+      bullet.tracer.GetComponent<PhotonViewReference>().SetBot(new Bot(botPosition, botName));
       return bullet;
     }
 
-    public void InstantiateBullet(Vector3 position, Vector3 velocity, int layer, int skill, PhotonView source) {
+    public void InstantiateBullet(Vector3 position, Vector3 velocity, int layer, int skill, int botPosition, string botName, PhotonView source) {
       if (!GetComponent<PlayerRPC>().IsPhotonViewMine())
         return;
 
-      bullets.Add(CreateBullet(position, velocity, layer, skill, source));
+      bullets.Add(CreateBullet(position, velocity, layer, skill, botPosition, botName, source));
     }
 
     Vector3 GetPosition(Bullet bullet) {

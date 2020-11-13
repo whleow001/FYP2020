@@ -1,4 +1,5 @@
-﻿using ExitGames.Client.Photon;
+using System;
+using ExitGames.Client.Photon;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -26,12 +27,25 @@ public class EndGameScreen : MonoBehaviourPunCallbacks
     private List<TeamTwoListing> _listingsTwo = new List<TeamTwoListing>();
 
     private GameDirector director;
+    private EventsManager eventsManager;
     private int i;
+
+    private bool shown = false;
 
     public void Show(string message)
     {
         director = GameObject.Find("Director").GetComponent<GameDirector>();
+        eventsManager = GameObject.Find("EventsManager").GetComponent<EventsManager>();
         //i = GetGeneratorCount(director);
+        if (PhotonNetwork.IsMasterClient && !shown) {
+          List<AIDirector> aiDirectors = director.GetAIDirectorList();
+
+          foreach (AIDirector aiDirector in aiDirectors)
+            eventsManager.AddAIListing_S(aiDirector.GetTeam(), aiDirector.GetBotDetails().botName, aiDirector.GetKills(), aiDirector.GetDeaths());
+
+          shown = true;
+        }
+
         SetWinText(message);
         gameObject.SetActive(true);
     }
@@ -61,7 +75,6 @@ public class EndGameScreen : MonoBehaviourPunCallbacks
             else if ((byte)playerInfo.Value.CustomProperties["_pt"] == 1)
                 AddPlayerListingTwo(playerInfo.Value);
         }
-
     }
 
     private void AddPlayerListingOne(Player player)
@@ -84,8 +97,18 @@ public class EndGameScreen : MonoBehaviourPunCallbacks
                     //Debug.Log(player.NickName);
                 }
             }
-            
+
         }
+    }
+
+    public void AddAIListingOne(String botName, int kills, int deaths) {
+      if (_teamOneListing != null) {
+        TeamOneListing listingOne = Instantiate(_teamOneListing, _contentTeamOne);
+        if (listingOne != null) {
+          _listingsOne.Add(listingOne);
+          listingOne.SetAIText(botName + "\t\t\t" + kills + " / " + deaths);
+        }
+      }
     }
 
     private void AddPlayerListingTwo(Player player)
@@ -108,8 +131,18 @@ public class EndGameScreen : MonoBehaviourPunCallbacks
                     //Debug.Log(player.NickName);
                 }
             }
-            
+
         }
+    }
+
+    public void AddAIListingTwo(String botName, int kills, int deaths) {
+      if (_teamTwoListing != null) {
+        TeamTwoListing listingTwo = Instantiate(_teamTwoListing, _contentTeamTwo);
+        if (listingTwo != null) {
+          _listingsTwo.Add(listingTwo);
+          listingTwo.SetAIText(botName + "\t\t\t" + kills + " / " + deaths);
+        }
+      }
     }
 
     public override void OnPlayerLeftRoom (Player otherPlayer)

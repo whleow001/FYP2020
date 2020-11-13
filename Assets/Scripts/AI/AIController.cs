@@ -1,8 +1,11 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using Photon.Pun;
+using Photon.Realtime;
 
-public class AIController : MonoBehaviour
+public class AIController : MonoBehaviourPun
 {
     private enum AIState {
       Objective = 0,
@@ -34,7 +37,9 @@ public class AIController : MonoBehaviour
     private UnityEngine.AI.NavMeshAgent agent;
     private Animator aiAnimator;
 
+    // Flags
     private bool readyForFiring = false;
+    private bool fovInstantiated = false;
 
     public void AddObjective(Vector3 objective) {
       objectivesLocation.Add(objective);
@@ -60,10 +65,19 @@ public class AIController : MonoBehaviour
 
     // Update is called once per frame
     void Update() {
+      if (!fovInstantiated) {
+        photonView.RPC("AllocateFOV", RpcTarget.All);
+        fovInstantiated = true;
+      }
+
       if (objectiveOfInterest == Vector3.zero)
         NextObjective();
 
-      if (aiState == AIState.Objective) {
+      if (aiDirector.GetHealth() <= 0) {
+        ChangeCharacterState(PlayerController.CharacterState.Dead);
+      }
+
+      else if (aiState == AIState.Objective) {
         ChangeCharacterState(PlayerController.CharacterState.Running);
 
         if (Physics.CheckSphere(transform.position, sightRange)) {
@@ -83,15 +97,13 @@ public class AIController : MonoBehaviour
           print("Distance to objective " + objectiveOfInterest + ": " + (objectiveOfInterest - transform.position).magnitude);
           agent.SetDestination(objectiveOfInterest);
 
-          if ((objectiveOfInterest - transform.position).magnitude <= 5.0f)
+          if ((objectiveOfInterest - transform.position).magnitude <= agent.stoppingDistance)
             NextObjective();
         }
       }
       else if (aiState == AIState.Engage) {
-        if (!enemyOfInterest) {
+        if (!enemyOfInterest)
           ChangeAIState(AIState.Objective);
-          ChangeCharacterState(PlayerController.CharacterState.Running);
-        }
 
         else {
           float distance = Vector3.Distance(enemyOfInterest.transform.position, transform.position);
@@ -105,32 +117,24 @@ public class AIController : MonoBehaviour
           }
           // Target in attack range
           else {
-            print("AI: Attacking " + enemyOfInterest);
-
-            agent.isStopped = true;
             agent.ResetPath();
             agent.velocity = Vector3.zero;
-            agent.Stop();
 
             ChangeCharacterState(PlayerController.CharacterState.Attacking);
             transform.LookAt(enemyOfInterest.transform, Vector3.up);
-
-            if (enemyOfInterest == null)
-              ChangeAIState(AIState.Objective);
           }
         }
       }
 
-      if (readyForFiring) {
+      if (readyForFiring)
         FireBullet();
-      }
     }
 
     private void FireBullet() {
       foreach (Transform raycastOrigin in raycastOrigins) {
         Vector3 velocity = (raycastDestination.position - raycastOrigin.position).normalized * bulletSpeed;
         raycastOrigin.GetChild(0).GetComponent<ParticleSystem>().Emit(1);
-        aiDirector.GetDirector().GetPlayerManager().GetComponent<PlayerRPC>().InstantiateBullet(raycastOrigin.position, velocity, aiDirector.GetTeam() == 0 ? GOVT_LAYER : REBEL_LAYER, 0);
+        aiDirector.GetDirector().GetPlayerManager().GetComponent<PlayerRPC>().InstantiateBullet(raycastOrigin.position, velocity, aiDirector.GetTeam() == 0 ? GOVT_LAYER : REBEL_LAYER, 0, aiDirector.GetBotDetails());
       }
     }
 
@@ -152,7 +156,8 @@ public class AIController : MonoBehaviour
       agent = _agent;
 
       agent.acceleration = 1;
-      agent.stoppingDistance = 1;
+      agent.angularSpeed = 900;
+      agent.stoppingDistance = 10;
     }
 
     public void SetAIDirector(AIDirector _aiDirector) {
@@ -182,6 +187,16 @@ public class AIController : MonoBehaviour
       aiDirector.TakeDamage(dmg);
     }
 
+    private void OnCollisionEnter(Collision other) {
+      if (photonView.IsMine)
+      {
+          if (other.gameObject.tag == "Projectile" && other.gameObject.layer == ((aiDirector.GetTeam() == 0) ? GOVT_LAYER : REBEL_LAYER))
+          {
+              aiDirector.TakeDamage(new Damage(20, other.gameObject.transform.position), other.gameObject.GetComponent<PhotonViewReference>().GetPhotonView().ViewID, other.gameObject.GetComponent<PhotonViewReference>().GetBot());
+          }
+      }
+    }
+
     public bool IsDead() {
       return aiDirector.GetHealth() <= 0;
     }
@@ -193,5 +208,54 @@ public class AIController : MonoBehaviour
     public void ReinitializeGunpoints(GameObject aiClone) {
       raycastOrigins = aiClone.transform.Find("RaycastOrigins").transform;
       raycastDestination = aiClone.transform.Find("RaycastDestination").transform;
+    }
+
+    //broadcast health to all clients in the server
+    [PunRPC]
+    void BroadcastHealth(int victimID)
+    {
+        PhotonView PV = PhotonView.Find(victimID);
+        Player victim = PV.Owner;
+        Slider mainslider = PV.gameObject.GetComponentInChildren<Slider>();
+        Image mainfill = PV.gameObject.transform.Find("Canvas").Find("Healthbar").Find("fill").GetComponent<Image>();
+        aiDirector.SetHealthBar(aiDirector.GetHealth(), mainslider, mainfill);
+    }
+
+    [PunRPC]
+    void ChangeIcons(int viewID, int team, int classIndex, int botPosition, string botName)
+    {
+        PhotonView PV = PhotonView.Find(viewID);
+
+        //broadcast nameplate to all client
+        Text name = PV.gameObject.transform.Find("Canvas").Find("Text").GetComponent<Text>();
+        name.text = botName;
+        name.color = Color.white;
+        Image healthColor = PV.gameObject.transform.Find("Canvas").Find("Healthbar").Find("fill").GetComponent<Image>();
+
+        if (team == 0) {
+          healthColor.color = Color.red;
+          aiDirector.GetDirector().GetPlayerManager().GovtIcons.transform.GetChild(botPosition).GetChild(0).GetComponent<Image>().sprite = Resources.Load<Sprite>("UISprites/number" + classIndex);
+        }
+        else {
+          healthColor.color = Color.blue;
+          aiDirector.GetDirector().GetPlayerManager().RebelIcons.transform.GetChild(botPosition).GetChild(0).GetComponent<Image>().sprite = Resources.Load<Sprite>("UISprites/number" + classIndex);
+        }
+    }
+
+    [PunRPC]
+    void ChangeMaterial(int ParentViewID, int ModelViewID, int team, int selectedLayer)
+    {
+        PhotonView ParentPV = PhotonView.Find(ParentViewID);
+        PhotonView ModelPV = PhotonView.Find(ModelViewID);
+        ParentPV.gameObject.layer = selectedLayer;
+        Material[] materials = ModelPV.gameObject.GetComponentInChildren<SkinnedMeshRenderer>().materials;
+        materials[1] = aiDirector.GetMaterial(team);
+        ModelPV.gameObject.GetComponentInChildren<SkinnedMeshRenderer>().materials = materials;
+        ModelPV.gameObject.layer = selectedLayer;
+    }
+
+    [PunRPC]
+    void AllocateFOV() {
+      aiDirector.GetDirector().AllocateFOVMask();
     }
 }

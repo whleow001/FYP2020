@@ -58,7 +58,7 @@ public class PlayerListingsMenu : MonoBehaviourPunCallbacks, IInRoomCallbacks
             StartButton.SetActive(false);
             ReadyUpButton.SetActive(true);
         }
-        
+
         SetReadyUp(false);
         GetCurrentRoomPlayers();
 

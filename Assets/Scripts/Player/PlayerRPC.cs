@@ -36,10 +36,12 @@ public class PlayerRPC : MonoBehaviour
     }
 
 
-    public void InstantiateBullet(Vector3 position, Vector3 velocity, int layer, int skill)
+    public void InstantiateBullet(Vector3 position, Vector3 velocity, int layer, int skill, Bot bot = null)
     {
-        GetPhotonView().RPC("InstantiateBullet", RpcTarget.All, position, velocity, layer, skill);
-        
+        if (bot == null)
+          GetPhotonView().RPC("InstantiateBullet", RpcTarget.All, position, velocity, layer, skill, -1, "");
+        else
+          GetPhotonView().RPC("InstantiateBullet", RpcTarget.All, position, velocity, layer, skill, bot.botPosition, bot.botName);
     }
 
     public void ChangeIcons()

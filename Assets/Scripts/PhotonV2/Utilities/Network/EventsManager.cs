@@ -13,7 +13,9 @@ using UnityEngine.Rendering;
 public class EventsManager : MonoBehaviourPun, IOnEventCallback {
 
     private GameDirector director;
-    //private EndGameScreen endGameScreen;
+
+    [SerializeField]
+    private EndGameScreen endGameScreen;
 
     enum EventsCode : byte
     {
@@ -24,6 +26,8 @@ public class EventsManager : MonoBehaviourPun, IOnEventCallback {
         RebelNotification,
         GovtNotification,
         GeneralNotification,
+        CreditBotKill,
+        AddAIListing,
         ShowCutscene
     }
 
@@ -31,7 +35,6 @@ public class EventsManager : MonoBehaviourPun, IOnEventCallback {
     private void Awake()
     {
         director = GameObject.Find("Director").GetComponent<GameDirector>();
-        //endGameScreen = GameObject.Find("EndGameScreen").GetComponent<EndGameScreen>();
     }
 
     //Void OnEvent
@@ -63,6 +66,12 @@ public class EventsManager : MonoBehaviourPun, IOnEventCallback {
                 break;
             case EventsCode.GeneralNotification:
                 GeneralNotification_R(o);
+                break;
+            case EventsCode.CreditBotKill:
+                CreditBotKill_R(o);
+                break;
+            case EventsCode.AddAIListing:
+                AddAIListing_R(o);
                 break;
             case EventsCode.ShowCutscene:
                 StartCutscene_R(o);
@@ -246,6 +255,54 @@ public class EventsManager : MonoBehaviourPun, IOnEventCallback {
 
         director.GetUIText(BaseTexts.notify).SetText(NotifText, duration);
         //director.UITexts[3].SetActiveState(true);
+    }
+
+    public void CreditBotKill_S(int botPosition) {
+      object[] package = new object[1];
+      package[0] = botPosition;
+
+      PhotonNetwork.RaiseEvent(
+        (byte)EventsCode.CreditBotKill,
+        package,
+        new RaiseEventOptions { Receivers = ReceiverGroup.MasterClient },
+        new SendOptions { Reliability = true }
+      );
+    }
+
+    public void CreditBotKill_R(object[] data) {
+      int botPosition = (int)data[0];
+
+      director.CreditBotKill(botPosition);
+    }
+
+    public void AddAIListing_S(int team, string botName, int kills, int deaths)
+    {
+      object[] package = new object[4];
+
+      package[0] = team;
+      package[1] = botName;
+      package[2] = kills;
+      package[3] = deaths;
+
+      PhotonNetwork.RaiseEvent(
+        (byte)EventsCode.AddAIListing,
+        package,
+        new RaiseEventOptions { Receivers = ReceiverGroup.All },
+        new SendOptions { Reliability = true }
+      );
+    }
+
+    public void AddAIListing_R(object[] data)
+    {
+      int team = (int)data[0];
+      string botName = data[1].ToString();
+      int kills = (int)data[2];
+      int deaths = (int)data[3];
+
+      if (team == 0)
+        endGameScreen.AddAIListingOne(botName, kills, deaths);
+      else
+        endGameScreen.AddAIListingTwo(botName, kills, deaths);
     }
 
     public void GeneralNotification_S(string message, float durationSeconds, string purpose)
