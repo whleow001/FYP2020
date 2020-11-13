@@ -100,10 +100,13 @@ public class PlayerContainer : MonoBehaviourPun
     {
         yield return new WaitForSeconds(3);
         playerManager.GetComponent<PlayerController>().SkillActive = false;
-        playerManager.GetComponent<PlayerController>().MoveSpdUp();
         gameObject.transform.Find("FireBall").gameObject.SetActive(false);
         gameObject.transform.Find("Shield").gameObject.SetActive(false);
-        playerManager.setAnimatorSpeed(1);
+        if (photonView.IsMine)
+        {
+            playerManager.setAnimatorSpeed(1);
+            playerManager.GetComponent<PlayerController>().MoveSpdUp();
+        }
     }
 
     //broadcast health to all clients in the server
@@ -190,8 +193,11 @@ public class PlayerContainer : MonoBehaviourPun
             if (currentClass == 1)
             {
                 gameObject.transform.Find("FireBall").gameObject.SetActive(true);
-                playerManager.GetComponent<PlayerController>().MoveSpdUp();
-                playerManager.setAnimatorSpeed(100);
+                if (photonView.IsMine)
+                {
+                    playerManager.GetComponent<PlayerController>().MoveSpdUp();
+                    playerManager.setAnimatorSpeed(100);
+                }
 
             }
             //sniper
