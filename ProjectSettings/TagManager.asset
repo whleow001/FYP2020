@@ -12,6 +12,8 @@ TagManager:
   - Projectile
   - Gate
   - GateBlock
+  - Crypt
+  - Waypoint
   layers:
   - Default
   - TransparentFX
