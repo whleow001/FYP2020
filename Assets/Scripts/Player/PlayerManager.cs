@@ -25,6 +25,8 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     public GameObject GovtIcons;
     [SerializeField]
     public GameObject RebelIcons;
+    [SerializeField]
+    public GameObject skillIcon;
 
     [SerializeField]
     private GameObject playerContainer;
@@ -103,6 +105,17 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     //do not think spawn needs to be a parameter here, should be layer instead, however currently not working as intended
     public void SetProperties(int selectedMaterial)
     {
+        for(int i = 0; i < 3; i++)
+        {
+            if(i == GetProperty("Class") - 1)
+            {
+                skillIcon.transform.GetChild(i).gameObject.SetActive(true);
+            }
+            else
+            {
+                skillIcon.transform.GetChild(i).gameObject.SetActive(false);
+            }
+        }
         int ModelViewID = playerClone.GetComponent<PhotonView>().ViewID;
         int ParentViewID = AvatarParent.GetComponent<PhotonView>().ViewID;
         int selectedLayer = director.GetFactionLayer();

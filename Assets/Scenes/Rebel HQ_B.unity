@@ -1782,7 +1782,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1958615551}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -1929,6 +1929,7 @@ MonoBehaviour:
   eventsManager: {fileID: 274814525}
   GovtIcons: {fileID: 675430117}
   RebelIcons: {fileID: 978313929}
+  skillIcon: {fileID: 1958615550}
   playerContainer: {fileID: 6487977800366431805, guid: 587e74ff3e8f3b940a351e63df26e6f3,
     type: 3}
   team: 0
@@ -12100,7 +12101,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1958615551}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -15128,8 +15129,8 @@ RectTransform:
   m_LocalScale: {x: 0.47794998, y: 0.47794998, z: 0.47794998}
   m_Children:
   - {fileID: 1774364287}
-  - {fileID: 207504979}
   - {fileID: 1465471536}
+  - {fileID: 207504979}
   m_Father: {fileID: 1017183737}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
