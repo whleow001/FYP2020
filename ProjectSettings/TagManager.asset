@@ -14,6 +14,7 @@ TagManager:
   - GateBlock
   - Crypt
   - Waypoint
+  - ControlPoint
   layers:
   - Default
   - TransparentFX
