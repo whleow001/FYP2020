@@ -220,13 +220,14 @@ public class CreepBot : MonoBehaviourPun
                         // calculate path to target
                         agent.CalculatePath(closestTarget.transform.position, path);
                         // if no path can be found, go to obj instead
-                        if (path.status == NavMeshPathStatus.PathPartial)
+                        if (path.status == NavMeshPathStatus.PathComplete)
                         {
-                            agent.SetDestination(objEdge);
+                            agent.SetDestination(closestTarget.transform.position);
                         }
                         else
                         {
-                            agent.SetDestination(closestTarget.transform.position);
+                            agent.SetDestination(objEdge);
+                            
                         }
                         transform.rotation = Quaternion.LookRotation(agent.velocity.normalized);
                     }

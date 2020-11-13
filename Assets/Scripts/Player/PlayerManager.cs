@@ -26,6 +26,8 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     public GameObject GovtIcons;
     [SerializeField]
     public GameObject RebelIcons;
+    [SerializeField]
+    public GameObject skillIcon;
 
     [SerializeField]
     private GameObject playerContainer;
@@ -34,7 +36,8 @@ public class PlayerManager : MonoBehaviourPunCallbacks
 
     //currently using int, can change back to GameObject type if we are using same character models for both teams.
     private GameObject selectedCharacter;
-    private int selectedCharacterIndex;
+    private int currentCharIndex;
+    private int nextCharIndex;
 
     private GameObject spawnPoint;
 
@@ -103,6 +106,17 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     //do not think spawn needs to be a parameter here, should be layer instead, however currently not working as intended
     public void SetProperties(int selectedMaterial)
     {
+        for(int i = 0; i < 3; i++)
+        {
+            if(i == GetProperty("Class") - 1)
+            {
+                skillIcon.transform.GetChild(i).gameObject.SetActive(true);
+            }
+            else
+            {
+                skillIcon.transform.GetChild(i).gameObject.SetActive(false);
+            }
+        }
         int ModelViewID = playerClone.GetComponent<PhotonView>().ViewID;
         int ParentViewID = AvatarParent.GetComponent<PhotonView>().ViewID;
         int selectedLayer = director.GetFactionLayer();
@@ -150,12 +164,14 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     public void ChangeCharacter(int index)
     {
         print("New char: " + index);
-        selectedCharacterIndex = index;
-        ChangeValue("Class", selectedCharacterIndex);
+        nextCharIndex = index;
 
-        selectedCharacter = director.GetPrefab(selectedCharacterIndex);
+        //Debug.Log(properties["Class"]);
+    }
 
-        Debug.Log(properties["Class"]);
+    public int getSelectedCharacterIndex()
+    {
+        return nextCharIndex;
     }
 
     private void InitializeCharacter()
@@ -165,6 +181,9 @@ public class PlayerManager : MonoBehaviourPunCallbacks
             AvatarParent = MasterManager.NetworkInstantiate(playerContainer, spawnPoint.transform.GetChild(UnityEngine.Random.Range(0, 3)).transform.position, Quaternion.identity);
         }
         //selectedCharacter = (int)(properties["Class"]);
+        ChangeValue("Class", nextCharIndex);
+
+        selectedCharacter = director.GetPrefab(nextCharIndex);
         AvatarParent.transform.rotation = Quaternion.identity;
         playerClone = MasterManager.NetworkInstantiate(selectedCharacter, AvatarParent.transform.position, Quaternion.identity);
 
@@ -216,6 +235,11 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     public Transform GetGunslingerEffect()
     {
         return AvatarParent.transform.Find("FireBall");
+    }
+
+    public void setAnimatorSpeed (float speed)
+    {
+        playerClone.GetComponent<Animator>().SetFloat("animSpeed", speed);
     }
 
     public Transform GetJuggernautEffect()
@@ -415,10 +439,6 @@ public class PlayerManager : MonoBehaviourPunCallbacks
         base.OnLeftRoom();
         Debug.Log(PhotonNetwork.LocalPlayer.NickName + " Has Disconnected");
         eventsManager.GeneralNotification_S(PhotonNetwork.LocalPlayer.NickName + " Has Disconnected", 2.0f, "PlayerDisconnect");
-    }
-
-    public int getSelectedCharacterIndex() {
-      return selectedCharacterIndex;
     }
 
     public bool IsDead() {
