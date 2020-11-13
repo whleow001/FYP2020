@@ -103,6 +103,7 @@ public class PlayerContainer : MonoBehaviourPun
         playerManager.GetComponent<PlayerController>().MoveSpdUp();
         gameObject.transform.Find("FireBall").gameObject.SetActive(false);
         gameObject.transform.Find("Shield").gameObject.SetActive(false);
+        playerManager.setAnimatorSpeed(1);
     }
 
     //broadcast health to all clients in the server
@@ -190,6 +191,7 @@ public class PlayerContainer : MonoBehaviourPun
             {
                 gameObject.transform.Find("FireBall").gameObject.SetActive(true);
                 playerManager.GetComponent<PlayerController>().MoveSpdUp();
+                playerManager.setAnimatorSpeed(100);
 
             }
             //sniper

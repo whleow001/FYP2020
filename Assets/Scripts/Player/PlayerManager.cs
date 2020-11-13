@@ -217,6 +217,11 @@ public class PlayerManager : MonoBehaviourPunCallbacks
         return AvatarParent.transform.Find("FireBall");
     }
 
+    public void setAnimatorSpeed (float speed)
+    {
+        playerClone.GetComponent<Animator>().SetFloat("animSpeed", speed);
+    }
+
     public Transform GetJuggernautEffect()
     {
         return AvatarParent.transform.Find("Shield");
