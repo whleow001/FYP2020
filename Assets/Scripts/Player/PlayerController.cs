@@ -43,6 +43,7 @@ public class PlayerController : MonoBehaviour {
 
     // skill variables
     public bool SkillActive = false;
+    public bool sniperActive = false;
     //private Coroutine usedSkillCoroutine;
     //private bool readyForSkill = true;
 
@@ -101,7 +102,8 @@ public class PlayerController : MonoBehaviour {
         {
             if((int)GetComponent<PlayerManager>().GetProperty("Class") == 2)
             {
-                FireBullet(2);
+                sniperActive = true;
+                ChangeState(CharacterState.Attacking);
             }
             else
             {
@@ -166,7 +168,7 @@ public class PlayerController : MonoBehaviour {
     private void UpdateState() {
         if (GetComponent<PlayerManager>().IsDead())
             ChangeState(CharacterState.Dead);
-        else if (!playerInput.IsJoystickMoving() && !playerInput.IsPressed(PlayerInput.Ability.Attack) && !playerInput.IsPressed(PlayerInput.Ability.Dodge))
+        else if (!playerInput.IsJoystickMoving() && !playerInput.IsPressed(PlayerInput.Ability.Attack) && !playerInput.IsPressed(PlayerInput.Ability.Dodge) && !playerInput.IsPressed(PlayerInput.Ability.Skill1) && !playerInput.IsPressed(PlayerInput.Ability.Skill2))
             ChangeState(CharacterState.Idle);
         else if (playerInput.IsPressed(PlayerInput.Ability.Dodge))
             ChangeState(CharacterState.Dodging);
@@ -192,7 +194,16 @@ public class PlayerController : MonoBehaviour {
             break;
           case CharacterState.Attacking:
             Stop();
-            Attack(Time.deltaTime);
+            if(sniperActive)
+                    {
+                        FireBullet(2);
+                        sniperActive = false;
+                    }
+            else
+                    {
+                        Attack(Time.deltaTime);
+                    }
+            
             break;
           default:
             break;
@@ -234,7 +245,8 @@ public class PlayerController : MonoBehaviour {
 
     private void Attack(float deltaTime) {
       if (readyForFiring)
-        FireBullet(0);
+            FireBullet(0);
+        
     }
 
     private void StopFiring() {
