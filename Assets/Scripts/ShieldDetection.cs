@@ -10,5 +10,6 @@ public class ShieldDetection : MonoBehaviour
     {
         //gameObject.layer = gameObject.transform.parent.gameObject.layer;
         Physics.IgnoreLayerCollision(17, gameObject.transform.parent.gameObject.layer);
+        Physics.IgnoreLayerCollision(17, 17);
     }
 }
