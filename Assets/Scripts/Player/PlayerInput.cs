@@ -15,9 +15,8 @@ public class PlayerInput : MonoBehaviour
     public enum Ability : int
     {
       Skill1 = 0,
-      Skill2 = 1,
-      Dodge = 2,
-      Attack = 3
+      Dodge = 1,
+      Attack = 2
     }
 
     public bool IsJoystickMoving() {
