@@ -1,4 +1,5 @@
 ﻿using ExitGames.Client.Photon;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -26,5 +27,9 @@ public class TeamTwoListing : MonoBehaviour
             int Deaths = (int)player.CustomProperties["Deaths"];
             _teamTwoText.text = player.NickName + "\t\t\t" + Kills.ToString() + " / " + Deaths.ToString();
         }
+    }
+
+    public void SetAIText(String text) {
+      _teamTwoText.text = text;
     }
 }

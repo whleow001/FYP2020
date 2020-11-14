@@ -1,4 +1,5 @@
-﻿using ExitGames.Client.Photon;
+using System;
+using ExitGames.Client.Photon;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -17,7 +18,7 @@ public class TeamOneListing : MonoBehaviour
     {
         Player = player;
     }
-    
+
     public void SetPlayerText(Player player)
     {
         if (player.CustomProperties.ContainsKey("Kills") && player.CustomProperties.ContainsKey("Deaths"))
@@ -26,5 +27,9 @@ public class TeamOneListing : MonoBehaviour
             int Deaths = (int)player.CustomProperties["Deaths"];
             _teamOneText.text = player.NickName + "\t\t\t" + Kills.ToString() + " / " + Deaths.ToString();
         }
+    }
+
+    public void SetAIText(String text) {
+      _teamOneText.text = text;
     }
 }

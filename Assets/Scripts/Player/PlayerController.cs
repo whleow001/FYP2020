@@ -43,6 +43,7 @@ public class PlayerController : MonoBehaviour {
 
     // skill variables
     public bool SkillActive = false;
+    public bool sniperActive = false;
     //private Coroutine usedSkillCoroutine;
     //private bool readyForSkill = true;
 
@@ -101,13 +102,14 @@ public class PlayerController : MonoBehaviour {
         {
             if((int)GetComponent<PlayerManager>().GetProperty("Class") == 2)
             {
-                FireBullet(2);
+                sniperActive = true;
+                ChangeState(CharacterState.Attacking);
             }
             else
             {
                 GetComponent<PlayerRPC>().ShowSkillEffect(GetComponent<PlayerManager>().GetPlayerAvatar().GetPhotonView().ViewID, (int)GetComponent<PlayerManager>().GetProperty("Class"));
             }
-            
+
             //classSkill();
         }
 
@@ -158,15 +160,15 @@ public class PlayerController : MonoBehaviour {
         }
         else
         {
-            currentStats = stats[GetComponent<PlayerManager>().getSelectedCharacterIndex() - 1];
+            currentStats = stats[GetComponent<PlayerManager>().GetProperty("Class")-1];
         }
-        
+
     }
 
     private void UpdateState() {
         if (GetComponent<PlayerManager>().IsDead())
             ChangeState(CharacterState.Dead);
-        else if (!playerInput.IsJoystickMoving() && !playerInput.IsPressed(PlayerInput.Ability.Attack) && !playerInput.IsPressed(PlayerInput.Ability.Dodge))
+        else if (!playerInput.IsJoystickMoving() && !playerInput.IsPressed(PlayerInput.Ability.Attack) && !playerInput.IsPressed(PlayerInput.Ability.Dodge) && !playerInput.IsPressed(PlayerInput.Ability.Skill1) && !playerInput.IsPressed(PlayerInput.Ability.Skill2))
             ChangeState(CharacterState.Idle);
         else if (playerInput.IsPressed(PlayerInput.Ability.Dodge))
             ChangeState(CharacterState.Dodging);
@@ -192,7 +194,16 @@ public class PlayerController : MonoBehaviour {
             break;
           case CharacterState.Attacking:
             Stop();
-            Attack(Time.deltaTime);
+            if(sniperActive)
+                    {
+                        FireBullet(2);
+                        sniperActive = false;
+                    }
+            else
+                    {
+                        Attack(Time.deltaTime);
+                    }
+            
             break;
           default:
             break;
@@ -234,7 +245,8 @@ public class PlayerController : MonoBehaviour {
 
     private void Attack(float deltaTime) {
       if (readyForFiring)
-        FireBullet(0);
+            FireBullet(0);
+        
     }
 
     private void StopFiring() {
@@ -284,7 +296,7 @@ public class PlayerController : MonoBehaviour {
       }
     }
 
-    Bullet CreateBullet(Vector3 position, Vector3 velocity, int layer, int skill, PhotonView source) {
+    Bullet CreateBullet(Vector3 position, Vector3 velocity, int layer, int skill, int botPosition, string botName, PhotonView source) {
       Bullet bullet = new Bullet();
       bullet.initialPosition = position;
       bullet.initialVelocity = velocity;
@@ -299,14 +311,15 @@ public class PlayerController : MonoBehaviour {
         }
       bullet.tracer.gameObject.layer = layer;
       bullet.tracer.GetComponent<PhotonViewReference>().SetPhotonView(source);
+      bullet.tracer.GetComponent<PhotonViewReference>().SetBot(new Bot(botPosition, botName));
       return bullet;
     }
 
-    public void InstantiateBullet(Vector3 position, Vector3 velocity, int layer, int skill, PhotonView source) {
+    public void InstantiateBullet(Vector3 position, Vector3 velocity, int layer, int skill, int botPosition, string botName, PhotonView source) {
       if (!GetComponent<PlayerRPC>().IsPhotonViewMine())
         return;
 
-      bullets.Add(CreateBullet(position, velocity, layer, skill, source));
+      bullets.Add(CreateBullet(position, velocity, layer, skill, botPosition, botName, source));
     }
 
     Vector3 GetPosition(Bullet bullet) {

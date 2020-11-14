@@ -5,6 +5,7 @@ using UnityEngine;
 using Photon.Realtime;
 using Photon.Pun;
 using Photon.Pun.UtilityScripts;
+using UnityEngine.UI;
 
 public class AIDirector : MonoBehaviour
 {
@@ -33,18 +34,30 @@ public class AIDirector : MonoBehaviour
 
   // Attributes
   private int team;
-  private int position;
   private int kills;
   private int deaths;
   private int health;
   private int classIndex;
-  private string name;
+  private Bot bot = new Bot();
 
   // Respawn
   private int respawnTime = 3;
   public int respawnTimer;
   private Coroutine respawnCoroutine;
   private bool reinitializing = false;
+
+  // Healthbar
+  public Slider slider;
+  public Gradient gradient;
+  public Image fill;
+
+  // Material
+  [SerializeField]
+  private List<Material> teamMaterials = new List<Material>();
+
+  private void Awake() {
+    DontDestroyOnLoad(gameObject);
+  }
 
   private void Start() {
     eventsManager = GameObject.Find("EventsManager").GetComponent<EventsManager>();
@@ -56,7 +69,8 @@ public class AIDirector : MonoBehaviour
       kills = (int)player.CustomProperties["Kills"];
       deaths = (int)player.CustomProperties["Deaths"];
       classIndex = (int)player.CustomProperties["Class"];
-      name = player.NickName + " (AI)";
+      selectedCharacter = director.GetPrefab(classIndex);
+      bot.botName = player.NickName + " (AI)";
 
       HashSet<Player> teamPlayers;
       PhotonTeamsManager photonTeamManager = GameObject.Find("TeamManager").GetComponent<PhotonTeamsManager>();
@@ -65,7 +79,7 @@ public class AIDirector : MonoBehaviour
       int i = 0;
       foreach (var _player in teamPlayers) {
         if (_player == player)
-          position = i;
+          bot.botPosition = i;
         i++;
       }
 
@@ -73,7 +87,6 @@ public class AIDirector : MonoBehaviour
     }
 
     if (!instantiated && director) {
-      selectedCharacter = director.GetPrefab((int)player.CustomProperties["Class"]);
       spawnPoint = director.GetSpawn(team);
       InitializeCharacter();
 
@@ -100,9 +113,13 @@ public class AIDirector : MonoBehaviour
     AvatarParent.transform.rotation = Quaternion.identity;
 
     aiClone = MasterManager.NetworkInstantiate(selectedCharacter, AvatarParent.transform.position, Quaternion.identity);
+
     AvatarParent.GetComponent<AIAnimation>().ReinitializeAnimator(aiClone);
     aiController.ClearObjectives();
     aiController.ReinitializeGunpoints(aiClone);
+
+    slider = aiClone.GetComponentInChildren<Slider>();
+    fill = aiClone.transform.Find("Canvas").Find("Healthbar").Find("fill").GetComponent<Image>();
 
     if (director is RebelHQ_A) {
       Transform generatorSpawns = director.GetSpawn(Spawns_A.Generator).transform;
@@ -126,10 +143,24 @@ public class AIDirector : MonoBehaviour
     }
 
     health = 100;
+
+    SetProperties();
+    aiController.GetComponent<PhotonView>().RPC("ChangeIcons", RpcTarget.All, aiClone.GetComponent<PhotonView>().ViewID, team, classIndex, bot.botPosition, bot.botName);
   }
 
   private ParticleSystem GetHitEffect() {
     return AvatarParent.transform.Find("BloodEffect").GetComponent<ParticleSystem>();
+  }
+
+  private void SetProperties() {
+    int ModelViewID = aiClone.GetComponent<PhotonView>().ViewID;
+    int ParentViewID = AvatarParent.GetComponent<PhotonView>().ViewID;
+    int selectedLayer = (team == 0) ? GOVT_LAYER : REBEL_LAYER;
+    aiController.GetComponent<PhotonView>().RPC("ChangeMaterial", RpcTarget.All, ParentViewID, ModelViewID, team, selectedLayer);
+  }
+
+  public Material GetMaterial(int _team) {
+    return teamMaterials[_team];
   }
 
   public void SetPlayer(Player _player) {
@@ -144,36 +175,46 @@ public class AIDirector : MonoBehaviour
     return director;
   }
 
-  public void TakeDamage(Damage dmg, int attackerViewID = -1) {
-    if (dmg.sourcePosition != Vector3.zero && GetHitEffect())
-    {
-      GetHitEffect().transform.position = dmg.sourcePosition;
-      GetHitEffect().transform.forward = (new Vector3(gameObject.transform.position.x, dmg.sourcePosition.y, dmg.sourcePosition.z) - dmg.sourcePosition).normalized;
-      GetHitEffect().Emit(1);
-    }
-
-    health -= dmg.damage;
-
-    if (health <= 0) {
-      deaths += 1;
-      PhotonView attacker = PhotonView.Find(attackerViewID);
-
-      if (attacker != null) {
-        Player killer = attacker.Owner;
-        CreditKiller(killer);
-
-        // Notification for "player" killed "player"
-        eventsManager.GeneralNotification_S(killer.NickName + " has killed " + name, 2.0f, "CombatLog");
+  public void TakeDamage(Damage dmg, int attackerViewID = -1, Bot bot = null) {
+    if (health > 0) {
+      if (dmg.sourcePosition != Vector3.zero && GetHitEffect())
+      {
+        GetHitEffect().transform.position = dmg.sourcePosition;
+        GetHitEffect().transform.forward = (new Vector3(gameObject.transform.position.x, dmg.sourcePosition.y, dmg.sourcePosition.z) - dmg.sourcePosition).normalized;
+        GetHitEffect().Emit(1);
       }
 
-      respawnTimer = respawnTime;
+      health -= dmg.damage;
+      aiController.GetComponent<PhotonView>().RPC("BroadcastHealth", RpcTarget.All, aiClone.GetComponent<PhotonView>().ViewID);
 
-      respawnCoroutine = StartCoroutine(RespawnTimer());
+      if (health <= 0) {
+        deaths += 1;
+        PhotonView attacker = PhotonView.Find(attackerViewID);
+
+        if (attacker != null) {
+          Player killer = attacker.Owner;
+          String killerName = "";
+
+          if (killer.IsMasterClient && bot.botPosition != -1) {
+            eventsManager.CreditBotKill_S(bot.botPosition);
+            killerName = bot.botName;
+          }
+          else {
+            CreditKiller(killer);
+            killerName = killer.NickName;
+          }
+
+          eventsManager.GeneralNotification_S(killerName + " has killed " + name, 2.0f, "CombatLog");
+          respawnTimer = respawnTime;
+
+          respawnCoroutine = StartCoroutine(RespawnTimer());
+        }
+      }
     }
   }
 
   private IEnumerator RespawnTimer() {
-    eventsManager.DeathTimer_S(team, position, respawnTimer);
+    eventsManager.DeathTimer_S(team, bot.botPosition, respawnTimer);
 
     if (respawnTimer < 0) {
       PhotonNetwork.Destroy(aiClone);
@@ -196,6 +237,10 @@ public class AIDirector : MonoBehaviour
     killer.SetCustomProperties(killerProperties);
   }
 
+  public void CreditBotKill() {
+    kills += 1;
+  }
+
   private String GetTimerText(int _seconds) {
     string minutes = (_seconds / 60).ToString("00");
     string seconds = (_seconds % 60).ToString("00");
@@ -216,5 +261,56 @@ public class AIDirector : MonoBehaviour
 
   public GameObject GetAIClone() {
     return aiClone;
+  }
+
+  public Bot GetBotDetails() {
+    return bot;
+  }
+
+  public int GetKills() {
+    return kills;
+  }
+
+  public int GetDeaths() {
+    return deaths;
+  }
+
+  public void ResetOnNewScene() {
+    instantiated = false;
+    AvatarParent = null;
+  }
+
+  public void SetHealthBar(int value, Slider mainslider = null, Image mainfill = null)
+  {
+
+      if(mainslider != null && mainfill != null)
+      {
+          mainslider.value = value;
+          //mainfill.color = gradient.Evaluate(mainslider.normalizedValue);
+      }
+      else
+      {
+          slider.value = value;
+          //fill.color = gradient.Evaluate(slider.normalizedValue);
+      }
+
+  }
+
+  public void SetMaxHealthBar(int value, Slider mainslider = null, Image mainfill = null)
+  {
+
+      if (mainslider != null && mainfill != null)
+      {
+          mainslider.maxValue = 100;
+          mainslider.value = 100;
+          //mainfill.color = gradient.Evaluate(1f);
+      }
+      else
+      {
+          slider.maxValue = 100;
+          slider.value = 100;
+          //fill.color = gradient.Evaluate(1f);
+      }
+
   }
 }

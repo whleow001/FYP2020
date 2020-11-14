@@ -70,7 +70,7 @@ public class PlayerContainer : MonoBehaviourPun
             {
                 //Debug.Log(other.gameObject.layer);
                 //Debug.Log(other.gameObject.GetComponent<PhotonViewReference>().GetPhotonView());
-                playerManager.TakeDamage(new Damage(20, other.gameObject.transform.position), other.gameObject.GetComponent<PhotonViewReference>().GetPhotonView().ViewID);
+                playerManager.TakeDamage(new Damage(20, other.gameObject.transform.position), other.gameObject.GetComponent<PhotonViewReference>().GetPhotonView().ViewID, other.gameObject.GetComponent<PhotonViewReference>().GetBot());
             }
         }
     }
@@ -81,7 +81,6 @@ public class PlayerContainer : MonoBehaviourPun
         {
             playerManager.TakeDamage(dmg);
         }
-
     }
 
     public bool IsDead()
@@ -100,9 +99,13 @@ public class PlayerContainer : MonoBehaviourPun
     {
         yield return new WaitForSeconds(3);
         playerManager.GetComponent<PlayerController>().SkillActive = false;
-        playerManager.GetComponent<PlayerController>().MoveSpdUp();
         gameObject.transform.Find("FireBall").gameObject.SetActive(false);
         gameObject.transform.Find("Shield").gameObject.SetActive(false);
+        if (photonView.IsMine)
+        {
+            playerManager.setAnimatorSpeed(1);
+            playerManager.GetComponent<PlayerController>().MoveSpdUp();
+        }
     }
 
     //broadcast health to all clients in the server
@@ -137,10 +140,10 @@ public class PlayerContainer : MonoBehaviourPun
     }
 
     [PunRPC]
-    void InstantiateBullet(Vector3 position, Vector3 velocity, int layer, int skill, PhotonMessageInfo info)
+    void InstantiateBullet(Vector3 position, Vector3 velocity, int layer, int skill, int botPosition, string botName, PhotonMessageInfo info)
     {
-        playerManager.GetComponent<PlayerController>().InstantiateBullet(position, velocity, layer, skill, info.photonView);
-        
+        playerManager.GetComponent<PlayerController>().InstantiateBullet(position, velocity, layer, skill, botPosition, botName, info.photonView);
+
     }
 
     [PunRPC]
@@ -150,7 +153,9 @@ public class PlayerContainer : MonoBehaviourPun
         Player player = PV.Owner;
 
         //broadcast nameplate to all client
-        PV.gameObject.transform.Find("Canvas").Find("Text").GetComponent<Text>().text = player.NickName;
+        Text name = PV.gameObject.transform.Find("Canvas").Find("Text").GetComponent<Text>();
+        name.text = player.NickName;
+        name.color = Color.white;
         Image healthColor = PV.gameObject.transform.Find("Canvas").Find("Healthbar").Find("fill").GetComponent<Image>();
 
         if ((byte)player.CustomProperties["_pt"] == 0)
@@ -189,7 +194,11 @@ public class PlayerContainer : MonoBehaviourPun
             if (currentClass == 1)
             {
                 gameObject.transform.Find("FireBall").gameObject.SetActive(true);
-                playerManager.GetComponent<PlayerController>().MoveSpdUp();
+                if (photonView.IsMine)
+                {
+                    playerManager.GetComponent<PlayerController>().MoveSpdUp();
+                    playerManager.setAnimatorSpeed(100);
+                }
 
             }
             //sniper
@@ -204,6 +213,6 @@ public class PlayerContainer : MonoBehaviourPun
             }
             usedSkillCoroutine = StartCoroutine(skillDuration());
         }
-        
+
     }
 }
