@@ -100,7 +100,8 @@ public class GeneratorHealth : Objective
                 Debug.Log("generator is hit");
                 TakeDamage(new Damage(20, collision.gameObject.transform.position));
 
-                GetComponent<DamageManager>().CueSound();
+                if (health > 20)
+                  GetComponent<DamageManager>().CueSound();
             }
         }
 

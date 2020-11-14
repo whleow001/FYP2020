@@ -353,7 +353,7 @@ public class EventsManager : MonoBehaviourPun, IOnEventCallback {
 
       PhotonView PV = PhotonView.Find(viewID);
 
-      if (PV.gameObject.GetComponent<FootstepsManager>())
+      if (PV.gameObject)
         PV.gameObject.GetComponent<FootstepsManager>().PlaySource();
     }
 
@@ -377,7 +377,7 @@ public class EventsManager : MonoBehaviourPun, IOnEventCallback {
 
       PhotonView PV = PhotonView.Find(viewID);
 
-      if (PV.gameObject.GetComponent<FiringManager>())
+      if (PV.gameObject)
         PV.gameObject.GetComponent<FiringManager>().PlaySource();
     }
 
@@ -401,7 +401,7 @@ public class EventsManager : MonoBehaviourPun, IOnEventCallback {
 
       PhotonView PV = PhotonView.Find(viewID);
 
-      if (PV.gameObject.GetComponent<GunslingerSkillManager>())
+      if (PV.gameObject)
         PV.gameObject.GetComponent<GunslingerSkillManager>().PlaySource();
     }
 
@@ -425,7 +425,7 @@ public class EventsManager : MonoBehaviourPun, IOnEventCallback {
 
       PhotonView PV = PhotonView.Find(viewID);
 
-      if (PV.gameObject.GetComponent<JuggernautSkillManager>())
+      if (PV.gameObject)
         PV.gameObject.GetComponent<JuggernautSkillManager>().PlaySource();
     }
 
@@ -449,7 +449,7 @@ public class EventsManager : MonoBehaviourPun, IOnEventCallback {
 
       PhotonView PV = PhotonView.Find(viewID);
 
-      if (PV.gameObject.GetComponent<SniperSkillManager>())
+      if (PV.gameObject)
         PV.gameObject.GetComponent<SniperSkillManager>().PlaySource();
     }
 
@@ -473,7 +473,7 @@ public class EventsManager : MonoBehaviourPun, IOnEventCallback {
 
       PhotonView PV = PhotonView.Find(viewID);
 
-      if (PV.gameObject.GetComponent<DestroyManager>())
+      if (PV.gameObject)
         PV.gameObject.GetComponent<DestroyManager>().PlaySource();
     }
 
@@ -497,7 +497,7 @@ public class EventsManager : MonoBehaviourPun, IOnEventCallback {
 
       PhotonView PV = PhotonView.Find(viewID);
 
-      if (PV.gameObject.GetComponent<DamageManager>())
+      if (PV.gameObject)
         PV.gameObject.GetComponent<DamageManager>().PlaySource();
     }
 

@@ -66,7 +66,8 @@ public class SphereDetection : Objective
                 Debug.Log(objectName+" is hit");
                 TakeDamage(new Damage(3, collision.gameObject.transform.position));
 
-                GetComponent<DamageManager>().CueSound();
+                if (health > 3)
+                  GetComponent<DamageManager>().CueSound();
             }
         }
     }
