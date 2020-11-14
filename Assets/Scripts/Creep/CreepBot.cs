@@ -266,7 +266,7 @@ public class CreepBot : MonoBehaviourPun
                             waypointReached = true;
                             // calculate path to target
                             agent.CalculatePath(objEdge, path);
-                            Debug.Log(path.status);
+                            //Debug.Log(path.status);
                             // if no path can be found, go to obj instead
                             if (path.status == NavMeshPathStatus.PathPartial)
                             {

@@ -16,7 +16,7 @@ public class AIDirectorsHolder : MonoBehaviour
 
     // Update is called once per frame
     void Update() {
-      print(SceneManager.GetActiveScene().name);
+      //print(SceneManager.GetActiveScene().name);
       if (SceneManager.GetActiveScene().name == "Rebel HQ_B" && !hasReset) {
         foreach (AIDirector aiDirector in aiDirectors) {
           aiDirector.ResetOnNewScene();
