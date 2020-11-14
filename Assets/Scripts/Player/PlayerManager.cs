@@ -211,11 +211,11 @@ public class PlayerManager : MonoBehaviourPunCallbacks
         // changing material and layer not working yet
         if(team == 0)
         {
-            playerPrefab.transform.GetComponentInChildren<SpriteRenderer>().color = Color.blue;
+            playerPrefab.transform.GetComponentInChildren<SpriteRenderer>().color = Color.red;
         }
         else
         {
-            playerPrefab.transform.GetComponentInChildren<SpriteRenderer>().color = Color.red;
+            playerPrefab.transform.GetComponentInChildren<SpriteRenderer>().color = Color.blue;
         }
 
     }
