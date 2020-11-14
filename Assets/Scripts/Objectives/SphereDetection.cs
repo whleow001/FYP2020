@@ -30,6 +30,7 @@ public class SphereDetection : Objective
 
     protected override void DestroyObject()
     {
+        GetComponent<DestroyManager>().CueSound();
         PhotonNetwork.Destroy(gameObject);
     }
 
@@ -64,6 +65,8 @@ public class SphereDetection : Objective
             {
                 Debug.Log(objectName+" is hit");
                 TakeDamage(new Damage(3, collision.gameObject.transform.position));
+
+                GetComponent<DamageManager>().CueSound();
             }
         }
     }

@@ -6,6 +6,7 @@ using Photon.Realtime;
 using Photon.Pun;
 using Photon.Pun.UtilityScripts;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class AIDirector : MonoBehaviour
 {
@@ -64,6 +65,9 @@ public class AIDirector : MonoBehaviour
   }
 
   private void Update() {
+    if (SceneManager.GetActiveScene().name == "RoomsV2")
+      Destroy(gameObject);
+
     if (!attributesSet && player != null) {
       team = (byte)player.CustomProperties["_pt"];
       kills = (int)player.CustomProperties["Kills"];

@@ -9,6 +9,7 @@ public class AIDirectorsHolder : MonoBehaviour
     private GameDirector director;
 
     private bool hasReset = false;
+    private bool hasCleared = false;
 
     void Awake() {
       DontDestroyOnLoad(gameObject);
@@ -16,13 +17,23 @@ public class AIDirectorsHolder : MonoBehaviour
 
     // Update is called once per frame
     void Update() {
-      print(SceneManager.GetActiveScene().name);
-      if (SceneManager.GetActiveScene().name == "Rebel HQ_B" && !hasReset) {
+      string sceneName = SceneManager.GetActiveScene().name;
+
+      if (sceneName == "Rebel HQ_B" && !hasReset) {
         foreach (AIDirector aiDirector in aiDirectors) {
           aiDirector.ResetOnNewScene();
         }
 
         hasReset = true;
+      }
+
+      else if (sceneName == "RoomsV2" && !hasCleared) {
+        aiDirectors = new List<AIDirector>();
+        hasCleared = true;
+      }
+
+      else if (sceneName == "Rebel HQ" && hasReset) {
+        hasReset = false;
       }
     }
 

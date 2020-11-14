@@ -72,6 +72,8 @@ public class GeneratorHealth : Objective
     */
     protected override void DestroyObject()
     {
+        GetComponent<DestroyManager>().CueSound();
+
         Adirector.DecrementGeneratorCount();
         healthPanel.SetActive(false);
         PhotonNetwork.Destroy(gameObject);
@@ -97,6 +99,8 @@ public class GeneratorHealth : Objective
             {
                 Debug.Log("generator is hit");
                 TakeDamage(new Damage(20, collision.gameObject.transform.position));
+
+                GetComponent<DamageManager>().CueSound();
             }
         }
 

@@ -28,6 +28,13 @@ public class EventsManager : MonoBehaviourPun, IOnEventCallback {
         GeneralNotification,
         CreditBotKill,
         AddAIListing,
+        PlayFootsteps,
+        PlayNormalAttack,
+        PlayGunslingerSkill,
+        PlayJuggernautSkill,
+        PlaySniperSkill,
+        PlayExplosion,
+        PlayOnHit,
         ShowCutscene
     }
 
@@ -72,6 +79,27 @@ public class EventsManager : MonoBehaviourPun, IOnEventCallback {
                 break;
             case EventsCode.AddAIListing:
                 AddAIListing_R(o);
+                break;
+            case EventsCode.PlayFootsteps:
+                PlayFootsteps_R(o);
+                break;
+            case EventsCode.PlayNormalAttack:
+                PlayNormalAttack_R(o);
+                break;
+            case EventsCode.PlayGunslingerSkill:
+                PlayGunslingerSkill_R(o);
+                break;
+            case EventsCode.PlayJuggernautSkill:
+                PlayJuggernautSkill_R(o);
+                break;
+            case EventsCode.PlaySniperSkill:
+                PlaySniperSkill_R(o);
+                break;
+            case EventsCode.PlayExplosion:
+                PlayExplosion_R(o);
+                break;
+            case EventsCode.PlayOnHit:
+                PlayOnHit_R(o);
                 break;
             case EventsCode.ShowCutscene:
                 StartCutscene_R(o);
@@ -303,6 +331,174 @@ public class EventsManager : MonoBehaviourPun, IOnEventCallback {
         endGameScreen.AddAIListingOne(botName, kills, deaths);
       else
         endGameScreen.AddAIListingTwo(botName, kills, deaths);
+    }
+
+    public void PlayFootsteps_S(int viewID)
+    {
+      object[] package = new object[1];
+
+      package[0] = viewID;
+
+      PhotonNetwork.RaiseEvent(
+        (byte)EventsCode.PlayFootsteps,
+        package,
+        new RaiseEventOptions { Receivers = ReceiverGroup.All },
+        new SendOptions { Reliability = true }
+      );
+    }
+
+    public void PlayFootsteps_R(object[] data)
+    {
+      int viewID = (int)data[0];
+
+      PhotonView PV = PhotonView.Find(viewID);
+
+      if (PV.gameObject.GetComponent<FootstepsManager>())
+        PV.gameObject.GetComponent<FootstepsManager>().PlaySource();
+    }
+
+    public void PlayNormalAttack_S(int viewID)
+    {
+      object[] package = new object[1];
+
+      package[0] = viewID;
+
+      PhotonNetwork.RaiseEvent(
+        (byte)EventsCode.PlayNormalAttack,
+        package,
+        new RaiseEventOptions { Receivers = ReceiverGroup.All },
+        new SendOptions { Reliability = true }
+      );
+    }
+
+    public void PlayNormalAttack_R(object[] data)
+    {
+      int viewID = (int)data[0];
+
+      PhotonView PV = PhotonView.Find(viewID);
+
+      if (PV.gameObject.GetComponent<FiringManager>())
+        PV.gameObject.GetComponent<FiringManager>().PlaySource();
+    }
+
+    public void PlayGunslingerSkill_S(int viewID)
+    {
+      object[] package = new object[1];
+
+      package[0] = viewID;
+
+      PhotonNetwork.RaiseEvent(
+        (byte)EventsCode.PlayGunslingerSkill,
+        package,
+        new RaiseEventOptions { Receivers = ReceiverGroup.All },
+        new SendOptions { Reliability = true }
+      );
+    }
+
+    public void PlayGunslingerSkill_R(object[] data)
+    {
+      int viewID = (int)data[0];
+
+      PhotonView PV = PhotonView.Find(viewID);
+
+      if (PV.gameObject.GetComponent<GunslingerSkillManager>())
+        PV.gameObject.GetComponent<GunslingerSkillManager>().PlaySource();
+    }
+
+    public void PlayJuggernautSkill_S(int viewID)
+    {
+      object[] package = new object[1];
+
+      package[0] = viewID;
+
+      PhotonNetwork.RaiseEvent(
+        (byte)EventsCode.PlayJuggernautSkill,
+        package,
+        new RaiseEventOptions { Receivers = ReceiverGroup.All },
+        new SendOptions { Reliability = true }
+      );
+    }
+
+    public void PlayJuggernautSkill_R(object[] data)
+    {
+      int viewID = (int)data[0];
+
+      PhotonView PV = PhotonView.Find(viewID);
+
+      if (PV.gameObject.GetComponent<JuggernautSkillManager>())
+        PV.gameObject.GetComponent<JuggernautSkillManager>().PlaySource();
+    }
+
+    public void PlaySniperSkill_S(int viewID)
+    {
+      object[] package = new object[1];
+
+      package[0] = viewID;
+
+      PhotonNetwork.RaiseEvent(
+        (byte)EventsCode.PlaySniperSkill,
+        package,
+        new RaiseEventOptions { Receivers = ReceiverGroup.All },
+        new SendOptions { Reliability = true }
+      );
+    }
+
+    public void PlaySniperSkill_R(object[] data)
+    {
+      int viewID = (int)data[0];
+
+      PhotonView PV = PhotonView.Find(viewID);
+
+      if (PV.gameObject.GetComponent<SniperSkillManager>())
+        PV.gameObject.GetComponent<SniperSkillManager>().PlaySource();
+    }
+
+    public void PlayExplosion_S(int viewID)
+    {
+      object[] package = new object[1];
+
+      package[0] = viewID;
+
+      PhotonNetwork.RaiseEvent(
+        (byte)EventsCode.PlayExplosion,
+        package,
+        new RaiseEventOptions { Receivers = ReceiverGroup.All },
+        new SendOptions { Reliability = true }
+      );
+    }
+
+    public void PlayExplosion_R(object[] data)
+    {
+      int viewID = (int)data[0];
+
+      PhotonView PV = PhotonView.Find(viewID);
+
+      if (PV.gameObject.GetComponent<DestroyManager>())
+        PV.gameObject.GetComponent<DestroyManager>().PlaySource();
+    }
+
+    public void PlayOnHit_S(int viewID)
+    {
+      object[] package = new object[1];
+
+      package[0] = viewID;
+
+      PhotonNetwork.RaiseEvent(
+        (byte)EventsCode.PlayOnHit,
+        package,
+        new RaiseEventOptions { Receivers = ReceiverGroup.All },
+        new SendOptions { Reliability = true }
+      );
+    }
+
+    public void PlayOnHit_R(object[] data)
+    {
+      int viewID = (int)data[0];
+
+      PhotonView PV = PhotonView.Find(viewID);
+
+      if (PV.gameObject.GetComponent<DamageManager>())
+        PV.gameObject.GetComponent<DamageManager>().PlaySource();
     }
 
     public void GeneralNotification_S(string message, float durationSeconds, string purpose)

@@ -104,9 +104,15 @@ public class PlayerController : MonoBehaviour {
             {
                 sniperActive = true;
                 ChangeState(CharacterState.Attacking);
+
+                GetComponent<PlayerManager>().GetPlayerAvatar().GetComponent<SniperSkillManager>().CueSound();
             }
             else
             {
+                if ((int)GetComponent<PlayerManager>().GetProperty("Class") == 1)
+                  GetComponent<PlayerManager>().GetPlayerAvatar().GetComponent<GunslingerSkillManager>().CueSound();
+                else if ((int)GetComponent<PlayerManager>().GetProperty("Class") == 3)
+                  GetComponent<PlayerManager>().GetPlayerAvatar().GetComponent<JuggernautSkillManager>().CueSound();
                 GetComponent<PlayerRPC>().ShowSkillEffect(GetComponent<PlayerManager>().GetPlayerAvatar().GetPhotonView().ViewID, (int)GetComponent<PlayerManager>().GetProperty("Class"));
             }
 
@@ -139,6 +145,7 @@ public class PlayerController : MonoBehaviour {
 
     public void ReinitializeGunpoints() {
       GameObject playerClone = GetComponent<PlayerManager>().GetPlayerClone();
+      GameObject avatarParent = GetComponent<PlayerManager>().GetPlayerAvatar();
 
       if (playerClone) {
         raycastOrigins = GetComponent<PlayerManager>().GetPlayerClone().transform.Find("RaycastOrigins").transform;
@@ -180,6 +187,8 @@ public class PlayerController : MonoBehaviour {
       if (!playerInput.IsPressed(PlayerInput.Ability.Attack))
         StopFiring();
 
+      GetComponent<PlayerManager>().GetPlayerAvatar().GetComponent<FootstepsManager>().SetPlayFootsteps(characterState == CharacterState.Running);
+
       if (GetComponent<PlayerManager>().GetPlayerClone())
         switch (characterState) {
           case CharacterState.Idle:
@@ -203,7 +212,7 @@ public class PlayerController : MonoBehaviour {
                     {
                         Attack(Time.deltaTime);
                     }
-            
+
             break;
           default:
             break;
@@ -244,9 +253,10 @@ public class PlayerController : MonoBehaviour {
     }
 
     private void Attack(float deltaTime) {
-      if (readyForFiring)
-            FireBullet(0);
-        
+      if (readyForFiring) {
+        FireBullet(0);
+        GetComponent<PlayerManager>().GetPlayerAvatar().GetComponent<FiringManager>().CueSound();
+      }
     }
 
     private void StopFiring() {
