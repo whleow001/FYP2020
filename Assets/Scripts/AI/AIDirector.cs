@@ -12,7 +12,7 @@ public class AIDirector : MonoBehaviour
 {
   [SerializeField]
   private GameObject aiContainer;
-  private GameObject AvatarParent;
+  private GameObject aiAvatarParent;
   private GameObject spawnPoint;
   private GameObject aiClone;
   private GameObject selectedCharacter;
@@ -99,28 +99,26 @@ public class AIDirector : MonoBehaviour
   }
 
   private void InitializeCharacter() {
-    if (!AvatarParent) {
-      AvatarParent = MasterManager.NetworkInstantiate(aiContainer, spawnPoint.transform.GetChild(UnityEngine.Random.Range(0, 3)).transform.position, Quaternion.identity);
-      // AvatarParent = MasterManager.NetworkInstantiate(aiContainer, Vector3.zero, Quaternion.identity);
-      Destroy(AvatarParent.GetComponent<PlayerContainer>());
-      UnityEngine.AI.NavMeshAgent agent = AvatarParent.AddComponent<UnityEngine.AI.NavMeshAgent>();
+    if (!aiAvatarParent) {
+      aiAvatarParent = MasterManager.NetworkInstantiate(aiContainer, spawnPoint.transform.GetChild(UnityEngine.Random.Range(0, 3)).transform.position, Quaternion.identity);
+      Destroy(aiAvatarParent.GetComponent<PlayerContainer>());
+      UnityEngine.AI.NavMeshAgent agent = aiAvatarParent.AddComponent<UnityEngine.AI.NavMeshAgent>();
 
-      aiAnimation = AvatarParent.AddComponent<AIAnimation>();
+      aiAnimation = aiAvatarParent.AddComponent<AIAnimation>();
 
-      aiController = AvatarParent.AddComponent<AIController>();
+      aiController = aiAvatarParent.AddComponent<AIController>();
       aiController.SetAgent(agent);
       aiController.SetAIDirector(this);
 
-      AvatarParent.layer = team == 0 ? GOVT_LAYER : REBEL_LAYER;
+      aiAvatarParent.layer = team == 0 ? GOVT_LAYER : REBEL_LAYER;
     }
 
-    AvatarParent.transform.rotation = Quaternion.identity;
+    aiAvatarParent.transform.rotation = Quaternion.identity;
 
-    print(classIndex);
-    print(selectedCharacter);
-    aiClone = MasterManager.NetworkInstantiate(selectedCharacter, AvatarParent.transform.position, Quaternion.identity);
+    aiClone = MasterManager.NetworkInstantiate(selectedCharacter, aiAvatarParent.transform.position, Quaternion.identity);
+    aiClone.GetComponent<ParentTest>().pvReference = aiAvatarParent.GetComponent<PhotonView>();
 
-    AvatarParent.GetComponent<AIAnimation>().ReinitializeAnimator(aiClone);
+    aiAnimation.ReinitializeAnimator(aiClone);
     aiController.ClearObjectives();
     aiController.ReinitializeGunpoints(aiClone);
 
@@ -155,12 +153,12 @@ public class AIDirector : MonoBehaviour
   }
 
   private ParticleSystem GetHitEffect() {
-    return AvatarParent.transform.Find("BloodEffect").GetComponent<ParticleSystem>();
+    return aiAvatarParent.transform.Find("BloodEffect").GetComponent<ParticleSystem>();
   }
 
   private void SetProperties() {
     int ModelViewID = aiClone.GetComponent<PhotonView>().ViewID;
-    int ParentViewID = AvatarParent.GetComponent<PhotonView>().ViewID;
+    int ParentViewID = aiAvatarParent.GetComponent<PhotonView>().ViewID;
     int selectedLayer = (team == 0) ? GOVT_LAYER : REBEL_LAYER;
     aiController.GetComponent<PhotonView>().RPC("ChangeMaterial", RpcTarget.All, ParentViewID, ModelViewID, team, selectedLayer);
   }
@@ -223,7 +221,7 @@ public class AIDirector : MonoBehaviour
 
     if (respawnTimer < 0) {
       PhotonNetwork.Destroy(aiClone);
-      AvatarParent.transform.position = spawnPoint.transform.GetChild(UnityEngine.Random.Range(0, 3)).transform.position;
+      aiAvatarParent.transform.position = spawnPoint.transform.GetChild(UnityEngine.Random.Range(0, 3)).transform.position;
       health = 100;
       InitializeCharacter();
 
@@ -282,7 +280,7 @@ public class AIDirector : MonoBehaviour
 
   public void ResetOnNewScene() {
     instantiated = false;
-    AvatarParent = null;
+    aiAvatarParent = null;
   }
 
   public void SetHealthBar(int value, Slider mainslider = null, Image mainfill = null)

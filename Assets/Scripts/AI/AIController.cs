@@ -27,7 +27,7 @@ public class AIController : MonoBehaviourPun
 
     private AIDirector aiDirector;
 
-    private float sightRange = 20.0f;
+    private float sightRange = 6.0f;
     private float attackRange = 6.0f;
     private float bulletSpeed = 70.0f;
 
@@ -79,6 +79,7 @@ public class AIController : MonoBehaviourPun
 
       if (aiDirector.GetHealth() <= 0) {
         ChangeCharacterState(PlayerController.CharacterState.Dead);
+        ChangeAIState(AIState.Objective);
       }
 
       else if (aiState == AIState.Objective) {
@@ -89,11 +90,13 @@ public class AIController : MonoBehaviourPun
           foreach (Collider colliderInSightRange in collidersInSightRange) {
             int team = aiDirector.GetTeam();
 
-            if ((team == 0 && (colliderInSightRange.gameObject.layer == REBEL_LAYER || colliderInSightRange.gameObject.layer == REBELSPHERE_LAYER)) || (team == 1 && colliderInSightRange.gameObject.layer == GOVT_LAYER)) {
-              if (!Physics.Linecast(transform.position, colliderInSightRange.gameObject.transform.position, LayerMask.GetMask("Environment")) &&
-                  !Physics.Linecast(transform.position, colliderInSightRange.gameObject.transform.position, LayerMask.GetMask("Default"))) {
+            if ((team == 0 && colliderInSightRange.gameObject.layer == REBEL_LAYER) ||
+                (team == 0 && colliderInSightRange.gameObject.layer == REBELSPHERE_LAYER) ||
+                (team == 1 && colliderInSightRange.gameObject.layer == GOVT_LAYER)) {
+              if (Physics.Linecast(transform.position, colliderInSightRange.gameObject.transform.position)) {
                 enemyOfInterest = colliderInSightRange.gameObject.transform;
                 ChangeAIState(AIState.Engage);
+                break;
               }
             }
           }
@@ -117,8 +120,6 @@ public class AIController : MonoBehaviourPun
             enemyOfInterest = null;
           // Target not in attack range
           // else if (distance > attackRange) {
-          //   print("Running to " + enemyOfInterest);
-          //
           //   agent.SetDestination(enemyOfInterest.position);
           //   ChangeCharacterState(PlayerController.CharacterState.Running);
           // }
@@ -171,21 +172,6 @@ public class AIController : MonoBehaviourPun
 
     public void SetAIDirector(AIDirector _aiDirector) {
       aiDirector = _aiDirector;
-
-      // int classIndex = aiDirector.GetClassIndex();
-      // switch (classIndex) {
-      //   case 1:
-      //     agent.speed = 10;
-      //     break;
-      //   case 2:
-      //     agent.speed = 8;
-      //     break;
-      //   case 3:
-      //     agent.speed = 5;
-      //     break;
-      //   default:
-      //     break;
-      // }
     }
 
     public AIDirector GetAIDirector() {
