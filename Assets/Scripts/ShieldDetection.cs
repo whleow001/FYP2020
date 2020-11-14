@@ -5,11 +5,16 @@ using UnityEngine;
 public class ShieldDetection : MonoBehaviour
 {
 
-    // Start is called before the first frame update
-    void Start()
+    private void Awake()
     {
-        //gameObject.layer = gameObject.transform.parent.gameObject.layer;
-        Physics.IgnoreLayerCollision(18, gameObject.transform.parent.gameObject.layer);
-        Physics.IgnoreLayerCollision(18, 17);
+        gameObject.layer = transform.parent.gameObject.layer;
+    }
+
+    private void OnEnable()
+    {
+        Debug.Log(gameObject.transform.parent.gameObject.layer);
+        Debug.Log(gameObject.layer);
+        //Physics.IgnoreLayerCollision(18, gameObject.transform.parent.gameObject.layer);
+        //Physics.IgnoreLayerCollision(18, 17);
     }
 }

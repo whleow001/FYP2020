@@ -21,6 +21,7 @@ public class PlayerContainer : MonoBehaviourPun
     void Awake()
     {
         playerManager = GameObject.Find("PlayerManager").GetComponent<PlayerManager>();
+        gameObject.transform.Find("Shield").gameObject.SetActive(false);
         //Debug.Log("my own layer: " + playerManager.GetDirector().GetFactionLayer());
         //Debug.Log("opposite team layer: " + playerManager.GetDirector().GetOtherFactionLayer());
     }
