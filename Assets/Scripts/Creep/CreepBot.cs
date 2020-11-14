@@ -227,7 +227,7 @@ public class CreepBot : MonoBehaviourPun
                         else
                         {
                             agent.SetDestination(objEdge);
-                            
+
                         }
                         transform.rotation = Quaternion.LookRotation(agent.velocity.normalized);
                     }

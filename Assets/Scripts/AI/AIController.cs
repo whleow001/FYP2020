@@ -15,6 +15,8 @@ public class AIController : MonoBehaviourPun
     // Layer references
     private int GOVT_LAYER = 9;
     private int REBEL_LAYER = 10;
+    private int ENVIRONMENT_LAYER = 13;
+    private int REBELSPHERE_LAYER = 17;
 
     private Transform raycastDestination;
     private Transform raycastOrigins;
@@ -25,13 +27,13 @@ public class AIController : MonoBehaviourPun
 
     private AIDirector aiDirector;
 
-    private float sightRange = 7.0f;
-    private float attackRange = 5.0f;
+    private float sightRange = 20.0f;
+    private float attackRange = 6.0f;
     private float bulletSpeed = 70.0f;
 
     private Vector3 objectiveOfInterest;
     private int objectivesIndex = 0;
-    private GameObject enemyOfInterest;
+    private Transform enemyOfInterest;
     private List<Vector3> objectivesLocation = new List<Vector3>();
 
     private UnityEngine.AI.NavMeshAgent agent;
@@ -73,6 +75,8 @@ public class AIController : MonoBehaviourPun
       if (objectiveOfInterest == Vector3.zero)
         NextObjective();
 
+      transform.rotation = Quaternion.LookRotation(agent.velocity.normalized);
+
       if (aiDirector.GetHealth() <= 0) {
         ChangeCharacterState(PlayerController.CharacterState.Dead);
       }
@@ -83,10 +87,12 @@ public class AIController : MonoBehaviourPun
         if (Physics.CheckSphere(transform.position, sightRange)) {
           Collider[] collidersInSightRange = Physics.OverlapSphere(transform.position, sightRange);
           foreach (Collider colliderInSightRange in collidersInSightRange) {
-            if (colliderInSightRange.gameObject.layer == ((aiDirector.GetTeam() == 0) ? REBEL_LAYER : GOVT_LAYER)) {
-              if (!Physics.Linecast(transform.position, colliderInSightRange.gameObject.transform.position)) {
-                enemyOfInterest = colliderInSightRange.gameObject;
+            int team = aiDirector.GetTeam();
 
+            if ((team == 0 && (colliderInSightRange.gameObject.layer == REBEL_LAYER || colliderInSightRange.gameObject.layer == REBELSPHERE_LAYER)) || (team == 1 && colliderInSightRange.gameObject.layer == GOVT_LAYER)) {
+              if (!Physics.Linecast(transform.position, colliderInSightRange.gameObject.transform.position, LayerMask.GetMask("Environment")) &&
+                  !Physics.Linecast(transform.position, colliderInSightRange.gameObject.transform.position, LayerMask.GetMask("Default"))) {
+                enemyOfInterest = colliderInSightRange.gameObject.transform;
                 ChangeAIState(AIState.Engage);
               }
             }
@@ -94,7 +100,6 @@ public class AIController : MonoBehaviourPun
         }
 
         if (aiState == AIState.Objective) {
-          print("Distance to objective " + objectiveOfInterest + ": " + (objectiveOfInterest - transform.position).magnitude);
           agent.SetDestination(objectiveOfInterest);
 
           if ((objectiveOfInterest - transform.position).magnitude <= agent.stoppingDistance)
@@ -106,22 +111,24 @@ public class AIController : MonoBehaviourPun
           ChangeAIState(AIState.Objective);
 
         else {
-          float distance = Vector3.Distance(enemyOfInterest.transform.position, transform.position);
+          float distance = Vector3.Distance(enemyOfInterest.position, transform.position);
           // Lost sight of target
           if (distance > sightRange)
             enemyOfInterest = null;
           // Target not in attack range
-          else if (distance > attackRange) {
-            agent.SetDestination(enemyOfInterest.transform.position);
-            ChangeCharacterState(PlayerController.CharacterState.Running);
-          }
+          // else if (distance > attackRange) {
+          //   print("Running to " + enemyOfInterest);
+          //
+          //   agent.SetDestination(enemyOfInterest.position);
+          //   ChangeCharacterState(PlayerController.CharacterState.Running);
+          // }
           // Target in attack range
           else {
             agent.ResetPath();
             agent.velocity = Vector3.zero;
 
             ChangeCharacterState(PlayerController.CharacterState.Attacking);
-            transform.LookAt(enemyOfInterest.transform, Vector3.up);
+            transform.LookAt(enemyOfInterest, Vector3.up);
           }
         }
       }
@@ -155,7 +162,9 @@ public class AIController : MonoBehaviourPun
     public void SetAgent(UnityEngine.AI.NavMeshAgent _agent) {
       agent = _agent;
 
-      agent.acceleration = 1;
+      agent.updateRotation = false;
+      agent.speed = 5;
+      agent.acceleration = 2;
       agent.angularSpeed = 900;
       agent.stoppingDistance = 10;
     }
@@ -163,20 +172,20 @@ public class AIController : MonoBehaviourPun
     public void SetAIDirector(AIDirector _aiDirector) {
       aiDirector = _aiDirector;
 
-      int classIndex = aiDirector.GetClassIndex();
-      switch (classIndex) {
-        case 1:
-          agent.speed = 10;
-          break;
-        case 2:
-          agent.speed = 8;
-          break;
-        case 3:
-          agent.speed = 5;
-          break;
-        default:
-          break;
-      }
+      // int classIndex = aiDirector.GetClassIndex();
+      // switch (classIndex) {
+      //   case 1:
+      //     agent.speed = 10;
+      //     break;
+      //   case 2:
+      //     agent.speed = 8;
+      //     break;
+      //   case 3:
+      //     agent.speed = 5;
+      //     break;
+      //   default:
+      //     break;
+      // }
     }
 
     public AIDirector GetAIDirector() {
@@ -190,7 +199,7 @@ public class AIController : MonoBehaviourPun
     private void OnCollisionEnter(Collision other) {
       if (photonView.IsMine)
       {
-          if (other.gameObject.tag == "Projectile" && other.gameObject.layer == ((aiDirector.GetTeam() == 0) ? GOVT_LAYER : REBEL_LAYER))
+          if (other.gameObject.tag == "Projectile" && other.gameObject.layer == ((aiDirector.GetTeam() == 0) ? REBEL_LAYER : GOVT_LAYER))
           {
               aiDirector.TakeDamage(new Damage(20, other.gameObject.transform.position), other.gameObject.GetComponent<PhotonViewReference>().GetPhotonView().ViewID, other.gameObject.GetComponent<PhotonViewReference>().GetBot());
           }

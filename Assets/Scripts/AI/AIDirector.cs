@@ -116,6 +116,8 @@ public class AIDirector : MonoBehaviour
 
     AvatarParent.transform.rotation = Quaternion.identity;
 
+    print(classIndex);
+    print(selectedCharacter);
     aiClone = MasterManager.NetworkInstantiate(selectedCharacter, AvatarParent.transform.position, Quaternion.identity);
 
     AvatarParent.GetComponent<AIAnimation>().ReinitializeAnimator(aiClone);
@@ -207,12 +209,11 @@ public class AIDirector : MonoBehaviour
             CreditKiller(killer);
             killerName = killer.NickName;
           }
-
           eventsManager.GeneralNotification_S(killerName + " has killed " + name, 2.0f, "CombatLog");
-          respawnTimer = respawnTime;
-
-          respawnCoroutine = StartCoroutine(RespawnTimer());
         }
+
+        respawnTimer = respawnTime;
+        respawnCoroutine = StartCoroutine(RespawnTimer());
       }
     }
   }
