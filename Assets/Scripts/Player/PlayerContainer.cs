@@ -98,7 +98,6 @@ public class PlayerContainer : MonoBehaviourPun
     private IEnumerator skillDuration()
     {
         yield return new WaitForSeconds(3);
-        playerManager.GetComponent<PlayerController>().SkillActive = false;
         gameObject.transform.Find("FireBall").gameObject.SetActive(false);
         gameObject.transform.Find("Shield").gameObject.SetActive(false);
         if (photonView.IsMine)
@@ -211,6 +210,7 @@ public class PlayerContainer : MonoBehaviourPun
             {
                 gameObject.transform.Find("Shield").gameObject.SetActive(true);
             }
+            playerManager.GetComponent<PlayerController>().SkillActive = false;
             usedSkillCoroutine = StartCoroutine(skillDuration());
         }
 
