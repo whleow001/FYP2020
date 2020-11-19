@@ -11515,7 +11515,7 @@ MonoBehaviour:
   UICanvas: {fileID: 1017183736}
   AIDirector: {fileID: 4559260691351625259, guid: dd172550b9501dc45a3f59f468a8163f,
     type: 3}
-  matchLength: 999
+  matchLength: 180
   timer: {fileID: 1625352458}
   currentMatchTime: 120
   TimelineObject: {fileID: 0}

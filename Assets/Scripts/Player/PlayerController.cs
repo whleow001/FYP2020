@@ -175,7 +175,7 @@ public class PlayerController : MonoBehaviour {
     private void UpdateState() {
         if (GetComponent<PlayerManager>().IsDead())
             ChangeState(CharacterState.Dead);
-        else if (!playerInput.IsJoystickMoving() && !playerInput.IsPressed(PlayerInput.Ability.Attack) && !playerInput.IsPressed(PlayerInput.Ability.Dodge) && !playerInput.IsPressed(PlayerInput.Ability.Skill1) && !playerInput.IsPressed(PlayerInput.Ability.Skill2))
+        else if (!playerInput.IsJoystickMoving() && !playerInput.IsPressed(PlayerInput.Ability.Attack) && !playerInput.IsPressed(PlayerInput.Ability.Dodge) && !playerInput.IsPressed(PlayerInput.Ability.Skill1))
             ChangeState(CharacterState.Idle);
         else if (playerInput.IsPressed(PlayerInput.Ability.Dodge))
             ChangeState(CharacterState.Dodging);
